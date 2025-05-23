@@ -1,0 +1,21 @@
+{
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "./packages/file-system-worker"
+    },
+    {
+      "path": "./packages/build"
+    },
+    {
+      "path": "./packages/server"
+    },
+    {
+      "path": "./packages/memory"
+    },
+    {
+      "path": "./packages/e2e"
+    }
+  ]
+}
