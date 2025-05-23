@@ -4,11 +4,12 @@ import * as Initialize from '../Initialize/Initialize.ts'
 export const commandMap = {
   'FileSystem.copy': FileSystem.copy,
   'FileSystem.createFile': FileSystem.createFile,
-  'FileSystem.readJson': FileSystem.readJson,
   'FileSystem.getPathSeparator': FileSystem.getPathSeparator,
   'FileSystem.getRealPath': FileSystem.getRealPath,
   'FileSystem.mkdir': FileSystem.mkdir,
   'FileSystem.readDirWithFileTypes': FileSystem.readDirWithFileTypes,
+  'FileSystem.readFile': FileSystem.readFile,
+  'FileSystem.readJson': FileSystem.readJson,
   'FileSystem.remove': FileSystem.remove,
   'FileSystem.rename': FileSystem.rename,
   'FileSystem.stat': FileSystem.stat,
