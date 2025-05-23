@@ -1,9 +1,3 @@
-import type { Rpc } from '@lvce-editor/rpc'
+import { FileSystemProcess } from '@lvce-editor/rpc-registry'
 
-export const invoke = async (method: string, ...params: readonly any[]): Promise<any> => {
-  return {}
-}
-
-export const set = (rpc: Rpc): void => {
-  // TODO
-}
+export const { invoke, set } = FileSystemProcess
