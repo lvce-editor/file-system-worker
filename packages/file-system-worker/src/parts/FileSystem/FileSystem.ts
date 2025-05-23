@@ -4,6 +4,10 @@ export const remove = async (dirent: string): Promise<void> => {
   return FileSystemProcess.invoke('FileSystem.remove', dirent)
 }
 
+export const readFile = async (uri: string): Promise<string> => {
+  return FileSystemProcess.invoke('FileSystem.readFile', uri)
+}
+
 export const readDirWithFileTypes = async (uri: string): Promise<readonly any[]> => {
   return FileSystemProcess.invoke('FileSystem.readDirWithFileTypes', uri)
 }
