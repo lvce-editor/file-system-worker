@@ -3,7 +3,7 @@ import { MockRpc } from '@lvce-editor/rpc'
 import * as FileSystemDisk from '../src/parts/FileSystemDisk/FileSystemDisk.js'
 import * as FileSystemProcess from '../src/parts/FileSystemProcess/FileSystemProcess.js'
 
-const mockInvoke = jest.fn<(method: string, ...args: unknown[]) => Promise<unknown>>()
+const mockInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
 const mockRpc = MockRpc.create({
   commandMap: {},
   invoke: mockInvoke,
