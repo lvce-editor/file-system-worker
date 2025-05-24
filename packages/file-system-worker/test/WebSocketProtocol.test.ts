@@ -1,11 +1,13 @@
 import { test, expect } from '@jest/globals'
 import * as Protocol from '../src/parts/Protocol/Protocol.js'
-import { getWebSocketProtocol } from '../src/parts/WebSocketProtocol/WebSocketProtocol.js'
+import * as WebSocketProtocol from '../src/parts/WebSocketProtocol/WebSocketProtocol.js'
 
-test('getWebSocketProtocol converts HTTP to WS', () => {
-  expect(getWebSocketProtocol('http:')).toBe(Protocol.Ws)
+test('getWebSocketProtocol returns wss for https', () => {
+  const result = WebSocketProtocol.getWebSocketProtocol(Protocol.Https)
+  expect(result).toBe(Protocol.Wss)
 })
 
-test('getWebSocketProtocol converts HTTPS to WSS', () => {
-  expect(getWebSocketProtocol(Protocol.Https)).toBe(Protocol.Wss)
+test('getWebSocketProtocol returns ws for http', () => {
+  const result = WebSocketProtocol.getWebSocketProtocol('http:')
+  expect(result).toBe(Protocol.Ws)
 })
