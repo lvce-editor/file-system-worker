@@ -1,4 +1,4 @@
-import * as FileSystem from '../FileSystem/FileSystem.ts'
+import * as FileSystem from '../FileSystemDisk/FileSystemDisk.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
 
 export const commandMap = {
