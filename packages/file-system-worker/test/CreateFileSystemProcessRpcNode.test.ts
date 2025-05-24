@@ -15,7 +15,7 @@ test('creates file system process rpc', async () => {
     constructor() {
       super()
 
-      setTimeout(() => {
+      setTimeout((): void => {
         this.dispatchEvent(new Event('open'))
       }, 0)
     }
@@ -33,7 +33,7 @@ test('handles error when creating file system process rpc', async () => {
     constructor() {
       super()
 
-      setTimeout(() => {
+      setTimeout((): void => {
         this.dispatchEvent(new Event('close'))
       }, 0)
     }
