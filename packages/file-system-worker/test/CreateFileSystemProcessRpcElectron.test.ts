@@ -20,7 +20,7 @@ test('creates file system process rpc', async () => {
     209,
   )
   expect(rpc).toBeDefined()
-  rpc.dispose()
+  await rpc.dispose()
 })
 
 test('handles error when creating file system process rpc', async () => {
