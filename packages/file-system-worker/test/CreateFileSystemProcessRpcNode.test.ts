@@ -20,7 +20,7 @@ test('creates file system process rpc', async () => {
       }, 0)
     }
 
-    close() {}
+    close(): void {}
   }
   const rpc = await createFileSystemProcessRpcNode()
   expect(rpc).toBeDefined()
@@ -38,7 +38,7 @@ test('handles error when creating file system process rpc', async () => {
       }, 0)
     }
 
-    close() {}
+    close(): void {}
   }
   await expect(createFileSystemProcessRpcNode()).rejects.toThrow(
     new Error('Failed to create file system process rpc: IpcError: Websocket connection was immediately closed'),
