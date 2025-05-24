@@ -1,6 +1,5 @@
-import { beforeAll, expect, jest, test } from '@jest/globals'
+import { beforeAll, expect, test } from '@jest/globals'
 import { createFileSystemProcessRpcNode } from '../src/parts/CreateFileSystemProcessRpcNode/CreateFileSystemProcessRpcNode.js'
-import * as GetWebSocketUrl from '../src/parts/GetWebSocketUrl/GetWebSocketUrl.js'
 
 beforeAll(() => {
   // @ts-ignore
