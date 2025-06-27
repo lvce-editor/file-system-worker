@@ -1,5 +1,6 @@
 import * as FileSystem from '../FileSystemDisk/FileSystemDisk.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
+import * as ReadRecentlyOpened from '../ReadRecentlyOpened/ReadRecentlyOpened.ts'
 
 export const commandMap = {
   'FileSystem.copy': FileSystem.copy,
@@ -14,5 +15,6 @@ export const commandMap = {
   'FileSystem.rename': FileSystem.rename,
   'FileSystem.stat': FileSystem.stat,
   'FileSystem.writeFile': FileSystem.writeFile,
+  'FileSystem.readRecentlyOpened': ReadRecentlyOpened.readRecentlyOpened,
   'Initialize.initialize': Initialize.initialize,
 }
