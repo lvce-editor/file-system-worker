@@ -1,11 +1,11 @@
 import { test } from '@jest/globals'
 import { mockWorkerGlobalRpc } from '@lvce-editor/rpc'
-import { main } from '../src/parts/Main/Main.ts'
+import { listen } from '../src/parts/Listen/Listen.ts'
 
-test('main', async () => {
+test('listen', async () => {
   const { start, dispose } = mockWorkerGlobalRpc()
-  const mainPromise = main()
+  const listenPromise = listen()
   start()
-  await mainPromise
+  await listenPromise
   dispose()
 })
