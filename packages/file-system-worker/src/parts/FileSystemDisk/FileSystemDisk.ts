@@ -1,51 +1,49 @@
 import * as FileSystemProcess from '../FileSystemProcess/FileSystemProcess.ts'
 
 export const remove = async (dirent: string): Promise<void> => {
-  return FileSystemProcess.invoke('FileSystem.remove', dirent)
+  return FileSystemProcess.remove(dirent)
 }
 
 export const readFile = async (uri: string): Promise<string> => {
-  return FileSystemProcess.invoke('FileSystem.readFile', uri)
+  return FileSystemProcess.readFile(uri)
 }
 
 export const readDirWithFileTypes = async (uri: string): Promise<readonly any[]> => {
-  return FileSystemProcess.invoke('FileSystem.readDirWithFileTypes', uri)
+  return FileSystemProcess.readDirWithFileTypes(uri)
 }
 
 export const getPathSeparator = async (root: string): Promise<string> => {
-  // @ts-ignore
-  return FileSystemProcess.invoke('FileSystem.getPathSeparator', root)
+  return FileSystemProcess.getPathSeparator(root)
 }
 
 export const readJson = async (uri: string): Promise<any> => {
-  // @ts-ignore
-  return FileSystemProcess.invoke('FileSystem.readJson', uri)
+  return FileSystemProcess.readJson(uri)
 }
 
 export const getRealPath = async (path: string): Promise<string> => {
-  return FileSystemProcess.invoke('FileSystem.getRealPath', path)
+  return FileSystemProcess.getPathSeparator(path)
 }
 
 export const stat = async (dirent: string): Promise<any> => {
-  return FileSystemProcess.invoke('FileSystem.stat', dirent)
+  return FileSystemProcess.stat(dirent)
 }
 
 export const createFile = async (uri: string): Promise<void> => {
-  return FileSystemProcess.invoke('FileSystem.writeFile', uri, '')
+  return FileSystemProcess.writeFile(uri, '')
 }
 
 export const writeFile = async (uri: string, content: string): Promise<void> => {
-  return FileSystemProcess.invoke('FileSystem.writeFile', uri, content)
+  return FileSystemProcess.writeFile(uri, content)
 }
 
 export const mkdir = async (uri: string): Promise<void> => {
-  return FileSystemProcess.invoke('FileSystem.mkdir', uri)
+  return FileSystemProcess.mkdir(uri)
 }
 
 export const rename = async (oldUri: string, newUri: string): Promise<void> => {
-  return FileSystemProcess.invoke('FileSystem.rename', oldUri, newUri)
+  return FileSystemProcess.rename(oldUri, newUri)
 }
 
 export const copy = async (oldUri: string, newUri: string): Promise<void> => {
-  return FileSystemProcess.invoke('FileSystem.copy', oldUri, newUri)
+  return FileSystemProcess.copy(oldUri, newUri)
 }
