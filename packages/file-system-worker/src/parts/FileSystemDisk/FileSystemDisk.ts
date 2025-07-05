@@ -21,7 +21,7 @@ export const readJson = async (uri: string): Promise<any> => {
 }
 
 export const getRealPath = async (path: string): Promise<string> => {
-  return FileSystemProcess.getPathSeparator(path)
+  return FileSystemProcess.getRealPath(path)
 }
 
 export const stat = async (dirent: string): Promise<any> => {
