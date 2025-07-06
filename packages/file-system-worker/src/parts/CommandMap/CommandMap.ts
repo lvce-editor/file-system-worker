@@ -14,5 +14,6 @@ export const commandMap = {
   'FileSystem.rename': FileSystem.rename,
   'FileSystem.stat': FileSystem.stat,
   'FileSystem.writeFile': FileSystem.writeFile,
+  'FileSystem.getFolderSize': FileSystem.getFolderSize,
   'Initialize.initialize': Initialize.initialize,
 }
