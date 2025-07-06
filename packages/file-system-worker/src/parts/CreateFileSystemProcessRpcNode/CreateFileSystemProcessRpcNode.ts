@@ -1,16 +1,10 @@
-import { type Rpc, WebSocketRpcParent } from '@lvce-editor/rpc'
+import { type Rpc, WebSocketRpcParent2 } from '@lvce-editor/rpc'
 import { VError } from '@lvce-editor/verror'
-import * as GetWebSocketUrl from '../GetWebSocketUrl/GetWebSocketUrl.ts'
-import * as Location from '../Location/Location.ts'
 
 export const createFileSystemProcessRpcNode = async (): Promise<Rpc> => {
   try {
-    const host = Location.getHost()
-    const protocol = Location.getProtocol()
-    const wsUrl = GetWebSocketUrl.getWebSocketUrl('file-system-process', host, protocol)
-    const webSocket = new WebSocket(wsUrl)
-    const rpc = await WebSocketRpcParent.create({
-      webSocket,
+    const rpc = await WebSocketRpcParent2.create({
+      type: 'file-system-process',
       commandMap: {},
     })
     return rpc
