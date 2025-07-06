@@ -47,3 +47,7 @@ export const rename = async (oldUri: string, newUri: string): Promise<void> => {
 export const copy = async (oldUri: string, newUri: string): Promise<void> => {
   return FileSystemProcess.copy(oldUri, newUri)
 }
+
+export const getFolderSize = async (uri: string): Promise<void> => {
+  return FileSystemProcess.getFolderSize(uri)
+}
