@@ -1,58 +1,56 @@
-import * as FileSystemFetch from '../FileSystemFetch/FileSystemFetch.ts'
-import * as FileSystemProcess from '../FileSystemProcess/FileSystemProcess.ts'
-import * as Protocol from '../Protocol/Protocol.ts'
-
 export const remove = async (dirent: string): Promise<void> => {
-  return FileSystemProcess.remove(dirent)
+  throw new Error('not implemented')
 }
 
 export const readFile = async (uri: string): Promise<string> => {
-  if (uri.startsWith(Protocol.Http) || uri.startsWith(Protocol.Https)) {
-    return FileSystemFetch.readFile(uri)
+  const response = await fetch(uri)
+  if (!response.ok) {
+    throw new Error(response.statusText)
   }
-  return FileSystemProcess.readFile(uri)
+  const result = await response.text()
+  return result
 }
 
 export const readDirWithFileTypes = async (uri: string): Promise<readonly any[]> => {
-  return FileSystemProcess.readDirWithFileTypes(uri)
+  throw new Error('not implemented')
 }
 
 export const getPathSeparator = async (root: string): Promise<string> => {
-  return FileSystemProcess.getPathSeparator(root)
+  return '/'
 }
 
 export const readJson = async (uri: string): Promise<any> => {
-  return FileSystemProcess.readJson(uri)
+  throw new Error('not implemented')
 }
 
 export const getRealPath = async (path: string): Promise<string> => {
-  return FileSystemProcess.getRealPath(path)
+  throw new Error('not implemented')
 }
 
 export const stat = async (dirent: string): Promise<any> => {
-  return FileSystemProcess.stat(dirent)
+  throw new Error('not implemented')
 }
 
 export const createFile = async (uri: string): Promise<void> => {
-  return FileSystemProcess.writeFile(uri, '')
+  throw new Error('not implemented')
 }
 
 export const writeFile = async (uri: string, content: string): Promise<void> => {
-  return FileSystemProcess.writeFile(uri, content)
+  throw new Error('not implemented')
 }
 
 export const mkdir = async (uri: string): Promise<void> => {
-  return FileSystemProcess.mkdir(uri)
+  throw new Error('not implemented')
 }
 
 export const rename = async (oldUri: string, newUri: string): Promise<void> => {
-  return FileSystemProcess.rename(oldUri, newUri)
+  throw new Error('not implemented')
 }
 
 export const copy = async (oldUri: string, newUri: string): Promise<void> => {
-  return FileSystemProcess.copy(oldUri, newUri)
+  throw new Error('not implemented')
 }
 
 export const getFolderSize = async (uri: string): Promise<void> => {
-  return FileSystemProcess.getFolderSize(uri)
+  throw new Error('not implemented')
 }
