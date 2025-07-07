@@ -1,4 +1,5 @@
 import * as FileSystem from '../FileSystemDisk/FileSystemDisk.ts'
+import * as HandleMessagePort from '../HandleMessagePort/HandleMessagePort.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
 
 export const commandMap = {
@@ -15,5 +16,6 @@ export const commandMap = {
   'FileSystem.stat': FileSystem.stat,
   'FileSystem.writeFile': FileSystem.writeFile,
   'FileSystem.getFolderSize': FileSystem.getFolderSize,
+  'FileSystem.handleMessagePort': HandleMessagePort.handleMessagePort,
   'Initialize.initialize': Initialize.initialize,
 }
