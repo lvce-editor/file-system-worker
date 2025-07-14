@@ -1,7 +1,7 @@
 import * as FileSystem from '../FileSystemDisk/FileSystemDisk.ts'
+import * as FileSystemFetch from '../FileSystemFetch/FileSystemFetch.ts'
 import * as HandleMessagePort from '../HandleMessagePort/HandleMessagePort.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
-import * as FileSystemFetch from '../FileSystemFetch/FileSystemFetch.ts'
 
 export const commandMap = {
   'FileSystem.copy': FileSystem.copy,
