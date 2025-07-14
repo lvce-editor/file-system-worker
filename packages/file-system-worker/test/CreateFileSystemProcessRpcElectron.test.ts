@@ -7,7 +7,7 @@ test('creates file system process rpc', async () => {
   const mockInvokeAndTransfer = jest.fn()
   const mockRpc = MockRpc.create({
     commandMap: {},
-    invoke: () => Promise.resolve(),
+    invoke: async () => {},
     invokeAndTransfer: mockInvokeAndTransfer,
   })
   RendererWorker.set(mockRpc)
@@ -29,7 +29,7 @@ test('handles error when creating file system process rpc', async () => {
   })
   const mockRpc = MockRpc.create({
     commandMap: {},
-    invoke: () => Promise.resolve(),
+    invoke: async () => {},
     invokeAndTransfer: mockInvokeAndTransfer,
   })
   RendererWorker.set(mockRpc)
