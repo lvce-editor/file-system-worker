@@ -15,9 +15,9 @@ beforeEach(() => {
 })
 
 test('remove', async () => {
-  mockInvoke.mockImplementation((method: string) => {
+  mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.remove') {
-      return Promise.resolve()
+      return
     }
     throw new Error(`unexpected method ${method}`)
   })
@@ -25,9 +25,9 @@ test('remove', async () => {
 })
 
 test('readFile', async () => {
-  mockInvoke.mockImplementation((method: string) => {
+  mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.readFile') {
-      return Promise.resolve('file content')
+      return 'file content'
     }
     throw new Error(`unexpected method ${method}`)
   })
@@ -36,9 +36,9 @@ test('readFile', async () => {
 })
 
 test('readDirWithFileTypes', async () => {
-  mockInvoke.mockImplementation((method: string) => {
+  mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.readDirWithFileTypes') {
-      return Promise.resolve([{ name: 'file1' }, { name: 'file2' }])
+      return [{ name: 'file1' }, { name: 'file2' }]
     }
     throw new Error(`unexpected method ${method}`)
   })
@@ -47,9 +47,9 @@ test('readDirWithFileTypes', async () => {
 })
 
 test('getPathSeparator', async () => {
-  mockInvoke.mockImplementation((method: string) => {
+  mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.getPathSeparator') {
-      return Promise.resolve('/')
+      return '/'
     }
     throw new Error(`unexpected method ${method}`)
   })
@@ -58,9 +58,9 @@ test('getPathSeparator', async () => {
 })
 
 test('readJson', async () => {
-  mockInvoke.mockImplementation((method: string) => {
+  mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.readJson') {
-      return Promise.resolve({ key: 'value' })
+      return { key: 'value' }
     }
     throw new Error(`unexpected method ${method}`)
   })
@@ -69,9 +69,9 @@ test('readJson', async () => {
 })
 
 test('getRealPath', async () => {
-  mockInvoke.mockImplementation((method: string) => {
+  mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.getRealPath') {
-      return Promise.resolve('/real/path')
+      return '/real/path'
     }
     throw new Error(`unexpected method ${method}`)
   })
@@ -80,9 +80,9 @@ test('getRealPath', async () => {
 })
 
 test('stat', async () => {
-  mockInvoke.mockImplementation((method: string) => {
+  mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.stat') {
-      return Promise.resolve({ size: 100 })
+      return { size: 100 }
     }
     throw new Error(`unexpected method ${method}`)
   })
@@ -91,9 +91,9 @@ test('stat', async () => {
 })
 
 test('createFile', async () => {
-  mockInvoke.mockImplementation((method: string) => {
+  mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.writeFile') {
-      return Promise.resolve()
+      return
     }
     throw new Error(`unexpected method ${method}`)
   })
@@ -101,9 +101,9 @@ test('createFile', async () => {
 })
 
 test('writeFile', async () => {
-  mockInvoke.mockImplementation((method: string) => {
+  mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.writeFile') {
-      return Promise.resolve()
+      return
     }
     throw new Error(`unexpected method ${method}`)
   })
@@ -111,9 +111,9 @@ test('writeFile', async () => {
 })
 
 test('mkdir', async () => {
-  mockInvoke.mockImplementation((method: string) => {
+  mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.mkdir') {
-      return Promise.resolve()
+      return
     }
     throw new Error(`unexpected method ${method}`)
   })
@@ -121,9 +121,9 @@ test('mkdir', async () => {
 })
 
 test('rename', async () => {
-  mockInvoke.mockImplementation((method: string) => {
+  mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.rename') {
-      return Promise.resolve()
+      return
     }
     throw new Error(`unexpected method ${method}`)
   })
@@ -131,9 +131,9 @@ test('rename', async () => {
 })
 
 test('copy', async () => {
-  mockInvoke.mockImplementation((method: string) => {
+  mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.copy') {
-      return Promise.resolve()
+      return
     }
     throw new Error(`unexpected method ${method}`)
   })
