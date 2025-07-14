@@ -33,6 +33,10 @@ export const stat = async (dirent: string): Promise<any> => {
   return FileSystemProcess.stat(dirent)
 }
 
+export const exists = async (uri: string): Promise<any> => {
+  return FileSystemProcess.exists(uri)
+}
+
 export const createFile = async (uri: string): Promise<void> => {
   return FileSystemProcess.writeFile(uri, '')
 }

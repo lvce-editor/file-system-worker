@@ -5,6 +5,8 @@ import * as Initialize from '../Initialize/Initialize.ts'
 export const commandMap = {
   'FileSystem.copy': FileSystem.copy,
   'FileSystem.createFile': FileSystem.createFile,
+  'FileSystem.exists': FileSystem.exists,
+  'FileSystem.getFolderSize': FileSystem.getFolderSize,
   'FileSystem.getPathSeparator': FileSystem.getPathSeparator,
   'FileSystem.getRealPath': FileSystem.getRealPath,
   'FileSystem.mkdir': FileSystem.mkdir,
@@ -15,7 +17,6 @@ export const commandMap = {
   'FileSystem.rename': FileSystem.rename,
   'FileSystem.stat': FileSystem.stat,
   'FileSystem.writeFile': FileSystem.writeFile,
-  'FileSystem.getFolderSize': FileSystem.getFolderSize,
   'FileSystem.handleMessagePort': HandleMessagePort.handleMessagePort,
   'Initialize.initialize': Initialize.initialize,
 }
