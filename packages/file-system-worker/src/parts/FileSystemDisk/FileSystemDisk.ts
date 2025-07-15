@@ -6,8 +6,12 @@ export const remove = async (dirent: string): Promise<void> => {
   return FileSystemProcess.remove(dirent)
 }
 
+const isHttp = (uri: string): boolean => {
+  return uri.startsWith(Protocol.Http) || uri.startsWith(Protocol.Https)
+}
+
 export const readFile = async (uri: string): Promise<string> => {
-  if (uri.startsWith(Protocol.Http) || uri.startsWith(Protocol.Https)) {
+  if (isHttp(uri)) {
     return FileSystemFetch.readFile(uri)
   }
   return FileSystemProcess.readFile(uri)
