@@ -11,6 +11,14 @@ export const readFile = async (uri: string): Promise<string> => {
   return result
 }
 
+export const exists = async (uri: string): Promise<boolean> => {
+  const response = await fetch(uri)
+  if (response.ok) {
+    return true
+  }
+  return false
+}
+
 export const readDirWithFileTypes = async (uri: string): Promise<readonly any[]> => {
   throw new Error('not implemented')
 }
