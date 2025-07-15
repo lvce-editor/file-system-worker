@@ -38,6 +38,9 @@ export const stat = async (dirent: string): Promise<any> => {
 }
 
 export const exists = async (uri: string): Promise<any> => {
+  if (isHttp(uri)) {
+    return FileSystemFetch.exists(uri)
+  }
   return FileSystemProcess.exists(uri)
 }
 
