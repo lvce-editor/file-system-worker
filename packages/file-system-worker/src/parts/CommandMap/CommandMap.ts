@@ -2,7 +2,7 @@ import * as FileSystem from '../FileSystemDisk/FileSystemDisk.ts'
 import * as HandleMessagePort from '../HandleMessagePort/HandleMessagePort.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
 
-export const commandMap = {
+export const commandMap: Record<string, any> = {
   'FileSystem.copy': FileSystem.copy,
   'FileSystem.createFile': FileSystem.createFile,
   'FileSystem.exists': FileSystem.exists,
