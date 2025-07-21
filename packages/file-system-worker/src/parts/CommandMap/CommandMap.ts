@@ -18,5 +18,6 @@ export const commandMap: Record<string, any> = {
   'FileSystem.stat': FileSystem.stat,
   'FileSystem.writeFile': FileSystem.writeFile,
   'FileSystem.handleMessagePort': HandleMessagePort.handleMessagePort,
+  'FileSystem.readFileAsBlob': FileSystem.readFileAsBlob,
   'Initialize.initialize': Initialize.initialize,
 }

@@ -33,6 +33,13 @@ export const getRealPath = async (path: string): Promise<string> => {
   return FileSystemProcess.getRealPath(path)
 }
 
+export const readFileAsBlob = async (uri: string): Promise<Blob> => {
+  if (isHttp(uri)) {
+    return FileSystemFetch.readFileAsBlob(uri)
+  }
+  throw new Error('not implemented')
+}
+
 export const stat = async (dirent: string): Promise<any> => {
   return FileSystemProcess.stat(dirent)
 }
