@@ -10,6 +10,14 @@ export const readFile = async (uri: string): Promise<string> => {
   const result = await response.text()
   return result
 }
+export const readFileAsBlob = async (uri: string): Promise<Blob> => {
+  const response = await fetch(uri)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  const result = await response.blob()
+  return result
+}
 
 export const exists = async (uri: string): Promise<boolean> => {
   const response = await fetch(uri)
