@@ -37,7 +37,17 @@ export const readFileAsBlob = async (uri: string): Promise<Blob> => {
   if (isHttp(uri)) {
     return FileSystemFetch.readFileAsBlob(uri)
   }
-  throw new Error('not implemented')
+  if (uri.startsWith('file:///')) {
+    const rest = uri.slice('file:///'.length)
+    const remoteUrl = `/remote/${rest}`
+    const response = await fetch(remoteUrl)
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+    const blob = await response.blob()
+    return blob
+  }
+  throw new Error('uri not supported')
 }
 
 export const stat = async (dirent: string): Promise<any> => {
