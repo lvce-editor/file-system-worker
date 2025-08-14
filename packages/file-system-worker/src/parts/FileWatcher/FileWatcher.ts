@@ -1,6 +1,6 @@
-import { Rpc } from '@lvce-editor/rpc'
-import * as WatchCallbacks from '../WatchCallbacks/WatchCallbacks.ts'
+import type { Rpc } from '@lvce-editor/rpc'
 import * as FileSystemProcess from '../FileSystemProcess/FileSystemProcess.ts'
+import * as WatchCallbacks from '../WatchCallbacks/WatchCallbacks.ts'
 
 export const watchFile = async (id: number, uri: string, rpc: Rpc): Promise<void> => {
   const commandId = 'Output.executeWatchCallback'
