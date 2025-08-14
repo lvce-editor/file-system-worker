@@ -18,7 +18,6 @@ export const readFile = async (uri: string): Promise<string> => {
 }
 
 export const appendFile = async (uri: string, text: string): Promise<string> => {
-  // @ts-ignore
   return FileSystemProcess.appendFile(uri, text)
 }
 

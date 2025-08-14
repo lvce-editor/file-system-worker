@@ -16,4 +16,5 @@ export const {
   readFile,
   remove,
   exists,
+  appendFile,
 } = FileSystemProcess
