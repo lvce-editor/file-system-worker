@@ -11,7 +11,7 @@ export const watchFile = async (id: number, uri: string, rpc: Rpc): Promise<void
   await FileSystemProcess.invoke('FileSystem.watchFile', id, uri)
 }
 
-export const fire = async (id: number): Promise<void> => {
+export const executeWatchCallback = async (id: number): Promise<void> => {
   await WatchCallbacks.executeWatchCallBack(id)
 }
 
