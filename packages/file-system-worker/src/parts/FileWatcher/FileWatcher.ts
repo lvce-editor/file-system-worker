@@ -9,7 +9,7 @@ export const watchFile = async (id: number, uri: string, rpcId: number): Promise
     if (!rpc) {
       return
     }
-    await rpc.invoke(commandId)
+    await rpc.invoke(commandId, id)
   })
   // @ts-ignore
   await FileSystemProcess.invoke('FileSystem.watchFile', id, uri)
