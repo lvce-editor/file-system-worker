@@ -7,6 +7,7 @@ export const commandMap: Record<string, any> = {
   'FileSystem.appendFile': FileSystem.appendFile,
   'FileSystem.copy': FileSystem.copy,
   'FileSystem.createFile': FileSystem.createFile,
+  'FileSystem.executeWatchcallback': FileWatcher.executeWatchCallback,
   'FileSystem.exists': FileSystem.exists,
   'FileSystem.getFolderSize': FileSystem.getFolderSize,
   'FileSystem.getPathSeparator': FileSystem.getPathSeparator,
@@ -20,8 +21,8 @@ export const commandMap: Record<string, any> = {
   'FileSystem.remove': FileSystem.remove,
   'FileSystem.rename': FileSystem.rename,
   'FileSystem.stat': FileSystem.stat,
-  'FileSystem.watchFile': FileWatcher.watchFile,
   'FileSystem.unwatchFile': FileWatcher.unwatchFile,
+  'FileSystem.watchFile': FileWatcher.watchFile,
   'FileSystem.writeFile': FileSystem.writeFile,
   'Initialize.initialize': Initialize.initialize,
 }
