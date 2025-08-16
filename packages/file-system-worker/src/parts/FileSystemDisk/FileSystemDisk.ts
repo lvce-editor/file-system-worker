@@ -1,6 +1,8 @@
 import * as FileSystemFetch from '../FileSystemFetch/FileSystemFetch.ts'
+import * as FileSystemMemory from '../FileSystemMemory/FileSystemMemory.ts'
 import * as FileSystemProcess from '../FileSystemProcess/FileSystemProcess.ts'
 import { isHttp } from '../IsHttp/IsHttp.ts'
+import { isMemory } from '../IsMemory/IsMemory.ts'
 
 export const remove = async (dirent: string): Promise<void> => {
   return FileSystemProcess.remove(dirent)
@@ -9,6 +11,9 @@ export const remove = async (dirent: string): Promise<void> => {
 export const readFile = async (uri: string): Promise<string> => {
   if (isHttp(uri)) {
     return FileSystemFetch.readFile(uri)
+  }
+  if (isMemory(uri)) {
+    return FileSystemMemory.readFile(uri)
   }
   return FileSystemProcess.readFile(uri)
 }
@@ -66,6 +71,9 @@ export const createFile = async (uri: string): Promise<void> => {
 }
 
 export const writeFile = async (uri: string, content: string): Promise<void> => {
+  if (isMemory(uri)) {
+    return FileSystemMemory.writeFile(uri, content)
+  }
   return FileSystemProcess.writeFile(uri, content)
 }
 
