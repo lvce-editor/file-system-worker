@@ -1,13 +1,9 @@
 import * as FileSystemFetch from '../FileSystemFetch/FileSystemFetch.ts'
 import * as FileSystemProcess from '../FileSystemProcess/FileSystemProcess.ts'
-import * as Protocol from '../Protocol/Protocol.ts'
+import { isHttp } from '../IsHttp/IsHttp.ts'
 
 export const remove = async (dirent: string): Promise<void> => {
   return FileSystemProcess.remove(dirent)
-}
-
-const isHttp = (uri: string): boolean => {
-  return uri.startsWith(Protocol.Http) || uri.startsWith(Protocol.Https)
 }
 
 export const readFile = async (uri: string): Promise<string> => {
