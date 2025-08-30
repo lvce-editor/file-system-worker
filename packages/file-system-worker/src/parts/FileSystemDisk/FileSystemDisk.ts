@@ -31,6 +31,12 @@ export const getPathSeparator = async (root: string): Promise<string> => {
 }
 
 export const readJson = async (uri: string): Promise<any> => {
+  if (isHttp(uri)) {
+    return FileSystemFetch.readJson(uri)
+  }
+  if (isMemory(uri)) {
+    return FileSystemMemory.readJson(uri)
+  }
   return FileSystemProcess.readJson(uri)
 }
 
