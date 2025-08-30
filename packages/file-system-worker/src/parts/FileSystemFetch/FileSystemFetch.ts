@@ -36,7 +36,12 @@ export const getPathSeparator = async (root: string): Promise<string> => {
 }
 
 export const readJson = async (uri: string): Promise<any> => {
-  throw new Error('not implemented')
+  const response = await fetch(uri)
+  if (response.ok) {
+    return true
+  }
+  const json = await response.json()
+  return json
 }
 
 export const getRealPath = async (path: string): Promise<string> => {
