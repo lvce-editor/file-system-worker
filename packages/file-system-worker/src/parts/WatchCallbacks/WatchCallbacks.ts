@@ -1,11 +1,27 @@
-const watchCallbacks = Object.create(null)
+import * as RpcRegistry from '@lvce-editor/rpc-registry'
 
-export const registerWatchCallback = (id: number, fn: () => Promise<void>): void => {
-  watchCallbacks[id] = fn
+interface WatchCallbackEntry {
+  readonly rpcId: number
+  readonly commandId: string
+}
+
+const watchCallbacks: Record<number, WatchCallbackEntry> = Object.create(null)
+
+export const registerWatchCallback = (id: number, rpcId: number, commandId: string): void => {
+  watchCallbacks[id] = {
+    rpcId,
+    commandId,
+  }
 }
 
 export const executeWatchCallBack = async (id: number): Promise<void> => {
-  await watchCallbacks[id]()
+  const entry = watchCallbacks[id]
+  if (!entry) {
+    throw new Error(`watch callback ${id} not found`)
+  }
+  const { rpcId, commandId } = entry
+  const rpc = RpcRegistry.get(rpcId)
+  await rpc.invoke(commandId, id)
 }
 
 export const unregisterWatchCallback = (id: number): void => {
