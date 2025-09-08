@@ -1,8 +1,10 @@
 import * as RpcRegistry from '@lvce-editor/rpc-registry'
+import { assertUri } from '../AssertUri/AssertUri.ts'
 import * as FileSystemProcess from '../FileSystemProcess/FileSystemProcess.ts'
 import * as WatchCallbacks from '../WatchCallbacks/WatchCallbacks.ts'
 
 export const watchFile = async (id: number, uri: string, rpcId: number): Promise<void> => {
+  assertUri(uri)
   const commandId = 'Output.executeWatchCallback'
   WatchCallbacks.registerWatchCallback(id, async () => {
     const rpc = RpcRegistry.get(rpcId)
