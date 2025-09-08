@@ -5,11 +5,13 @@ import * as FileSystemFetch from '../src/parts/FileSystemFetch/FileSystemFetch.t
 ;(globalThis as any).fetch = jest.fn()
 
 test('readFile should fetch and return text content', async () => {
+  // @ts-ignore
   const mockText = jest.fn().mockResolvedValue('file content') as any
   const mockResponse = {
     ok: true,
     text: mockText
   } as any
+  // @ts-ignore
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
 
   const result = await FileSystemFetch.readFile('http://example.com/file.txt')
@@ -23,6 +25,7 @@ test('readFile should throw error when response is not ok', async () => {
     ok: false,
     statusText: 'Not Found'
   } as any
+  // @ts-ignore
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
 
   await expect(FileSystemFetch.readFile('http://example.com/notfound.txt')).rejects.toThrow('Not Found')
@@ -30,11 +33,13 @@ test('readFile should throw error when response is not ok', async () => {
 
 test('readFileAsBlob should fetch and return blob content', async () => {
   const mockBlob = new Blob(['blob content'])
+  // @ts-ignore
   const mockBlobFn = jest.fn().mockResolvedValue(mockBlob) as any
   const mockResponse = {
     ok: true,
     blob: mockBlobFn
   } as any
+  // @ts-ignore
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
 
   const result = await FileSystemFetch.readFileAsBlob('http://example.com/file.bin')
@@ -48,6 +53,7 @@ test('readFileAsBlob should throw error when response is not ok', async () => {
     ok: false,
     statusText: 'Server Error'
   } as any
+  // @ts-ignore
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
 
   await expect(FileSystemFetch.readFileAsBlob('http://example.com/error.bin')).rejects.toThrow('Server Error')
@@ -57,6 +63,7 @@ test('exists should return true for successful response', async () => {
   const mockResponse = {
     ok: true
   } as any
+  // @ts-ignore
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
 
   const result = await FileSystemFetch.exists('http://example.com/exists.txt')
@@ -68,6 +75,7 @@ test('exists should return false for failed response', async () => {
   const mockResponse = {
     ok: false
   } as any
+  // @ts-ignore
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
 
   const result = await FileSystemFetch.exists('http://example.com/notfound.txt')
@@ -82,11 +90,13 @@ test('getPathSeparator should return forward slash', async () => {
 
 test('readJson should fetch and return JSON content', async () => {
   const mockJson = { key: 'value' }
+  // @ts-ignore
   const mockJsonFn = jest.fn().mockResolvedValue(mockJson) as any
   const mockResponse = {
     ok: true,
     json: mockJsonFn
   } as any
+  // @ts-ignore
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
 
   const result = await FileSystemFetch.readJson('http://example.com/data.json')
@@ -100,6 +110,7 @@ test('readJson should throw error when response is not ok', async () => {
     ok: false,
     statusText: 'Bad Request'
   } as any
+  // @ts-ignore
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
 
   await expect(FileSystemFetch.readJson('http://example.com/invalid.json')).rejects.toThrow('Bad Request')
