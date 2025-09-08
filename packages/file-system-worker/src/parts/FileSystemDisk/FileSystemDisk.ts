@@ -98,3 +98,8 @@ export const copy = async (oldUri: string, newUri: string): Promise<void> => {
 export const getFolderSize = async (uri: string): Promise<void> => {
   return FileSystemProcess.getFolderSize(uri)
 }
+
+export const watchFile = async (id: number, uri: string): Promise<void> => {
+  // @ts-ignore
+  await FileSystemProcess.invoke('FileSystem.watchFile', id, uri)
+}

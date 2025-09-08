@@ -59,3 +59,7 @@ export const copy = async (oldUri: string, newUri: string): Promise<void> => {
 export const getFolderSize = async (uri: string): Promise<void> => {
   throw new Error('not implemented')
 }
+
+export const watchFile = async (id: number, uri: string): Promise<void> => {
+  throw new Error('not implemented')
+}
