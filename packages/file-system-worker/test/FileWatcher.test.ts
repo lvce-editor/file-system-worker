@@ -1,6 +1,6 @@
 import { test, expect, jest } from '@jest/globals'
-import * as FileWatcher from '../src/parts/FileWatcher/FileWatcher.ts'
 import * as FileSystemProcess from '../src/parts/FileSystemProcess/FileSystemProcess.ts'
+import * as FileWatcher from '../src/parts/FileWatcher/FileWatcher.ts'
 
 const mockInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
 const mockRpc = {
@@ -28,7 +28,7 @@ test('watchFile should throw error for invalid URI', async () => {
 test('watchFile should register watch callback and invoke FileSystemProcess', async () => {
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.watchFile') {
-      return Promise.resolve()
+      return;
     }
     throw new Error(`unexpected method ${method}`)
   })
@@ -39,7 +39,7 @@ test('watchFile should register watch callback and invoke FileSystemProcess', as
 test('unwatchFile should unregister watch callback and invoke FileSystemProcess', async () => {
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.unwatchFile') {
-      return Promise.resolve()
+      return;
     }
     throw new Error(`unexpected method ${method}`)
   })

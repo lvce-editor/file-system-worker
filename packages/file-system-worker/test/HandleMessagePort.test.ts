@@ -1,6 +1,6 @@
 import { test, expect } from '@jest/globals'
-import { handleMessagePort } from '../src/parts/HandleMessagePort/HandleMessagePort.ts'
 import { get } from '@lvce-editor/rpc-registry'
+import { handleMessagePort } from '../src/parts/HandleMessagePort/HandleMessagePort.ts'
 
 test('handleMessagePort should create RPC without rpcId', async () => {
   const mockPort = new MessageChannel().port1
