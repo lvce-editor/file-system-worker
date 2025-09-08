@@ -1,4 +1,4 @@
-import type { Rpc } from '@lvce-editor/rpc-registry';
+import type { Rpc } from '@lvce-editor/rpc-registry'
 import { ExtensionHost } from '@lvce-editor/rpc-registry'
 import { createExtensionHostRpc } from '../InitializeExtensionHostWorker/InitializeExtensionHostWorker.ts'
 
