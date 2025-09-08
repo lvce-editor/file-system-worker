@@ -3,11 +3,11 @@ import * as WatchCallbacks from '../src/parts/WatchCallbacks/WatchCallbacks.ts'
 
 // Mock the RpcRegistry module
 const mockRpc = {
-  invoke: jest.fn()
+  invoke: jest.fn(),
 }
 
 jest.mock('@lvce-editor/rpc-registry', () => ({
-  get: jest.fn().mockReturnValue(mockRpc)
+  get: jest.fn().mockReturnValue(mockRpc),
 }))
 
 test('registerWatchCallback should register a callback', () => {

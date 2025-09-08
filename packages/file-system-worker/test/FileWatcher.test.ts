@@ -7,16 +7,16 @@ const mockRpc = {
   invoke: mockInvoke,
   send: jest.fn(),
   invokeAndTransfer: jest.fn(),
-  dispose: jest.fn()
+  dispose: jest.fn(),
 } as any
 
 // Mock the RpcRegistry module
 const mockRpcRegistry = {
-  invoke: jest.fn()
+  invoke: jest.fn(),
 }
 
 jest.mock('@lvce-editor/rpc-registry', () => ({
-  get: jest.fn().mockReturnValue(mockRpcRegistry)
+  get: jest.fn().mockReturnValue(mockRpcRegistry),
 }))
 
 FileSystemProcess.set(mockRpc)
@@ -28,7 +28,7 @@ test('watchFile should throw error for invalid URI', async () => {
 test('watchFile should register watch callback and invoke FileSystemProcess', async () => {
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.watchFile') {
-      return;
+      return
     }
     throw new Error(`unexpected method ${method}`)
   })
@@ -39,7 +39,7 @@ test('watchFile should register watch callback and invoke FileSystemProcess', as
 test('unwatchFile should unregister watch callback and invoke FileSystemProcess', async () => {
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.unwatchFile') {
-      return;
+      return
     }
     throw new Error(`unexpected method ${method}`)
   })

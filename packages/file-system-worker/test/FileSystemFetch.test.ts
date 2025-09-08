@@ -9,7 +9,7 @@ test('readFile should fetch and return text content', async () => {
   const mockText = jest.fn().mockResolvedValue('file content') as any
   const mockResponse = {
     ok: true,
-    text: mockText
+    text: mockText,
   } as any
   // @ts-ignore
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -23,7 +23,7 @@ test('readFile should fetch and return text content', async () => {
 test('readFile should throw error when response is not ok', async () => {
   const mockResponse = {
     ok: false,
-    statusText: 'Not Found'
+    statusText: 'Not Found',
   } as any
   // @ts-ignore
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -37,7 +37,7 @@ test('readFileAsBlob should fetch and return blob content', async () => {
   const mockBlobFn = jest.fn().mockResolvedValue(mockBlob) as any
   const mockResponse = {
     ok: true,
-    blob: mockBlobFn
+    blob: mockBlobFn,
   } as any
   // @ts-ignore
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -51,7 +51,7 @@ test('readFileAsBlob should fetch and return blob content', async () => {
 test('readFileAsBlob should throw error when response is not ok', async () => {
   const mockResponse = {
     ok: false,
-    statusText: 'Server Error'
+    statusText: 'Server Error',
   } as any
   // @ts-ignore
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -61,7 +61,7 @@ test('readFileAsBlob should throw error when response is not ok', async () => {
 
 test('exists should return true for successful response', async () => {
   const mockResponse = {
-    ok: true
+    ok: true,
   } as any
   // @ts-ignore
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -73,7 +73,7 @@ test('exists should return true for successful response', async () => {
 
 test('exists should return false for failed response', async () => {
   const mockResponse = {
-    ok: false
+    ok: false,
   } as any
   // @ts-ignore
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -94,7 +94,7 @@ test('readJson should fetch and return JSON content', async () => {
   const mockJsonFn = jest.fn().mockResolvedValue(mockJson) as any
   const mockResponse = {
     ok: true,
-    json: mockJsonFn
+    json: mockJsonFn,
   } as any
   // @ts-ignore
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -108,7 +108,7 @@ test('readJson should fetch and return JSON content', async () => {
 test('readJson should throw error when response is not ok', async () => {
   const mockResponse = {
     ok: false,
-    statusText: 'Bad Request'
+    statusText: 'Bad Request',
   } as any
   // @ts-ignore
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
