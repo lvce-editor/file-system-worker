@@ -13,7 +13,7 @@ test('readFile should fetch and return text content', async () => {
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
 
   const result = await FileSystemFetch.readFile('http://example.com/file.txt')
-  
+
   expect((globalThis as any).fetch).toHaveBeenCalledWith('http://example.com/file.txt')
   expect(result).toBe('file content')
 })
@@ -38,7 +38,7 @@ test('readFileAsBlob should fetch and return blob content', async () => {
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
 
   const result = await FileSystemFetch.readFileAsBlob('http://example.com/file.bin')
-  
+
   expect((globalThis as any).fetch).toHaveBeenCalledWith('http://example.com/file.bin')
   expect(result).toBe(mockBlob)
 })
@@ -60,7 +60,7 @@ test('exists should return true for successful response', async () => {
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
 
   const result = await FileSystemFetch.exists('http://example.com/exists.txt')
-  
+
   expect(result).toBe(true)
 })
 
@@ -71,7 +71,7 @@ test('exists should return false for failed response', async () => {
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
 
   const result = await FileSystemFetch.exists('http://example.com/notfound.txt')
-  
+
   expect(result).toBe(false)
 })
 
@@ -90,7 +90,7 @@ test('readJson should fetch and return JSON content', async () => {
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
 
   const result = await FileSystemFetch.readJson('http://example.com/data.json')
-  
+
   expect((globalThis as any).fetch).toHaveBeenCalledWith('http://example.com/data.json')
   expect(result).toEqual(mockJson)
 })

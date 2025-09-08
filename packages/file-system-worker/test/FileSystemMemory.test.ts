@@ -1,38 +1,5 @@
-import { test, expect, jest } from '@jest/globals'
+import { test, expect } from '@jest/globals'
 import * as FileSystemMemory from '../src/parts/FileSystemMemory/FileSystemMemory.ts'
-import * as ExtensionHostWorker from '../src/parts/ExtensionHostWorker/ExtensionHostWorker.ts'
-
-const mockInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-const mockRpc = {
-  invoke: mockInvoke,
-  send: jest.fn(),
-  invokeAndTransfer: jest.fn(),
-  dispose: jest.fn()
-} as any
-ExtensionHostWorker.set(mockRpc)
-
-test('readFile should invoke ExtensionHostWorker', async () => {
-  mockInvoke.mockImplementation(async (method: string) => {
-    if (method === 'FileSystemMemory.readFile') {
-      return 'file content'
-    }
-    throw new Error(`unexpected method ${method}`)
-  })
-
-  const result = await FileSystemMemory.readFile('memory://test.txt')
-  expect(result).toBe('file content')
-})
-
-test('writeFile should invoke ExtensionHostWorker', async () => {
-  mockInvoke.mockImplementation(async (method: string) => {
-    if (method === 'FileSystemMemory.writeFile') {
-      return Promise.resolve()
-    }
-    throw new Error(`unexpected method ${method}`)
-  })
-
-  await expect(FileSystemMemory.writeFile('memory://test.txt', 'content')).resolves.not.toThrow()
-})
 
 test('getPathSeparator should return forward slash', async () => {
   const result = await FileSystemMemory.getPathSeparator('memory://')

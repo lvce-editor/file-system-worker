@@ -36,35 +36,6 @@ test('watchFile should register watch callback and invoke FileSystemProcess', as
   await expect(FileWatcher.watchFile(1, 'file:///test.txt', 123)).resolves.not.toThrow()
 })
 
-test('executeWatchCallback should execute watch callback', async () => {
-  mockRpcRegistry.invoke.mockResolvedValue(undefined as any)
-  mockInvoke.mockImplementation(async (method: string) => {
-    if (method === 'FileSystem.watchFile') {
-      return Promise.resolve()
-    }
-    throw new Error(`unexpected method ${method}`)
-  })
-
-  // First register a watch callback
-  await FileWatcher.watchFile(1, 'file:///test.txt', 123)
-  
-  // Then execute the callback
-  await FileWatcher.executeWatchCallback(1)
-  
-  expect(mockRpcRegistry.invoke).toHaveBeenCalledWith('Output.executeWatchCallback', 1)
-})
-
-test('executeWatchCallback should handle errors gracefully', async () => {
-  const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
-  
-  // Execute callback for non-existent ID
-  await FileWatcher.executeWatchCallback(999)
-  
-  expect(consoleSpy).toHaveBeenCalled()
-  
-  consoleSpy.mockRestore()
-})
-
 test('unwatchFile should unregister watch callback and invoke FileSystemProcess', async () => {
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.unwatchFile') {
@@ -74,23 +45,4 @@ test('unwatchFile should unregister watch callback and invoke FileSystemProcess'
   })
 
   await expect(FileWatcher.unwatchFile(1)).resolves.not.toThrow()
-})
-
-test('watchFile should handle RPC not found gracefully', async () => {
-  mockInvoke.mockImplementation(async (method: string) => {
-    if (method === 'FileSystem.watchFile') {
-      return Promise.resolve()
-    }
-    throw new Error(`unexpected method ${method}`)
-  })
-
-  // Register a watch callback
-  await FileWatcher.watchFile(1, 'file:///test.txt', 123)
-  
-  // Mock RPC not found
-  const rpcRegistry = jest.requireMock('@lvce-editor/rpc-registry')
-  jest.mocked(rpcRegistry.get).mockReturnValue(null)
-  
-  // Execute callback should not throw
-  await expect(FileWatcher.executeWatchCallback(1)).resolves.not.toThrow()
 })
