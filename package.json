@@ -12,7 +12,7 @@
     "dev": "node packages/build/src/dev.js",
     "format": "prettier --write .",
     "postinstall": "lerna bootstrap --ci",
-    "lint": "eslint .",
+    "lint": "eslint . && prettier --check .",
     "test": "lerna run test",
     "test-integration": "lerna run test-integration",
     "type-check": "tsc -b"
