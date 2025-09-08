@@ -1,15 +1,14 @@
 import { test, expect, jest } from '@jest/globals'
+import * as WatchCallbacks from '../src/parts/WatchCallbacks/WatchCallbacks.ts'
 
 // Mock the RpcRegistry module
 const mockRpc = {
   invoke: jest.fn()
 }
 
-await jest.unstable_mockModule('@lvce-editor/rpc-registry', () => ({
+jest.mock('@lvce-editor/rpc-registry', () => ({
   get: jest.fn().mockReturnValue(mockRpc)
 }))
-
-const WatchCallbacks = await import('../src/parts/WatchCallbacks/WatchCallbacks.ts')
 
 test('registerWatchCallback should register a callback', () => {
   expect(() => WatchCallbacks.registerWatchCallback(1, 123, 'test.command')).not.toThrow()
