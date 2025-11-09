@@ -1,7 +1,6 @@
 import * as FileSystemFetch from '../FileSystemFetch/FileSystemFetch.ts'
 import * as FileSystemMemory from '../FileSystemMemory/FileSystemMemory.ts'
 import * as FileSystemProcess from '../FileSystemProcess/FileSystemProcess.ts'
-import * as FileWatcher from '../FileWatcher/FileWatcher.ts'
 import { isHttp } from '../IsHttp/IsHttp.ts'
 import { isMemory } from '../IsMemory/IsMemory.ts'
 
