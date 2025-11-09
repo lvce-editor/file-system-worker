@@ -91,9 +91,9 @@ export const writeFile = async (uri: string, content: string): Promise<void> => 
 }
 
 export const writeBlob = async (uri: string, blob: Blob): Promise<void> => {
-  const buffer = await blob.arrayBuffer()
+  const bytes = await blob.bytes()
   // @ts-ignore
-  await FileSystemProcess.invoke('FileSystem.writeBuffer', uri, buffer)
+  await FileSystemProcess.invoke('FileSystem.writeBuffer', uri, bytes)
 }
 
 export const mkdir = async (uri: string): Promise<void> => {
