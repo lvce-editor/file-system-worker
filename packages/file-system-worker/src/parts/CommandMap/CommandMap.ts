@@ -2,6 +2,7 @@ import * as FileSystem from '../FileSystemDisk/FileSystemDisk.ts'
 import * as FileWatcher from '../FileWatcher/FileWatcher.ts'
 import * as HandleMessagePort from '../HandleMessagePort/HandleMessagePort.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
+import * as ReadRecentlyOpened from '../ReadRecentlyOpened/ReadRecentlyOpened.ts'
 
 export const commandMap: Record<string, any> = {
   'FileSystem.appendFile': FileSystem.appendFile,
@@ -24,5 +25,6 @@ export const commandMap: Record<string, any> = {
   'FileSystem.unwatchFile': FileWatcher.unwatchFile,
   'FileSystem.watchFile': FileWatcher.watchFile,
   'FileSystem.writeFile': FileSystem.writeFile,
+  'FileSystem.readRecentlyOpened': ReadRecentlyOpened.readRecentlyOpened,
   'Initialize.initialize': Initialize.initialize,
 }
