@@ -24,5 +24,6 @@ export const commandMap: Record<string, any> = {
   'FileSystem.unwatchFile': FileWatcher.unwatchFile,
   'FileSystem.watchFile': FileWatcher.watchFile,
   'FileSystem.writeFile': FileSystem.writeFile,
+  'FileSystem.writeBlob': FileSystem.writeBlob,
   'Initialize.initialize': Initialize.initialize,
 }
