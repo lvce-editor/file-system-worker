@@ -90,8 +90,17 @@ export const writeFile = async (uri: string, content: string): Promise<void> => 
   return FileSystemProcess.writeFile(uri, content)
 }
 
+const getBytes = async (blob: Blob): Promise<Uint8Array> => {
+  if (blob.bytes) {
+    return blob.bytes()
+  }
+  const buffer = await blob.arrayBuffer()
+  const bytes = new Uint8Array(buffer)
+  return bytes
+}
+
 export const writeBlob = async (uri: string, blob: Blob): Promise<void> => {
-  const bytes = await blob.bytes()
+  const bytes = await getBytes(blob)
   // @ts-ignore
   await FileSystemProcess.invoke('FileSystem.writeBuffer', uri, bytes)
 }
