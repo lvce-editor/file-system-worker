@@ -3,17 +3,16 @@ import * as FileSystemProcess from '../FileSystemProcess/FileSystemProcess.ts'
 import * as Protocol from '../Protocol/Protocol.ts'
 import * as WatchCallbacks from '../WatchCallbacks/WatchCallbacks.ts'
 
-// TODO support file watchers for differenr protocols like memfs, http
-
 export const watchFile = async (id: number, uri: string, rpcId: number): Promise<void> => {
   assertUri(uri)
   const commandId = 'Output.executeWatchCallback'
-  WatchCallbacks.registerWatchCallback(id, rpcId, commandId)
+  WatchCallbacks.registerWatchCallback(id, rpcId, commandId, uri)
 
   if (uri.startsWith(Protocol.File)) {
     // @ts-ignore
     await FileSystemProcess.invoke('FileSystem.watchFile', id, uri)
   }
+  // memfs file watchers are handled in-memory, no need to register with FileSystemProcess
 }
 
 export const executeWatchCallback = async (id: number): Promise<void> => {
@@ -29,4 +28,12 @@ export const unwatchFile = async (id: number): Promise<void> => {
   // TODO only if it is a file uri
   // @ts-ignore
   await FileSystemProcess.invoke('FileSystem.unwatchFile', id)
+}
+
+export const triggerMemfsFileWatcher = async (uri: string): Promise<void> => {
+  // Find all registered watchers for this URI and trigger them
+  const watchCallbackIds = WatchCallbacks.getWatchCallbackIdsForUri(uri)
+  for (const id of watchCallbackIds) {
+    await executeWatchCallback(id)
+  }
 }

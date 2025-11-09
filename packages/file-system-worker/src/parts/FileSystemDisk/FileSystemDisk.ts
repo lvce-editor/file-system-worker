@@ -1,10 +1,14 @@
 import * as FileSystemFetch from '../FileSystemFetch/FileSystemFetch.ts'
 import * as FileSystemMemory from '../FileSystemMemory/FileSystemMemory.ts'
 import * as FileSystemProcess from '../FileSystemProcess/FileSystemProcess.ts'
+import * as FileWatcher from '../FileWatcher/FileWatcher.ts'
 import { isHttp } from '../IsHttp/IsHttp.ts'
 import { isMemory } from '../IsMemory/IsMemory.ts'
 
 export const remove = async (dirent: string): Promise<void> => {
+  if (isMemory(dirent)) {
+    return FileSystemMemory.remove(dirent)
+  }
   return FileSystemProcess.remove(dirent)
 }
 
@@ -73,6 +77,9 @@ export const exists = async (uri: string): Promise<any> => {
 }
 
 export const createFile = async (uri: string): Promise<void> => {
+  if (isMemory(uri)) {
+    return FileSystemMemory.createFile(uri)
+  }
   return FileSystemProcess.writeFile(uri, '')
 }
 
@@ -83,11 +90,20 @@ export const writeFile = async (uri: string, content: string): Promise<void> => 
   return FileSystemProcess.writeFile(uri, content)
 }
 
+export const writeBlob = async (uri: string, blob: Blob): Promise<void> => {
+  const buffer = await blob.arrayBuffer()
+  // @ts-ignore
+  await FileSystemProcess.invoke('FileSystem.writeBuffer', uri, buffer)
+}
+
 export const mkdir = async (uri: string): Promise<void> => {
   return FileSystemProcess.mkdir(uri)
 }
 
 export const rename = async (oldUri: string, newUri: string): Promise<void> => {
+  if (isMemory(oldUri) || isMemory(newUri)) {
+    return FileSystemMemory.rename(oldUri, newUri)
+  }
   return FileSystemProcess.rename(oldUri, newUri)
 }
 

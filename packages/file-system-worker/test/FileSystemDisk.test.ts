@@ -110,6 +110,17 @@ test('writeFile', async () => {
   await FileSystemDisk.writeFile('/test/path', 'content')
 })
 
+test('writeBlob', async () => {
+  const blob = new Blob(['abc'])
+  mockInvoke.mockImplementation(async (method: string) => {
+    if (method === 'FileSystem.writeBuffer') {
+      return
+    }
+    throw new Error(`unexpected method ${method}`)
+  })
+  await FileSystemDisk.writeBlob('file:///test/path', blob)
+})
+
 test('mkdir', async () => {
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.mkdir') {
