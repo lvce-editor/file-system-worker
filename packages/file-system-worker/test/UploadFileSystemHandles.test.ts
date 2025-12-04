@@ -5,12 +5,6 @@ import * as UploadFileSystemHandles from '../src/parts/UploadFileSystemHandles/U
 
 test('uploadFileSystemHandles with single directory', async () => {
   const mockRendererInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-  const rpc = MockRpc.create({
-    commandMap: {},
-    invoke: mockRendererInvoke,
-  })
-  setFactory(async () => rpc)
-
   mockRendererInvoke.mockImplementation(async (method: string) => {
     if (method === 'PersistentFileHandle.addHandle') {
       return
@@ -20,6 +14,11 @@ test('uploadFileSystemHandles with single directory', async () => {
     }
     throw new Error(`unexpected method ${method}`)
   })
+  const rpc = MockRpc.create({
+    commandMap: {},
+    invoke: mockRendererInvoke,
+  })
+  setFactory(async () => rpc)
 
   const mockDirectoryHandle = {
     name: 'folder1',
@@ -43,6 +42,12 @@ test('uploadFileSystemHandles with single file', async () => {
   } as any)
 
   const mockRendererInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
+  mockRendererInvoke.mockImplementation(async (method: string) => {
+    if (method === 'Blob.blobToBinaryString') {
+      return 'file content'
+    }
+    throw new Error(`unexpected method ${method}`)
+  })
   const rpc = MockRpc.create({
     commandMap: {},
     invoke: mockRendererInvoke,
@@ -52,13 +57,6 @@ test('uploadFileSystemHandles with single file', async () => {
   mockFileSystemInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.writeFile') {
       return
-    }
-    throw new Error(`unexpected method ${method}`)
-  })
-
-  mockRendererInvoke.mockImplementation(async (method: string) => {
-    if (method === 'Blob.blobToBinaryString') {
-      return 'file content'
     }
     throw new Error(`unexpected method ${method}`)
   })

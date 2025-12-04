@@ -1,5 +1,5 @@
-import * as RendererProcess from '../RendererProcess/RendererProcess.ts'
+import * as Blob from '../Blob/Blob.ts'
 
 export const getBinaryString = (file: File): Promise<string> => {
-  return RendererProcess.invoke('Blob.blobToBinaryString', file) as Promise<string>
+  return Blob.blobToBinaryString(file)
 }
