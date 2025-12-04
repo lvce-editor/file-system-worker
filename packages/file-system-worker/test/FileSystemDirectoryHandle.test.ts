@@ -2,7 +2,7 @@ import { expect, jest, test } from '@jest/globals'
 import * as FileSystemDirectoryHandle from '../src/parts/FileSystemDirectoryHandle/FileSystemDirectoryHandle.ts'
 
 test('getFileHandle', async () => {
-  const mockFileHandle = { name: 'file1', kind: 'file' } as FileSystemFileHandle
+  const mockFileHandle = { kind: 'file', name: 'file1' } as FileSystemFileHandle
   const mockGetFileHandle = jest.fn<(name: string) => Promise<FileSystemFileHandle>>().mockResolvedValue(mockFileHandle)
   const mockHandle = {
     getFileHandle: mockGetFileHandle,
@@ -13,7 +13,7 @@ test('getFileHandle', async () => {
 })
 
 test('getChildHandles', async () => {
-  const mockChildHandle = { name: 'file1', kind: 'file' }
+  const mockChildHandle = { kind: 'file', name: 'file1' }
   const mockValues = async function* (): AsyncGenerator<FileSystemHandle, void, unknown> {
     yield mockChildHandle as FileSystemHandle
   }

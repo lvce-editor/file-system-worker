@@ -15,13 +15,13 @@ beforeEach(() => {
 })
 
 test('uploadDirectory', async () => {
-  const mockChildHandle = { name: 'file1', kind: 'file' } as FileSystemHandle
+  const mockChildHandle = { kind: 'file', name: 'file1' } as FileSystemHandle
   const mockValues = async function* (): AsyncGenerator<FileSystemHandle, void, unknown> {
     yield mockChildHandle
   }
   const mockDirectoryHandle = {
-    name: 'folder1',
     kind: 'directory',
+    name: 'folder1',
     values: jest.fn().mockReturnValue(mockValues()),
   } as unknown as FileSystemDirectoryHandle
 

@@ -77,9 +77,9 @@ test('uploadHandle with file', async () => {
   const mockFile = new File(['file content'], 'file1.txt')
   const mockGetFile = jest.fn<() => Promise<File>>().mockResolvedValue(mockFile)
   const mockFileHandle = {
-    name: 'file1.txt',
-    kind: 'file',
     getFile: mockGetFile,
+    kind: 'file',
+    name: 'file1.txt',
   } as unknown as FileSystemFileHandle
 
   mockFileSystemInvoke.mockImplementation(async (method: string) => {
@@ -104,13 +104,13 @@ test('uploadHandle with file', async () => {
 })
 
 test('uploadHandle with directory', async () => {
-  const mockChildHandle = { name: 'file1', kind: 'file' } as FileSystemHandle
+  const mockChildHandle = { kind: 'file', name: 'file1' } as FileSystemHandle
   const mockValues = async function* (): AsyncGenerator<FileSystemHandle, void, unknown> {
     yield mockChildHandle
   }
   const mockDirectoryHandle = {
-    name: 'folder1',
     kind: 'directory',
+    name: 'folder1',
     values: jest.fn().mockReturnValue(mockValues()),
   } as unknown as FileSystemDirectoryHandle
 
@@ -131,8 +131,8 @@ test('uploadHandle with directory', async () => {
 
 test('uploadHandle with unsupported type', async () => {
   const mockHandle = {
-    name: 'unknown',
     kind: 'unknown',
+    name: 'unknown',
   } as unknown as FileSystemHandle
 
   const mockUploadHandles = jest.fn<(fileSystemHandles: readonly FileSystemHandle[], pathSeparator: string, root: string) => Promise<void>>()

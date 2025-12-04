@@ -91,8 +91,8 @@ test('write', async () => {
   const mockWrite = jest.fn<(data: Readonly<string>) => Promise<void>>().mockResolvedValue(undefined)
   const mockClose = jest.fn<() => Promise<void>>().mockResolvedValue(undefined)
   const mockWritable = {
-    write: mockWrite,
     close: mockClose,
+    write: mockWrite,
   } as unknown as FileSystemWritableFileStream
   const mockCreateWritable = jest.fn<() => Promise<FileSystemWritableFileStream>>().mockResolvedValue(mockWritable)
   const mockHandle = {

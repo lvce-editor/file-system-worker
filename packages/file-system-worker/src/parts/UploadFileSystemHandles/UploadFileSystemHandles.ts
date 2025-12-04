@@ -11,7 +11,7 @@ const uploadHandles = async (fileSystemHandles: readonly FileSystemHandle[], pat
 export const uploadFileSystemHandles = async (root: string, pathSeparator: string, fileSystemHandles: readonly FileSystemHandle[]): Promise<boolean> => {
   if (fileSystemHandles.length === 1) {
     const file = fileSystemHandles[0]
-    const { name, kind } = file
+    const { kind, name } = file
     if (kind === FileHandleType.Directory) {
       await RendererProcess.invoke('PersistentFileHandle.addHandle', `/${name}`, file)
       await RendererProcess.invoke('Workspace.setPath', `html:///${name}`)

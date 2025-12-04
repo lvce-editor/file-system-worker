@@ -5,8 +5,8 @@ import * as CommandMapRef from '../CommandMapRef/CommandMapRef.ts'
 export const createFileSystemProcessRpcNode = async (): Promise<Rpc> => {
   try {
     const rpc = await WebSocketRpcParent2.create({
-      type: 'file-system-process',
       commandMap: CommandMapRef.commandMapRef,
+      type: 'file-system-process',
     })
     return rpc
   } catch (error) {

@@ -72,8 +72,8 @@ test('uploadFileSystemHandles with single directory', async () => {
   setFactory(async () => rpc)
 
   const mockDirectoryHandle = {
-    name: 'folder1',
     kind: 'directory',
+    name: 'folder1',
   } as FileSystemDirectoryHandle
 
   const result = await UploadFileSystemHandles.uploadFileSystemHandles('/root', '/', [mockDirectoryHandle])
@@ -115,9 +115,9 @@ test('uploadFileSystemHandles with single file', async () => {
   const mockFile = new File(['file content'], 'file1.txt')
   const mockGetFile = jest.fn<() => Promise<File>>().mockResolvedValue(mockFile)
   const mockFileHandle = {
-    name: 'file1.txt',
-    kind: 'file',
     getFile: mockGetFile,
+    kind: 'file',
+    name: 'file1.txt',
   } as unknown as FileSystemFileHandle
 
   const result = await UploadFileSystemHandles.uploadFileSystemHandles('/root', '/', [mockFileHandle])
@@ -170,22 +170,22 @@ test('uploadFileSystemHandles with multiple handles', async () => {
 
   const mockGetFile = jest.fn<() => Promise<File>>().mockResolvedValue(mockFile)
   const mockFileHandle = {
-    name: 'file1.txt',
-    kind: 'file',
     getFile: mockGetFile,
+    kind: 'file',
+    name: 'file1.txt',
   } as unknown as FileSystemFileHandle
   const mockChildGetFile = jest.fn<() => Promise<File>>().mockResolvedValue(mockChildFile)
   const mockChildHandle = {
-    name: 'file2.txt',
-    kind: 'file',
     getFile: mockChildGetFile,
+    kind: 'file',
+    name: 'file2.txt',
   } as unknown as FileSystemFileHandle
   const mockValues = async function* (): AsyncGenerator<FileSystemHandle, void, unknown> {
     yield mockChildHandle as FileSystemHandle
   }
   const mockDirectoryHandle = {
-    name: 'folder1',
     kind: 'directory',
+    name: 'folder1',
     values: jest.fn().mockReturnValue(mockValues()),
   } as unknown as FileSystemDirectoryHandle
 
