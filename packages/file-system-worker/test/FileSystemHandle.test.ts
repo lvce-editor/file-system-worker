@@ -1,6 +1,6 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
-import { RendererProcess } from '@lvce-editor/rpc-registry'
+import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
 import * as FileSystemHandle from '../src/parts/FileSystemHandle/FileSystemHandle.ts'
 
 const mockInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
@@ -11,7 +11,7 @@ const mockRpc = MockRpc.create({
 
 beforeEach(() => {
   jest.resetAllMocks()
-  RendererProcess.set(mockRpc)
+  setFactory(async () => mockRpc)
 })
 
 test('getFileHandles', async () => {

@@ -1,15 +1,12 @@
-import { type Rpc, PlainMessagePortRpcParent } from '@lvce-editor/rpc'
+import { type Rpc, TransferMessagePortRpcParent } from '@lvce-editor/rpc'
 import { VError } from '@lvce-editor/verror'
-import * as GetPortTuple from '../GetPortTuple/GetPortTuple.ts'
 import { sendMessagePortToFileSystemProcess } from '../SendMessagePortToFileSystemProcess/SendMessagePortToFileSystemProcess.ts'
 
 export const createFileSystemProcessRpcElectron = async (): Promise<Rpc> => {
   try {
-    const { port1, port2 } = GetPortTuple.getPortTuple()
-    await sendMessagePortToFileSystemProcess(port2)
-    const rpc = await PlainMessagePortRpcParent.create({
+    const rpc = await TransferMessagePortRpcParent.create({
       commandMap: {},
-      messagePort: port1,
+      send: sendMessagePortToFileSystemProcess,
     })
     return rpc
   } catch (error) {

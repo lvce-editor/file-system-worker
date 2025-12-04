@@ -1,15 +1,12 @@
-import { type Rpc, PlainMessagePortRpcParent } from '@lvce-editor/rpc'
+import { type Rpc, TransferMessagePortRpcParent } from '@lvce-editor/rpc'
 import { VError } from '@lvce-editor/verror'
-import * as GetPortTuple from '../GetPortTuple/GetPortTuple.ts'
 import { sendMessagePortToExtensionHostWorker } from '../RendererWorker/RendererWorker.ts'
 
 export const createExtensionHostRpc = async (): Promise<Rpc> => {
   try {
-    const { port1, port2 } = GetPortTuple.getPortTuple()
-    await sendMessagePortToExtensionHostWorker(port2)
-    const rpc = await PlainMessagePortRpcParent.create({
+    const rpc = await TransferMessagePortRpcParent.create({
       commandMap: {},
-      messagePort: port1,
+      send: sendMessagePortToExtensionHostWorker,
     })
     return rpc
   } catch (error) {
