@@ -2,7 +2,7 @@ import * as RendererProcess from '../RendererProcess/RendererProcess.ts'
 
 export const requestPermission = async (
   handle: FileSystemHandle,
-  options: FileSystemHandlePermissionDescriptor,
+  options: { mode?: 'read' | 'readwrite' },
 ): Promise<PermissionState> => {
   // query permission, but from renderer process
   // because handle.requestPermission is not implemented
@@ -17,8 +17,10 @@ export const requestPermission = async (
 
 export const queryPermission = async (
   handle: FileSystemHandle,
-  options: FileSystemHandlePermissionDescriptor,
+  options: { mode?: 'read' | 'readwrite' },
 ): Promise<PermissionState> => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore - queryPermission exists on FileSystemHandle but TypeScript types may not include it
   return handle.queryPermission(options)
 }
 

@@ -1,4 +1,5 @@
 import type { Rpc } from '@lvce-editor/rpc-registry'
+import { RpcId, get } from '@lvce-editor/rpc-registry'
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 
 export const { set } = RendererWorker
@@ -7,7 +8,7 @@ let rpcPromise: Promise<Rpc> | undefined = undefined
 
 const getOrCreate = (): Promise<Rpc> => {
   if (!rpcPromise) {
-    rpcPromise = Promise.resolve(RendererWorker.get())
+    rpcPromise = Promise.resolve(get(RpcId.RendererWorker))
   }
 
   return rpcPromise
