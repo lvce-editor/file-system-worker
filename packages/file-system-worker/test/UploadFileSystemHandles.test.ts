@@ -4,7 +4,7 @@ import { RendererProcess } from '@lvce-editor/rpc-registry'
 import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
 import * as UploadFileSystemHandles from '../src/parts/UploadFileSystemHandles/UploadFileSystemHandles.ts'
 
-test.only('uploadFileSystemHandles with single directory', async () => {
+test('uploadFileSystemHandles with single directory', async () => {
   const mockRendererInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
   const rpc = MockRpc.create({
     commandMap: {},
