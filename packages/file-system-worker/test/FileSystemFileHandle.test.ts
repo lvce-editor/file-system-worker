@@ -13,7 +13,7 @@ test('getFile', async () => {
 })
 
 test('write', async () => {
-  const mockWrite = jest.fn<(data: string) => Promise<void>>().mockResolvedValue(undefined)
+  const mockWrite = jest.fn<(data: Readonly<string>) => Promise<void>>().mockResolvedValue(undefined)
   const mockClose = jest.fn<() => Promise<void>>().mockResolvedValue(undefined)
   const mockWritable = {
     write: mockWrite,
@@ -30,7 +30,7 @@ test('write', async () => {
 })
 
 test('writeResponse', async () => {
-  const mockWritablePipeTo = jest.fn<(destination: WritableStream) => Promise<void>>().mockResolvedValue(undefined)
+  const mockWritablePipeTo = jest.fn<(destination: Readonly<WritableStream>) => Promise<void>>().mockResolvedValue(undefined)
   const mockWritable = {
     pipeTo: mockWritablePipeTo,
   } as unknown as FileSystemWritableFileStream
@@ -38,7 +38,7 @@ test('writeResponse', async () => {
   const mockHandle = {
     createWritable: mockCreateWritable,
   } as unknown as FileSystemFileHandle
-  const mockBodyPipeTo = jest.fn<(destination: WritableStream) => Promise<void>>().mockResolvedValue(undefined)
+  const mockBodyPipeTo = jest.fn<(destination: Readonly<WritableStream>) => Promise<void>>().mockResolvedValue(undefined)
   const mockBody = {
     pipeTo: mockBodyPipeTo,
   } as unknown as ReadableStream
@@ -47,7 +47,5 @@ test('writeResponse', async () => {
   } as Response
   await FileSystemFileHandle.writeResponse(mockHandle, mockResponse)
   expect(mockCreateWritable).toHaveBeenCalled()
-  if (mockResponse.body) {
-    expect(mockBodyPipeTo).toHaveBeenCalledWith(mockWritable)
-  }
+  expect(mockBodyPipeTo).toHaveBeenCalledWith(mockWritable)
 })
