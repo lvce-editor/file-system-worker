@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/prefer-readonly-parameter-types */
 import * as BlobUtil from 'blob-util'
 import * as NormalizeBlobError from '../NormalizeBlobError/NormalizeBlobError.ts'
 import { VError } from '../VError/VError.ts'

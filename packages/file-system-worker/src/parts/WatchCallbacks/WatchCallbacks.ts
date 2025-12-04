@@ -1,8 +1,8 @@
 import * as RpcRegistry from '@lvce-editor/rpc-registry'
 
 interface WatchCallbackEntry {
-  readonly rpcId: number
   readonly commandId: string
+  readonly rpcId: number
   readonly uri: string
 }
 
