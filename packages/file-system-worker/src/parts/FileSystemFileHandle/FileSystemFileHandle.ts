@@ -1,4 +1,3 @@
-// @ts-ignore - HtmlFile is an external dependency
 import * as HtmlFile from '../HtmlFile/HtmlFile.ts'
 
 export const getFile = (handle: FileSystemFileHandle): Promise<File> => {
