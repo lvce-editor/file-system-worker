@@ -1,6 +1,4 @@
-// TODO use this function more often
-
-// TODO use this function more often
+/* eslint-disable @typescript-eslint/prefer-readonly-parameter-types */
 
 export const fromAsync = async <T>(asyncIterable: AsyncIterable<T>): Promise<T[]> => {
   const children: T[] = []
