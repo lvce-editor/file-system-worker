@@ -14,8 +14,8 @@ test('getFileHandle', async () => {
 
 test('getChildHandles', async () => {
   const mockChildHandle = { name: 'file1', kind: 'file' }
-  const mockValues = async function* () {
-    yield mockChildHandle
+  const mockValues = async function* (): AsyncGenerator<FileSystemHandle, void, unknown> {
+    yield mockChildHandle as FileSystemHandle
   }
   const mockHandle = {
     values: jest.fn().mockReturnValue(mockValues()),

@@ -1,4 +1,3 @@
-# eslint-disable github-actions/permissions
 name: CI
 
 on:
