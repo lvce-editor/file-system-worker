@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/prefer-readonly-parameter-types */
 import { beforeEach, expect, jest, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
-import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
 import * as FileSystemFileHandle from '../src/parts/FileSystemFileHandle/FileSystemFileHandle.ts'
+import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
 
 // @ts-ignore
 globalThis.ProgressEvent = class ProgressEvent extends Event {

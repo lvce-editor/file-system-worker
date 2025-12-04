@@ -1,7 +1,7 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
-import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
 import * as FileSystemProcess from '../src/parts/FileSystemProcess/FileSystemProcess.ts'
+import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
 import * as UploadFileSystemFileHandle from '../src/parts/UploadFileSystemFileHandle/UploadFileSystemFileHandle.ts'
 
 const mockFileSystemInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()

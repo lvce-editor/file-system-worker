@@ -1,7 +1,7 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
-import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
 import * as FileSystemProcess from '../src/parts/FileSystemProcess/FileSystemProcess.ts'
+import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
 import * as UploadFileSystemHandle from '../src/parts/UploadFileSystemHandle/UploadFileSystemHandle.ts'
 
 // @ts-ignore
