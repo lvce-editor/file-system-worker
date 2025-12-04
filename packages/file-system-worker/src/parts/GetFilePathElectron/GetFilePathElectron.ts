@@ -2,4 +2,3 @@ export const getFilePathElectron = (fileHandle: FileSystemHandle): Promise<strin
   // This is a stub - actual implementation would get the file path from Electron
   throw new Error('getFilePathElectron not implemented')
 }
-
