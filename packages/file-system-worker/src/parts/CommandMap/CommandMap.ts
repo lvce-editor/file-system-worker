@@ -1,3 +1,5 @@
+import { base64StringToBlob } from 'blob-util'
+import { binaryStringToBlob, blobToBinaryString } from '../Blob/Blob.ts'
 import * as FileSystem from '../FileSystemDisk/FileSystemDisk.ts'
 import * as FileWatcher from '../FileWatcher/FileWatcher.ts'
 import * as HandleMessagePort from '../HandleMessagePort/HandleMessagePort.ts'
@@ -27,5 +29,8 @@ export const commandMap: Record<string, any> = {
   'FileSystem.writeFile': FileSystem.writeFile,
   'FileSystem.writeBlob': FileSystem.writeBlob,
   'FileSystem.uploadFileSystemHandles': uploadFileSystemHandles,
+  'Blob.base64StringToBlob': base64StringToBlob,
+  'Blob.binaryStringToBlob': binaryStringToBlob,
+  'Blob.blobToBinaryString': blobToBinaryString,
   'Initialize.initialize': Initialize.initialize,
 }
