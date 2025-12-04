@@ -2,6 +2,7 @@ import * as FileSystem from '../FileSystemDisk/FileSystemDisk.ts'
 import * as FileWatcher from '../FileWatcher/FileWatcher.ts'
 import * as HandleMessagePort from '../HandleMessagePort/HandleMessagePort.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
+import { uploadFileSystemHandles } from '../UploadFileSystemHandles/UploadFileSystemHandles.ts'
 
 export const commandMap: Record<string, any> = {
   'FileSystem.appendFile': FileSystem.appendFile,
@@ -25,5 +26,6 @@ export const commandMap: Record<string, any> = {
   'FileSystem.watchFile': FileWatcher.watchFile,
   'FileSystem.writeFile': FileSystem.writeFile,
   'FileSystem.writeBlob': FileSystem.writeBlob,
+  'FileSystem.uploadFileSystemHandles': uploadFileSystemHandles,
   'Initialize.initialize': Initialize.initialize,
 }
