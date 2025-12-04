@@ -19,7 +19,7 @@ export const queryPermission = async (
   handle: FileSystemHandle,
   options: { mode?: 'read' | 'readwrite' },
 ): Promise<PermissionState> => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+   
   // @ts-ignore - queryPermission exists on FileSystemHandle but TypeScript types may not include it
   return handle.queryPermission(options)
 }

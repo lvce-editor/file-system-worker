@@ -1,8 +1,8 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore - Path is an external dependency
-import * as Path from '../Path/Path.js'
+ 
 import * as FileSystemDisk from '../FileSystemDisk/FileSystemDisk.ts'
 import * as FilesystemFileHandle from '../FileSystemFileHandle/FileSystemFileHandle.ts'
+// @ts-ignore - Path is an external dependency
+import * as Path from '../Path/Path.js'
 
 export const uploadFile = async (
   fileSystemHandle: FileSystemFileHandle,

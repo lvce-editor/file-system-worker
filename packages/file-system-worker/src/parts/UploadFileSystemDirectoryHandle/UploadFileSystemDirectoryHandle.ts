@@ -1,5 +1,5 @@
-import * as FileSystemDisk from '../FileSystemDisk/FileSystemDisk.ts'
 import * as FileSystemDirectoryHandle from '../FileSystemDirectoryHandle/FileSystemDirectoryHandle.ts'
+import * as FileSystemDisk from '../FileSystemDisk/FileSystemDisk.ts'
 
 export const uploadDirectory = async (
   fileSystemHandle: FileSystemDirectoryHandle,

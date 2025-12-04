@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+ 
 // @ts-ignore - HtmlFile is an external dependency
 import * as HtmlFile from '../HtmlFile/HtmlFile.js'
 

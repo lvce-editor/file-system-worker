@@ -1,5 +1,5 @@
-import * as FileHandleType from '../FileHandleType/FileHandleType.ts'
 import * as DirentType from '../DirentType/DirentType.ts'
+import * as FileHandleType from '../FileHandleType/FileHandleType.ts'
 
 export const getDirentType = (fileHandleKind: string): string => {
   switch (fileHandleKind) {

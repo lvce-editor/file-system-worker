@@ -1,7 +1,7 @@
-import * as FileSystemHandle from './FileSystemHandle.ts'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+ 
 // @ts-ignore - GetFilePathElectron is an external dependency
 import * as GetFilePathElectron from '../GetFilePathElectron/GetFilePathElectron.js'
+import * as FileSystemHandle from './FileSystemHandle.ts'
 
 export const name = 'FileSystemHandle'
 
