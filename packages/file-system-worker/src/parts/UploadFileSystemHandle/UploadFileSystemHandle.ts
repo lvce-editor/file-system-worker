@@ -2,7 +2,7 @@ import * as FileHandleType from '../FileHandleType/FileHandleType.ts'
 import * as UploadFileSystemDirectoryHandle from '../UploadFileSystemDirectoryHandle/UploadFileSystemDirectoryHandle.ts'
 import * as UploadFileSystemFileHandle from '../UploadFileSystemFileHandle/UploadFileSystemFileHandle.ts'
 
-export const uploadHandle = (
+export const uploadHandle = async (
   fileSystemHandle: Readonly<FileSystemHandle>,
   pathSeparator: string,
   root: string,
