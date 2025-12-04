@@ -1,32 +1,16 @@
-import { beforeEach, expect, jest, test } from '@jest/globals'
+import { expect, jest, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
 import * as FileSystemProcess from '../src/parts/FileSystemProcess/FileSystemProcess.ts'
 import * as RendererProcess from '../src/parts/RendererProcess/RendererProcess.ts'
 import * as UploadFileSystemHandles from '../src/parts/UploadFileSystemHandles/UploadFileSystemHandles.ts'
 
-const mockRendererInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-const mockRendererRpc = MockRpc.create({
-  commandMap: {},
-  invoke: mockRendererInvoke,
-})
-
-const mockFileSystemInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-const mockFileSystemRpc = MockRpc.create({
-  commandMap: {},
-  invoke: mockFileSystemInvoke,
-})
-
-beforeEach(() => {
-  jest.resetAllMocks()
-  RendererProcess.set(mockRendererRpc)
-  FileSystemProcess.set(mockFileSystemRpc)
-})
-
 test('uploadFileSystemHandles with single directory', async () => {
-  const mockDirectoryHandle = {
-    name: 'folder1',
-    kind: 'directory',
-  } as FileSystemDirectoryHandle
+  const mockRendererInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
+  const mockRendererRpc = MockRpc.create({
+    commandMap: {},
+    invoke: mockRendererInvoke,
+  })
+  RendererProcess.set(mockRendererRpc)
 
   mockRendererInvoke.mockImplementation(async (method: string) => {
     if (method === 'PersistentFileHandle.addHandle') {
@@ -38,6 +22,11 @@ test('uploadFileSystemHandles with single directory', async () => {
     throw new Error(`unexpected method ${method}`)
   })
 
+  const mockDirectoryHandle = {
+    name: 'folder1',
+    kind: 'directory',
+  } as FileSystemDirectoryHandle
+
   const result = await UploadFileSystemHandles.uploadFileSystemHandles('/root', '/', [mockDirectoryHandle])
 
   expect(result).toBe(true)
@@ -46,13 +35,19 @@ test('uploadFileSystemHandles with single directory', async () => {
 })
 
 test('uploadFileSystemHandles with single file', async () => {
-  const mockFile = new File(['file content'], 'file1.txt')
-  const mockGetFile = jest.fn<() => Promise<File>>().mockResolvedValue(mockFile)
-  const mockFileHandle = {
-    name: 'file1.txt',
-    kind: 'file',
-    getFile: mockGetFile,
-  } as unknown as FileSystemFileHandle
+  const mockFileSystemInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
+  const mockFileSystemRpc = MockRpc.create({
+    commandMap: {},
+    invoke: mockFileSystemInvoke,
+  })
+  FileSystemProcess.set(mockFileSystemRpc)
+
+  const mockRendererInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
+  const mockRendererRpc = MockRpc.create({
+    commandMap: {},
+    invoke: mockRendererInvoke,
+  })
+  RendererProcess.set(mockRendererRpc)
 
   mockFileSystemInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.writeFile') {
@@ -68,6 +63,14 @@ test('uploadFileSystemHandles with single file', async () => {
     throw new Error(`unexpected method ${method}`)
   })
 
+  const mockFile = new File(['file content'], 'file1.txt')
+  const mockGetFile = jest.fn<() => Promise<File>>().mockResolvedValue(mockFile)
+  const mockFileHandle = {
+    name: 'file1.txt',
+    kind: 'file',
+    getFile: mockGetFile,
+  } as unknown as FileSystemFileHandle
+
   const result = await UploadFileSystemHandles.uploadFileSystemHandles('/root', '/', [mockFileHandle])
 
   expect(result).toBe(false)
@@ -76,27 +79,21 @@ test('uploadFileSystemHandles with single file', async () => {
 
 test('uploadFileSystemHandles with multiple handles', async () => {
   const mockFile = new File(['file content'], 'file1.txt')
-  const mockGetFile = jest.fn<() => Promise<File>>().mockResolvedValue(mockFile)
-  const mockFileHandle = {
-    name: 'file1.txt',
-    kind: 'file',
-    getFile: mockGetFile,
-  } as unknown as FileSystemFileHandle
   const mockChildFile = new File(['child content'], 'file2.txt')
-  const mockChildGetFile = jest.fn<() => Promise<File>>().mockResolvedValue(mockChildFile)
-  const mockChildHandle = {
-    name: 'file2.txt',
-    kind: 'file',
-    getFile: mockChildGetFile,
-  } as unknown as FileSystemFileHandle
-  const mockValues = async function* (): AsyncGenerator<FileSystemHandle, void, unknown> {
-    yield mockChildHandle as FileSystemHandle
-  }
-  const mockDirectoryHandle = {
-    name: 'folder1',
-    kind: 'directory',
-    values: jest.fn().mockReturnValue(mockValues()),
-  } as unknown as FileSystemDirectoryHandle
+
+  const mockFileSystemInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
+  const mockFileSystemRpc = MockRpc.create({
+    commandMap: {},
+    invoke: mockFileSystemInvoke,
+  })
+  FileSystemProcess.set(mockFileSystemRpc)
+
+  const mockRendererInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
+  const mockRendererRpc = MockRpc.create({
+    commandMap: {},
+    invoke: mockRendererInvoke,
+  })
+  RendererProcess.set(mockRendererRpc)
 
   mockFileSystemInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.writeFile') {
@@ -122,6 +119,27 @@ test('uploadFileSystemHandles with multiple handles', async () => {
     throw new Error(`unexpected method ${method}`)
   })
 
+  const mockGetFile = jest.fn<() => Promise<File>>().mockResolvedValue(mockFile)
+  const mockFileHandle = {
+    name: 'file1.txt',
+    kind: 'file',
+    getFile: mockGetFile,
+  } as unknown as FileSystemFileHandle
+  const mockChildGetFile = jest.fn<() => Promise<File>>().mockResolvedValue(mockChildFile)
+  const mockChildHandle = {
+    name: 'file2.txt',
+    kind: 'file',
+    getFile: mockChildGetFile,
+  } as unknown as FileSystemFileHandle
+  const mockValues = async function* (): AsyncGenerator<FileSystemHandle, void, unknown> {
+    yield mockChildHandle as FileSystemHandle
+  }
+  const mockDirectoryHandle = {
+    name: 'folder1',
+    kind: 'directory',
+    values: jest.fn().mockReturnValue(mockValues()),
+  } as unknown as FileSystemDirectoryHandle
+
   const result = await UploadFileSystemHandles.uploadFileSystemHandles('/root', '/', [mockFileHandle, mockDirectoryHandle])
 
   expect(result).toBe(false)
@@ -130,6 +148,20 @@ test('uploadFileSystemHandles with multiple handles', async () => {
 })
 
 test('uploadFileSystemHandles with empty array', async () => {
+  const mockFileSystemInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
+  const mockFileSystemRpc = MockRpc.create({
+    commandMap: {},
+    invoke: mockFileSystemInvoke,
+  })
+  FileSystemProcess.set(mockFileSystemRpc)
+
+  const mockRendererInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
+  const mockRendererRpc = MockRpc.create({
+    commandMap: {},
+    invoke: mockRendererInvoke,
+  })
+  RendererProcess.set(mockRendererRpc)
+
   const result = await UploadFileSystemHandles.uploadFileSystemHandles('/root', '/', [])
 
   expect(result).toBe(false)
