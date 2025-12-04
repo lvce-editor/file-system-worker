@@ -15,7 +15,7 @@ beforeEach(() => {
 })
 
 test('requestPermission', async () => {
-  const mockHandle = { name: 'file1', kind: 'file' } as FileSystemHandle
+  const mockHandle = { kind: 'file', name: 'file1' } as FileSystemHandle
   const options = { mode: 'read' as const }
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystemHandle.requestPermission') {
@@ -31,8 +31,8 @@ test('requestPermission', async () => {
 test('queryPermission', async () => {
   const mockQueryPermission = jest.fn<(options: Readonly<{ mode?: 'read' | 'readwrite' }>) => Promise<PermissionState>>().mockResolvedValue('granted')
   const mockHandle = {
-    name: 'file1',
     kind: 'file',
+    name: 'file1',
     queryPermission: mockQueryPermission,
   } as unknown as FileSystemHandle & { queryPermission: (options: Readonly<{ mode?: 'read' | 'readwrite' }>) => Promise<PermissionState> }
   const options = { mode: 'read' as const }

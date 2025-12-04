@@ -5,10 +5,10 @@ import * as WatchCallbacks from '../src/parts/WatchCallbacks/WatchCallbacks.ts'
 
 const mockInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
 const mockRpc = {
-  invoke: mockInvoke,
-  send: jest.fn(),
-  invokeAndTransfer: jest.fn(),
   dispose: jest.fn(),
+  invoke: mockInvoke,
+  invokeAndTransfer: jest.fn(),
+  send: jest.fn(),
 } as any
 
 // Mock the RpcRegistry module

@@ -26,9 +26,9 @@ test.skip('uploadFile', async () => {
   const mockFile = new File(['file content'], 'file1.txt')
   const mockGetFile = jest.fn<() => Promise<File>>().mockResolvedValue(mockFile)
   const mockFileHandle = {
-    name: 'file1.txt',
-    kind: 'file',
     getFile: mockGetFile,
+    kind: 'file',
+    name: 'file1.txt',
   } as unknown as FileSystemFileHandle
 
   mockFileSystemInvoke.mockImplementation(async (method: string) => {

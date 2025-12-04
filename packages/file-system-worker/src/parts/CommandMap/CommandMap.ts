@@ -7,6 +7,9 @@ import * as Initialize from '../Initialize/Initialize.ts'
 import { uploadFileSystemHandles } from '../UploadFileSystemHandles/UploadFileSystemHandles.ts'
 
 export const commandMap: Record<string, any> = {
+  'Blob.base64StringToBlob': base64StringToBlob,
+  'Blob.binaryStringToBlob': binaryStringToBlob,
+  'Blob.blobToBinaryString': blobToBinaryString,
   'FileSystem.appendFile': FileSystem.appendFile,
   'FileSystem.copy': FileSystem.copy,
   'FileSystem.createFile': FileSystem.createFile,
@@ -25,12 +28,9 @@ export const commandMap: Record<string, any> = {
   'FileSystem.rename': FileSystem.rename,
   'FileSystem.stat': FileSystem.stat,
   'FileSystem.unwatchFile': FileWatcher.unwatchFile,
-  'FileSystem.watchFile': FileWatcher.watchFile,
-  'FileSystem.writeFile': FileSystem.writeFile,
-  'FileSystem.writeBlob': FileSystem.writeBlob,
   'FileSystem.uploadFileSystemHandles': uploadFileSystemHandles,
-  'Blob.base64StringToBlob': base64StringToBlob,
-  'Blob.binaryStringToBlob': binaryStringToBlob,
-  'Blob.blobToBinaryString': blobToBinaryString,
+  'FileSystem.watchFile': FileWatcher.watchFile,
+  'FileSystem.writeBlob': FileSystem.writeBlob,
+  'FileSystem.writeFile': FileSystem.writeFile,
   'Initialize.initialize': Initialize.initialize,
 }

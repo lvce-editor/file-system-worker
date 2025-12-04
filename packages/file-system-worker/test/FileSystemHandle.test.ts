@@ -15,7 +15,7 @@ beforeEach(() => {
 })
 
 test('getFileHandles', async () => {
-  const mockHandles = [{ name: 'file1', kind: 'file' }]
+  const mockHandles = [{ kind: 'file', name: 'file1' }]
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileHandles.get') {
       return mockHandles
@@ -28,7 +28,7 @@ test('getFileHandles', async () => {
 })
 
 test('addFileHandle', async () => {
-  const mockHandle = { name: 'file1', kind: 'file' }
+  const mockHandle = { kind: 'file', name: 'file1' }
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystemHandle.addFileHandle') {
       return

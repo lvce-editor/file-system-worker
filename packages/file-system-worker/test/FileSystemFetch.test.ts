@@ -36,8 +36,8 @@ test('readFileAsBlob should fetch and return blob content', async () => {
   // @ts-ignore
   const mockBlobFn = jest.fn().mockResolvedValue(mockBlob) as any
   const mockResponse = {
-    ok: true,
     blob: mockBlobFn,
+    ok: true,
   } as any
   // @ts-ignore
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
@@ -93,8 +93,8 @@ test('readJson should fetch and return JSON content', async () => {
   // @ts-ignore
   const mockJsonFn = jest.fn().mockResolvedValue(mockJson) as any
   const mockResponse = {
-    ok: true,
     json: mockJsonFn,
+    ok: true,
   } as any
   // @ts-ignore
   ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
