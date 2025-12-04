@@ -2,7 +2,7 @@ import * as FileSystem from '../FileSystemDisk/FileSystemDisk.ts'
 import * as FileWatcher from '../FileWatcher/FileWatcher.ts'
 import * as HandleMessagePort from '../HandleMessagePort/HandleMessagePort.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
-import { uploadFileSystemHandles } from '../UploadFileSystemHandles/UploadFileSystemHandles.js'
+import { uploadFileSystemHandles } from '../UploadFileSystemHandles/UploadFileSystemHandles.ts'
 
 export const commandMap: Record<string, any> = {
   'FileSystem.appendFile': FileSystem.appendFile,
