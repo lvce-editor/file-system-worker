@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-readonly-parameter-types */
 import { beforeEach, expect, jest, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
 import * as FileSystemProcess from '../src/parts/FileSystemProcess/FileSystemProcess.ts'
