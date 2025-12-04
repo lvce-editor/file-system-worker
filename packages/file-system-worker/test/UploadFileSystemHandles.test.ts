@@ -1,4 +1,5 @@
 import { expect, jest, test, beforeEach } from '@jest/globals'
+import { MockRpc } from '@lvce-editor/rpc'
 import { RendererProcess } from '@lvce-editor/rpc-registry'
 import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
 
@@ -10,10 +11,12 @@ test('uploadFileSystemHandles with single directory', async () => {
   const UploadFileSystemHandles = await import('../src/parts/UploadFileSystemHandles/UploadFileSystemHandles.ts')
 
   const mockRendererInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-  const rpc = {
-    invoke: mockRendererInvoke,
-  } as any
-  setFactory(rpc)
+  const rpcFactory = async () =>
+    MockRpc.create({
+      commandMap: {},
+      invoke: mockRendererInvoke,
+    })
+  setFactory(rpcFactory)
 
   mockRendererInvoke.mockImplementation(async (method: string) => {
     if (method === 'PersistentFileHandle.addHandle') {

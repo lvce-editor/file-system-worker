@@ -9,3 +9,4 @@ export const getFileExtension = (uri: string): string => {
   }
   return uri.slice(lastDot + 1)
 }
+
