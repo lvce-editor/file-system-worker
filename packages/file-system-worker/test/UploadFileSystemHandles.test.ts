@@ -1,6 +1,5 @@
 import { expect, jest, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
-import { RendererProcess } from '@lvce-editor/rpc-registry'
 import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
 import * as UploadFileSystemHandles from '../src/parts/UploadFileSystemHandles/UploadFileSystemHandles.ts'
 
@@ -44,9 +43,11 @@ test('uploadFileSystemHandles with single file', async () => {
   } as any)
 
   const mockRendererInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-  RendererProcess.set({
+  const rpc = MockRpc.create({
+    commandMap: {},
     invoke: mockRendererInvoke,
-  } as any)
+  })
+  setFactory(async () => rpc)
 
   mockFileSystemInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.writeFile') {
@@ -89,9 +90,11 @@ test('uploadFileSystemHandles with multiple handles', async () => {
   } as any)
 
   const mockRendererInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-  RendererProcess.set({
+  const rpc = MockRpc.create({
+    commandMap: {},
     invoke: mockRendererInvoke,
-  } as any)
+  })
+  setFactory(async () => rpc)
 
   mockFileSystemInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.writeFile') {
@@ -155,9 +158,11 @@ test('uploadFileSystemHandles with empty array', async () => {
   } as any)
 
   const mockRendererInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-  RendererProcess.set({
+  const rpc = MockRpc.create({
+    commandMap: {},
     invoke: mockRendererInvoke,
-  } as any)
+  })
+  setFactory(async () => rpc)
 
   const result = await UploadFileSystemHandles.uploadFileSystemHandles('/root', '/', [])
 

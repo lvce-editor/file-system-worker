@@ -1,7 +1,7 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
+import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
 import * as FileSystemHandlePermission from '../src/parts/FileSystemHandlePermission/FileSystemHandlePermission.ts'
-import * as RendererProcess from '../src/parts/RendererProcess/RendererProcess.ts'
 
 const mockInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
 const mockRpc = MockRpc.create({
@@ -11,7 +11,7 @@ const mockRpc = MockRpc.create({
 
 beforeEach(() => {
   jest.resetAllMocks()
-  RendererProcess.set(mockRpc)
+  setFactory(async () => mockRpc)
 })
 
 test('requestPermission', async () => {
