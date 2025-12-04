@@ -4,7 +4,7 @@ import * as FileSystemFileHandle from '../src/parts/FileSystemFileHandle/FileSys
 test('getFile', async () => {
   const mockFile = new File(['content'], 'file1')
   const mockHandle = {
-    getFile: jest.fn().mockResolvedValue(mockFile),
+    getFile: jest.fn<() => Promise<File>>().mockResolvedValue(mockFile),
   } as unknown as FileSystemFileHandle
   const result = await FileSystemFileHandle.getFile(mockHandle)
   expect(result).toBe(mockFile)
@@ -13,11 +13,11 @@ test('getFile', async () => {
 
 test('write', async () => {
   const mockWritable = {
-    write: jest.fn().mockResolvedValue(undefined),
-    close: jest.fn().mockResolvedValue(undefined),
-  }
+    write: jest.fn<[string], Promise<void>>().mockResolvedValue(undefined),
+    close: jest.fn<[], Promise<void>>().mockResolvedValue(undefined),
+  } as unknown as FileSystemWritableFileStream
   const mockHandle = {
-    createWritable: jest.fn().mockResolvedValue(mockWritable),
+    createWritable: jest.fn<[], Promise<FileSystemWritableFileStream>>().mockResolvedValue(mockWritable),
   } as unknown as FileSystemFileHandle
   await FileSystemFileHandle.write(mockHandle, 'content')
   expect(mockHandle.createWritable).toHaveBeenCalled()

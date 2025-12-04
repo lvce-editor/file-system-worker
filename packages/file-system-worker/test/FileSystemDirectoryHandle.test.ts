@@ -2,11 +2,12 @@ import { expect, jest, test } from '@jest/globals'
 import * as FileSystemDirectoryHandle from '../src/parts/FileSystemDirectoryHandle/FileSystemDirectoryHandle.ts'
 
 test('getFileHandle', async () => {
+  const mockFileHandle = { name: 'file1', kind: 'file' } as FileSystemFileHandle
   const mockHandle = {
-    getFileHandle: jest.fn().mockResolvedValue({ name: 'file1', kind: 'file' }),
+    getFileHandle: jest.fn().mockResolvedValue(mockFileHandle),
   } as unknown as FileSystemDirectoryHandle
   const result = await FileSystemDirectoryHandle.getFileHandle(mockHandle, 'file1')
-  expect(result).toEqual({ name: 'file1', kind: 'file' })
+  expect(result).toBe(mockFileHandle)
   expect(mockHandle.getFileHandle).toHaveBeenCalledWith('file1')
 })
 
