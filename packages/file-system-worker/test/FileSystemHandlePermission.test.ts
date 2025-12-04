@@ -29,12 +29,12 @@ test('requestPermission', async () => {
 })
 
 test('queryPermission', async () => {
-  const mockQueryPermission = jest.fn<(options: { mode?: 'read' | 'readwrite' }) => Promise<PermissionState>>().mockResolvedValue('granted')
+  const mockQueryPermission = jest.fn<(options: Readonly<{ mode?: 'read' | 'readwrite' }>) => Promise<PermissionState>>().mockResolvedValue('granted')
   const mockHandle = {
     name: 'file1',
     kind: 'file',
     queryPermission: mockQueryPermission,
-  } as unknown as FileSystemHandle & { queryPermission: (options: { mode?: 'read' | 'readwrite' }) => Promise<PermissionState> }
+  } as unknown as FileSystemHandle & { queryPermission: (options: Readonly<{ mode?: 'read' | 'readwrite' }>) => Promise<PermissionState> }
   const options = { mode: 'read' as const }
   const result = await FileSystemHandlePermission.queryPermission(mockHandle, options)
   expect(result).toBe('granted')
