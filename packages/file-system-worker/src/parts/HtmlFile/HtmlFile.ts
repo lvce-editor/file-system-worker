@@ -1,6 +1,6 @@
 import * as RendererProcess from '../RendererProcess/RendererProcess.ts'
 
-export const getText = (file: File): Promise<string> => {
+const getText = (file: File): Promise<string> => {
   return file.text()
 }
 
