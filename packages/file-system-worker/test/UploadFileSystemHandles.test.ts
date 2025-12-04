@@ -1,17 +1,19 @@
 import { expect, jest, test, beforeEach } from '@jest/globals'
+import { RendererProcess } from '@lvce-editor/rpc-registry'
+import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
 
 beforeEach(() => {
   jest.resetModules()
 })
 
 test('uploadFileSystemHandles with single directory', async () => {
-  const RendererProcess = await import('../src/parts/RendererProcess/RendererProcess.ts')
   const UploadFileSystemHandles = await import('../src/parts/UploadFileSystemHandles/UploadFileSystemHandles.ts')
 
   const mockRendererInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-  RendererProcess.set({
+  const rpc = {
     invoke: mockRendererInvoke,
-  } as any)
+  } as any
+  setFactory(rpc)
 
   mockRendererInvoke.mockImplementation(async (method: string) => {
     if (method === 'PersistentFileHandle.addHandle') {
@@ -37,7 +39,6 @@ test('uploadFileSystemHandles with single directory', async () => {
 
 test('uploadFileSystemHandles with single file', async () => {
   const FileSystemProcess = await import('../src/parts/FileSystemProcess/FileSystemProcess.ts')
-  const RendererProcess = await import('../src/parts/RendererProcess/RendererProcess.ts')
   const UploadFileSystemHandles = await import('../src/parts/UploadFileSystemHandles/UploadFileSystemHandles.ts')
 
   const mockFileSystemInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
@@ -80,7 +81,6 @@ test('uploadFileSystemHandles with single file', async () => {
 
 test('uploadFileSystemHandles with multiple handles', async () => {
   const FileSystemProcess = await import('../src/parts/FileSystemProcess/FileSystemProcess.ts')
-  const RendererProcess = await import('../src/parts/RendererProcess/RendererProcess.ts')
   const UploadFileSystemHandles = await import('../src/parts/UploadFileSystemHandles/UploadFileSystemHandles.ts')
 
   const mockFile = new File(['file content'], 'file1.txt')
@@ -150,7 +150,6 @@ test('uploadFileSystemHandles with multiple handles', async () => {
 
 test('uploadFileSystemHandles with empty array', async () => {
   const FileSystemProcess = await import('../src/parts/FileSystemProcess/FileSystemProcess.ts')
-  const RendererProcess = await import('../src/parts/RendererProcess/RendererProcess.ts')
   const UploadFileSystemHandles = await import('../src/parts/UploadFileSystemHandles/UploadFileSystemHandles.ts')
 
   const mockFileSystemInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
