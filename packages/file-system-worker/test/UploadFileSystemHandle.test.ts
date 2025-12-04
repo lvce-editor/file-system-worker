@@ -86,11 +86,7 @@ test('uploadHandle with unsupported type', async () => {
 
   const mockUploadHandles = jest.fn<(fileSystemHandles: readonly FileSystemHandle[], pathSeparator: string, root: string) => Promise<void>>()
 
-  try {
-    await UploadFileSystemHandle.uploadHandle(mockHandle, '/', '/root', mockUploadHandles)
-    expect(true).toBe(false)
-  } catch (error) {
-    expect(error).toBeInstanceOf(Error)
-    expect((error as Error).message).toBe('unsupported file system handle type unknown')
-  }
+  await expect(UploadFileSystemHandle.uploadHandle(mockHandle, '/', '/root', mockUploadHandles)).rejects.toThrow(
+    'unsupported file system handle type unknown',
+  )
 })
