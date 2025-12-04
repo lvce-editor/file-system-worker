@@ -3,6 +3,56 @@ import { MockRpc } from '@lvce-editor/rpc'
 import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
 import * as UploadFileSystemHandles from '../src/parts/UploadFileSystemHandles/UploadFileSystemHandles.ts'
 
+// @ts-ignore
+globalThis.ProgressEvent = class ProgressEvent extends Event {
+  constructor(type: string, init?: any) {
+    super(type, init)
+    this.target = init?.target
+  }
+  target: any
+}
+
+// @ts-ignore
+globalThis.FileReader = class FileReader extends EventTarget {
+  result: string | ArrayBuffer | null = null
+  readyState: number = 0
+  error: Error | null = null
+  onload: ((event: any) => void) | null = null
+  onerror: ((event: any) => void) | null = null
+  onloadend: ((event: any) => void) | null = null
+
+  readAsBinaryString(blob: Blob): void {
+    this.readyState = 1
+    blob
+      .arrayBuffer()
+      .then((buffer) => {
+        const bytes = new Uint8Array(buffer)
+        let binaryString = ''
+        for (let i = 0; i < bytes.length; i++) {
+          binaryString += String.fromCodePoint(bytes[i])
+        }
+        this.result = binaryString
+        this.readyState = 2
+        if (this.onload) {
+          this.onload({ target: this })
+        }
+        if (this.onloadend) {
+          this.onloadend({ target: this })
+        }
+      })
+      .catch((error) => {
+        this.error = error
+        this.readyState = 2
+        if (this.onerror) {
+          this.onerror({ target: this })
+        }
+        if (this.onloadend) {
+          this.onloadend({ target: this })
+        }
+      })
+  }
+}
+
 test('uploadFileSystemHandles with single directory', async () => {
   const mockRendererInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
   mockRendererInvoke.mockImplementation(async (method: string) => {
@@ -88,6 +138,19 @@ test('uploadFileSystemHandles with multiple handles', async () => {
   } as any)
 
   const mockRendererInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
+  mockRendererInvoke.mockImplementation(async (method: string, ...args: readonly unknown[]) => {
+    if (method === 'Blob.blobToBinaryString') {
+      const file = args[0] as File | undefined
+      if (file === mockFile) {
+        return 'file content'
+      }
+      if (file === mockChildFile) {
+        return 'child content'
+      }
+      return 'content'
+    }
+    throw new Error(`unexpected method ${method}`)
+  })
   const rpc = MockRpc.create({
     commandMap: {},
     invoke: mockRendererInvoke,
@@ -100,20 +163,6 @@ test('uploadFileSystemHandles with multiple handles', async () => {
     }
     if (method === 'FileSystem.mkdir') {
       return
-    }
-    throw new Error(`unexpected method ${method}`)
-  })
-
-  mockRendererInvoke.mockImplementation(async (method: string, ...args: readonly unknown[]) => {
-    if (method === 'Blob.blobToBinaryString') {
-      const file = args[0] as File | undefined
-      if (file === mockFile) {
-        return 'file content'
-      }
-      if (file === mockChildFile) {
-        return 'child content'
-      }
-      return 'content'
     }
     throw new Error(`unexpected method ${method}`)
   })
