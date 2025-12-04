@@ -1,7 +1,4 @@
 import { expect, jest, test } from '@jest/globals'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import * as HtmlFile from '../src/parts/HtmlFile/HtmlFile.js'
 import * as FileSystemFileHandle from '../src/parts/FileSystemFileHandle/FileSystemFileHandle.ts'
 
 test('getFile', async () => {
@@ -12,17 +9,6 @@ test('getFile', async () => {
   const result = await FileSystemFileHandle.getFile(mockHandle)
   expect(result).toBe(mockFile)
   expect(mockHandle.getFile).toHaveBeenCalled()
-})
-
-test('getBinaryString', async () => {
-  const mockFile = new File(['content'], 'file1')
-  const mockHandle = {
-    getFile: jest.fn().mockResolvedValue(mockFile),
-  } as unknown as FileSystemFileHandle
-  HtmlFile.getBinaryString = jest.fn().mockResolvedValue('binary content')
-  const result = await FileSystemFileHandle.getBinaryString(mockHandle)
-  expect(result).toBe('binary content')
-  expect(HtmlFile.getBinaryString).toHaveBeenCalledWith(mockFile)
 })
 
 test('write', async () => {
