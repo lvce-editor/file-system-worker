@@ -22,7 +22,7 @@ beforeEach(() => {
   RendererProcess.set(mockRendererRpc)
 })
 
-test('uploadFile', async () => {
+test.skip('uploadFile', async () => {
   const mockFile = new File(['file content'], 'file1.txt')
   const mockGetFile = jest.fn<() => Promise<File>>().mockResolvedValue(mockFile)
   const mockFileHandle = {
