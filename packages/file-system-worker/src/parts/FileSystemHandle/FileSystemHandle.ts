@@ -1,4 +1,4 @@
-import * as RendererProcess from '../RendererProcess/RendererProcess'
+import * as RendererProcess from '../RendererProcess/RendererProcess.ts'
 
 export const getFileHandles = (ids: readonly string[]): Promise<FileSystemHandle[]> => {
   return RendererProcess.invoke('FileHandles.get', ids) as Promise<FileSystemHandle[]>
