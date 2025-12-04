@@ -19,7 +19,7 @@ test('requestPermission', async () => {
   const options = { mode: 'read' as const }
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystemHandle.requestPermission') {
-      return 'granted'
+      return 'granted' as PermissionState
     }
     throw new Error(`unexpected method ${method}`)
   })
@@ -29,13 +29,14 @@ test('requestPermission', async () => {
 })
 
 test('queryPermission', async () => {
+  const mockQueryPermission = jest.fn<(options: { mode?: 'read' | 'readwrite' }) => Promise<PermissionState>>().mockResolvedValue('granted')
   const mockHandle = {
     name: 'file1',
     kind: 'file',
-    queryPermission: jest.fn().mockResolvedValue('granted'),
-  } as unknown as FileSystemHandle
+    queryPermission: mockQueryPermission,
+  } as unknown as FileSystemHandle & { queryPermission: (options: { mode?: 'read' | 'readwrite' }) => Promise<PermissionState> }
   const options = { mode: 'read' as const }
   const result = await FileSystemHandlePermission.queryPermission(mockHandle, options)
   expect(result).toBe('granted')
-  expect(mockHandle.queryPermission).toHaveBeenCalledWith(options)
+  expect(mockQueryPermission).toHaveBeenCalledWith(options)
 })

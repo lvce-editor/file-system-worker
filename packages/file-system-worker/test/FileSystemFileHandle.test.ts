@@ -3,41 +3,51 @@ import * as FileSystemFileHandle from '../src/parts/FileSystemFileHandle/FileSys
 
 test('getFile', async () => {
   const mockFile = new File(['content'], 'file1')
+  const mockGetFile = jest.fn<() => Promise<File>>().mockResolvedValue(mockFile)
   const mockHandle = {
-    getFile: jest.fn<() => Promise<File>>().mockResolvedValue(mockFile),
+    getFile: mockGetFile,
   } as unknown as FileSystemFileHandle
   const result = await FileSystemFileHandle.getFile(mockHandle)
   expect(result).toBe(mockFile)
-  expect(mockHandle.getFile).toHaveBeenCalled()
+  expect(mockGetFile).toHaveBeenCalled()
 })
 
 test('write', async () => {
+  const mockWrite = jest.fn<(data: string) => Promise<void>>().mockResolvedValue(undefined)
+  const mockClose = jest.fn<() => Promise<void>>().mockResolvedValue(undefined)
   const mockWritable = {
-    write: jest.fn<[string], Promise<void>>().mockResolvedValue(undefined),
-    close: jest.fn<[], Promise<void>>().mockResolvedValue(undefined),
+    write: mockWrite,
+    close: mockClose,
   } as unknown as FileSystemWritableFileStream
+  const mockCreateWritable = jest.fn<() => Promise<FileSystemWritableFileStream>>().mockResolvedValue(mockWritable)
   const mockHandle = {
-    createWritable: jest.fn<[], Promise<FileSystemWritableFileStream>>().mockResolvedValue(mockWritable),
+    createWritable: mockCreateWritable,
   } as unknown as FileSystemFileHandle
   await FileSystemFileHandle.write(mockHandle, 'content')
-  expect(mockHandle.createWritable).toHaveBeenCalled()
-  expect(mockWritable.write).toHaveBeenCalledWith('content')
-  expect(mockWritable.close).toHaveBeenCalled()
+  expect(mockCreateWritable).toHaveBeenCalled()
+  expect(mockWrite).toHaveBeenCalledWith('content')
+  expect(mockClose).toHaveBeenCalled()
 })
 
 test('writeResponse', async () => {
+  const mockWritablePipeTo = jest.fn<(destination: WritableStream) => Promise<void>>().mockResolvedValue(undefined)
   const mockWritable = {
-    pipeTo: jest.fn().mockResolvedValue(undefined),
-  }
+    pipeTo: mockWritablePipeTo,
+  } as unknown as FileSystemWritableFileStream
+  const mockCreateWritable = jest.fn<() => Promise<FileSystemWritableFileStream>>().mockResolvedValue(mockWritable)
   const mockHandle = {
-    createWritable: jest.fn().mockResolvedValue(mockWritable),
+    createWritable: mockCreateWritable,
   } as unknown as FileSystemFileHandle
+  const mockBodyPipeTo = jest.fn<(destination: WritableStream) => Promise<void>>().mockResolvedValue(undefined)
+  const mockBody = {
+    pipeTo: mockBodyPipeTo,
+  } as unknown as ReadableStream
   const mockResponse = {
-    body: { pipeTo: jest.fn().mockResolvedValue(undefined) },
-  } as unknown as Response
+    body: mockBody,
+  } as Response
   await FileSystemFileHandle.writeResponse(mockHandle, mockResponse)
-  expect(mockHandle.createWritable).toHaveBeenCalled()
+  expect(mockCreateWritable).toHaveBeenCalled()
   if (mockResponse.body) {
-    expect(mockResponse.body.pipeTo).toHaveBeenCalledWith(mockWritable)
+    expect(mockBodyPipeTo).toHaveBeenCalledWith(mockWritable)
   }
 })

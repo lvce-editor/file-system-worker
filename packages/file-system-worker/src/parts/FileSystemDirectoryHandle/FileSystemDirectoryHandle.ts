@@ -11,7 +11,7 @@ export const getChildHandles = async (handle: FileSystemDirectoryHandle): Promis
 
   // @ts-ignore - values() exists on FileSystemDirectoryHandle but TypeScript types may not include it
   const handles = await Arrays.fromAsync(handle.values())
-  return handles
+  return handles as FileSystemHandle[]
 }
 
 export const getFileHandle = (handle: FileSystemDirectoryHandle, name: string): Promise<FileSystemFileHandle> => {
