@@ -11,12 +11,11 @@ test('uploadFileSystemHandles with single directory', async () => {
   const UploadFileSystemHandles = await import('../src/parts/UploadFileSystemHandles/UploadFileSystemHandles.ts')
 
   const mockRendererInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-  const rpcFactory = async () =>
-    MockRpc.create({
-      commandMap: {},
-      invoke: mockRendererInvoke,
-    })
-  setFactory(rpcFactory)
+  const rpc = MockRpc.create({
+    commandMap: {},
+    invoke: mockRendererInvoke,
+  })
+  setFactory(async () => rpc)
 
   mockRendererInvoke.mockImplementation(async (method: string) => {
     if (method === 'PersistentFileHandle.addHandle') {
