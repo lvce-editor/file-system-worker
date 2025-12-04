@@ -41,4 +41,3 @@ test('writeResponse', async () => {
     expect(mockResponse.body.pipeTo).toHaveBeenCalledWith(mockWritable)
   }
 })
-

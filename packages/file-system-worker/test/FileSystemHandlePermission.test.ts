@@ -39,4 +39,3 @@ test('queryPermission', async () => {
   expect(result).toBe('granted')
   expect(mockHandle.queryPermission).toHaveBeenCalledWith(options)
 })
-

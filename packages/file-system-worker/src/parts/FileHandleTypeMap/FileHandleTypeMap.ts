@@ -11,4 +11,3 @@ export const getDirentType = (fileHandleKind: string): string => {
       return DirentType.Unknown
   }
 }
-

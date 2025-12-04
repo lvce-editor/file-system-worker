@@ -21,4 +21,3 @@ test('getChildHandles', async () => {
   const result = await FileSystemDirectoryHandle.getChildHandles(mockHandle)
   expect(result).toEqual([mockChildHandle])
 })
-

@@ -8,4 +8,3 @@ test('Directory constant', () => {
 test('File constant', () => {
   expect(FileHandleType.File).toBe('file')
 })
-

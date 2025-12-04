@@ -7,4 +7,3 @@ export const getFileHandles = (ids: readonly string[]): Promise<FileSystemHandle
 export const addFileHandle = (fileHandle: FileSystemHandle): Promise<void> => {
   return RendererProcess.invoke('FileSystemHandle.addFileHandle', fileHandle) as Promise<void>
 }
-

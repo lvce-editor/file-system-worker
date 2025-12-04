@@ -12,4 +12,3 @@ test('Prompt constant', () => {
 test('Denied constant', () => {
   expect(FileHandlePermissionType.Denied).toBe('denied')
 })
-

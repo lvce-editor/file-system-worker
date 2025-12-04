@@ -2,18 +2,13 @@ import * as FileSystemDirectoryHandle from '../FileSystemDirectoryHandle/FileSys
 import * as FileSystemDisk from '../FileSystemDisk/FileSystemDisk.ts'
 
 export const uploadDirectory = async (
-  fileSystemHandle: FileSystemDirectoryHandle,
+  fileSystemHandle: Readonly<FileSystemDirectoryHandle>,
   pathSeparator: string,
   root: string,
-  uploadHandles: (
-    fileSystemHandles: FileSystemHandle[],
-    pathSeparator: string,
-    root: string,
-  ) => Promise<void>,
+  uploadHandles: (fileSystemHandles: readonly FileSystemHandle[], pathSeparator: string, root: string) => Promise<void>,
 ): Promise<void> => {
   const folderPath = root + pathSeparator + fileSystemHandle.name
   await FileSystemDisk.mkdir(folderPath)
   const childHandles = await FileSystemDirectoryHandle.getChildHandles(fileSystemHandle)
   await uploadHandles(childHandles, pathSeparator, folderPath)
 }
-

@@ -17,4 +17,3 @@ test('getDirentType for unknown', () => {
   const result = FileHandleTypeMap.getDirentType('unknown')
   expect(result).toBe(DirentType.Unknown)
 })
-

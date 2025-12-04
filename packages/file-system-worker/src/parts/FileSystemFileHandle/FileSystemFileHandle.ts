@@ -1,4 +1,3 @@
- 
 // @ts-ignore - HtmlFile is an external dependency
 import * as HtmlFile from '../HtmlFile/HtmlFile.js'
 
@@ -18,13 +17,9 @@ export const write = async (handle: FileSystemFileHandle, content: string): Prom
   await writable.close()
 }
 
-export const writeResponse = async (
-  handle: FileSystemFileHandle,
-  response: Response,
-): Promise<void> => {
+export const writeResponse = async (handle: FileSystemFileHandle, response: Response): Promise<void> => {
   const writable = await handle.createWritable()
   if (response.body) {
     await response.body.pipeTo(writable)
   }
 }
-

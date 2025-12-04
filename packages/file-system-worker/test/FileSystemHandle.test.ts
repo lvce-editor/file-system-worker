@@ -1,6 +1,5 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
-import { RpcId } from '@lvce-editor/rpc-registry'
 import * as FileSystemHandle from '../src/parts/FileSystemHandle/FileSystemHandle.ts'
 import * as RendererProcess from '../src/parts/RendererProcess/RendererProcess.ts'
 
@@ -39,4 +38,3 @@ test('addFileHandle', async () => {
   await FileSystemHandle.addFileHandle(mockHandle as FileSystemHandle)
   expect(mockInvoke).toHaveBeenCalledWith('FileSystemHandle.addFileHandle', mockHandle)
 })
-

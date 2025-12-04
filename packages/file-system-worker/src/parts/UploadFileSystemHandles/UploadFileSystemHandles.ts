@@ -8,7 +8,7 @@ const uploadHandles = async (fileSystemHandles: readonly FileSystemHandle[], pat
   }
 }
 
-export const uploadFileSystemHandles = async (root: string, pathSeparator: string, fileSystemHandles: FileSystemHandle[]): Promise<boolean> => {
+export const uploadFileSystemHandles = async (root: string, pathSeparator: string, fileSystemHandles: readonly FileSystemHandle[]): Promise<boolean> => {
   if (fileSystemHandles.length === 1) {
     const file = fileSystemHandles[0]
     const { name, kind } = file

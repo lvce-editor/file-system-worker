@@ -1,4 +1,3 @@
- 
 // @ts-ignore - GetFilePathElectron is an external dependency
 import * as GetFilePathElectron from '../GetFilePathElectron/GetFilePathElectron.js'
 import * as FileSystemHandle from './FileSystemHandle.ts'
@@ -10,4 +9,3 @@ export const Commands = {
   getFileHandles: FileSystemHandle.getFileHandles,
   getFilePathElectron: GetFilePathElectron.getFilePathElectron,
 }
-
