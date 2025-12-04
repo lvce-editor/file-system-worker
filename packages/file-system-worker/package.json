@@ -50,5 +50,8 @@
     "@lvce-editor/verror": "^1.7.0",
     "jest": "^30.2.0",
     "ts-jest": "^29.4.6"
+  },
+  "dependencies": {
+    "blob-util": "^2.0.2"
   }
 }
