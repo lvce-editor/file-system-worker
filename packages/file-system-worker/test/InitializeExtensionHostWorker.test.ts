@@ -4,7 +4,7 @@ import { RendererWorker } from '@lvce-editor/rpc-registry'
 import { createExtensionHostRpc } from '../src/parts/InitializeExtensionHostWorker/InitializeExtensionHostWorker.ts'
 
 test('createExtensionHostRpc should create RPC successfully', async () => {
-  const mockInvokeAndTransfer = jest.fn<() => Promise<void>>()
+  const mockInvokeAndTransfer = jest.fn<(method: string, port: MessagePort, command: string, rpcId: number) => Promise<void>>()
   const mockRpc = MockRpc.create({
     commandMap: {},
     invoke: () => {},
@@ -19,7 +19,7 @@ test('createExtensionHostRpc should create RPC successfully', async () => {
 })
 
 test('createExtensionHostRpc should handle error when sendMessagePortToExtensionHostWorker fails', async () => {
-  const mockInvokeAndTransfer = jest.fn<() => Promise<void>>(() => {
+  const mockInvokeAndTransfer = jest.fn<(method: string, port: MessagePort, command: string, rpcId: number) => Promise<void>>(() => {
     throw new Error('sendMessagePort error')
   })
   const mockRpc = MockRpc.create({

@@ -1,6 +1,7 @@
-import { test, expect, jest } from '@jest/globals'
+import { test, expect, jest, beforeEach } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
 import { ExtensionHost } from '@lvce-editor/rpc-registry'
+import * as ExtensionHostWorker from '../src/parts/ExtensionHostWorker/ExtensionHostWorker.ts'
 
 const mockCreateExtensionHostRpc = jest.fn<() => Promise<any>>()
 
@@ -8,8 +9,11 @@ jest.mock('../src/parts/InitializeExtensionHostWorker/InitializeExtensionHostWor
   createExtensionHostRpc: mockCreateExtensionHostRpc,
 }))
 
-test('set should be available from ExtensionHost', async () => {
-  const ExtensionHostWorker = await import('../src/parts/ExtensionHostWorker/ExtensionHostWorker.ts')
+beforeEach(() => {
+  mockCreateExtensionHostRpc.mockReset()
+})
+
+test('set should be available from ExtensionHost', () => {
   expect(ExtensionHostWorker.set).toBe(ExtensionHost.set)
 })
 
@@ -21,7 +25,6 @@ test('invoke should call rpc.invoke with method and params', async () => {
   })
   mockCreateExtensionHostRpc.mockResolvedValue(mockRpc)
 
-  const ExtensionHostWorker = await import('../src/parts/ExtensionHostWorker/ExtensionHostWorker.ts')
   await ExtensionHostWorker.invoke('testMethod', 'param1', 'param2')
 
   expect(mockInvoke).toHaveBeenCalledTimes(1)

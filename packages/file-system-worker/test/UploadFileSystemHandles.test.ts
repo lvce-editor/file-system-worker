@@ -108,8 +108,9 @@ test('uploadFileSystemHandles with multiple handles', async () => {
     throw new Error(`unexpected method ${method}`)
   })
 
-  mockRendererInvoke.mockImplementation(async (method: string, file?: File) => {
+  mockRendererInvoke.mockImplementation(async (method: string, ...args: readonly unknown[]) => {
     if (method === 'Blob.blobToBinaryString') {
+      const file = args[0] as File | undefined
       if (file === mockFile) {
         return 'file content'
       }
