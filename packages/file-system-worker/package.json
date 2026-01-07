@@ -51,5 +51,8 @@
     "blob-util": "^2.0.2",
     "jest": "^30.2.0",
     "ts-jest": "^29.4.6"
+  },
+  "dependencies": {
+    "@lvce-editor/assert": "^1.5.1"
   }
 }
