@@ -1,14 +1,14 @@
-import * as ExtensionHostWorker from '../ExtensionHostWorker/ExtensionHostWorker.ts'
+import { ExtensionHost } from '@lvce-editor/rpc-registry'
 import * as FileWatcher from '../FileWatcher/FileWatcher.ts'
 
 export const remove = async (dirent: string): Promise<void> => {
-  await ExtensionHostWorker.invoke('FileSystemMemory.remove', dirent)
+  await ExtensionHost.invoke('FileSystemMemory.remove', dirent)
   // Trigger file watchers for memfs files
   await FileWatcher.triggerMemfsFileWatcher(dirent)
 }
 
 export const readFile = async (uri: string): Promise<string> => {
-  return ExtensionHostWorker.invoke('FileSystemMemory.readFile', uri)
+  return ExtensionHost.invoke('FileSystemMemory.readFile', uri)
 }
 
 export const readFileAsBlob = async (uri: string): Promise<Blob> => {
@@ -40,13 +40,13 @@ export const stat = async (dirent: string): Promise<any> => {
 }
 
 export const createFile = async (uri: string): Promise<void> => {
-  await ExtensionHostWorker.invoke('FileSystemMemory.createFile', uri)
+  await ExtensionHost.invoke('FileSystemMemory.createFile', uri)
   // Trigger file watchers for memfs files
   await FileWatcher.triggerMemfsFileWatcher(uri)
 }
 
 export const writeFile = async (uri: string, content: string): Promise<void> => {
-  await ExtensionHostWorker.invoke('FileSystemMemory.writeFile', uri, content)
+  await ExtensionHost.invoke('FileSystemMemory.writeFile', uri, content)
   // Trigger file watchers for memfs files
   await FileWatcher.triggerMemfsFileWatcher(uri)
 }
@@ -56,7 +56,7 @@ export const mkdir = async (uri: string): Promise<void> => {
 }
 
 export const rename = async (oldUri: string, newUri: string): Promise<void> => {
-  await ExtensionHostWorker.invoke('FileSystemMemory.rename', oldUri, newUri)
+  await ExtensionHost.invoke('FileSystemMemory.rename', oldUri, newUri)
   // Trigger file watchers for both old and new URIs
   await FileWatcher.triggerMemfsFileWatcher(oldUri)
   await FileWatcher.triggerMemfsFileWatcher(newUri)
