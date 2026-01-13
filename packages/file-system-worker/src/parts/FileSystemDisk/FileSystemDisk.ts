@@ -1,3 +1,4 @@
+import * as Assert from '@lvce-editor/assert'
 import * as FileSystemFetch from '../FileSystemFetch/FileSystemFetch.ts'
 import * as FileSystemMemory from '../FileSystemMemory/FileSystemMemory.ts'
 import * as FileSystemProcess from '../FileSystemProcess/FileSystemProcess.ts'
@@ -5,6 +6,8 @@ import { isHttp } from '../IsHttp/IsHttp.ts'
 import { isMemory } from '../IsMemory/IsMemory.ts'
 
 export const remove = async (dirent: string): Promise<void> => {
+  Assert.string(dirent)
+
   if (isMemory(dirent)) {
     return FileSystemMemory.remove(dirent)
   }
@@ -12,6 +15,8 @@ export const remove = async (dirent: string): Promise<void> => {
 }
 
 export const readFile = async (uri: string): Promise<string> => {
+  Assert.string(uri)
+
   if (isHttp(uri)) {
     return FileSystemFetch.readFile(uri)
   }
@@ -22,18 +27,26 @@ export const readFile = async (uri: string): Promise<string> => {
 }
 
 export const appendFile = async (uri: string, text: string): Promise<string> => {
+  Assert.string(uri)
+
   return FileSystemProcess.appendFile(uri, text)
 }
 
 export const readDirWithFileTypes = async (uri: string): Promise<readonly any[]> => {
+  Assert.string(uri)
+
   return FileSystemProcess.readDirWithFileTypes(uri)
 }
 
 export const getPathSeparator = async (root: string): Promise<string> => {
+  Assert.string(root)
+
   return FileSystemProcess.getPathSeparator(root)
 }
 
 export const readJson = async (uri: string): Promise<any> => {
+  Assert.string(uri)
+
   if (isHttp(uri)) {
     return FileSystemFetch.readJson(uri)
   }
@@ -44,10 +57,13 @@ export const readJson = async (uri: string): Promise<any> => {
 }
 
 export const getRealPath = async (path: string): Promise<string> => {
+  Assert.string(path)
+
   return FileSystemProcess.getRealPath(path)
 }
 
 export const readFileAsBlob = async (uri: string): Promise<Blob> => {
+  Assert.string(uri)
   if (isHttp(uri)) {
     return FileSystemFetch.readFileAsBlob(uri)
   }
@@ -69,6 +85,7 @@ export const stat = async (dirent: string): Promise<any> => {
 }
 
 export const exists = async (uri: string): Promise<any> => {
+  Assert.string(uri)
   if (isHttp(uri)) {
     return FileSystemFetch.exists(uri)
   }
@@ -76,6 +93,7 @@ export const exists = async (uri: string): Promise<any> => {
 }
 
 export const createFile = async (uri: string): Promise<void> => {
+  Assert.string(uri)
   if (isMemory(uri)) {
     return FileSystemMemory.createFile(uri)
   }
@@ -83,6 +101,8 @@ export const createFile = async (uri: string): Promise<void> => {
 }
 
 export const writeFile = async (uri: string, content: string): Promise<void> => {
+  Assert.string(uri)
+
   if (isMemory(uri)) {
     return FileSystemMemory.writeFile(uri, content)
   }
@@ -99,6 +119,8 @@ const getBytes = async (blob: Blob): Promise<Uint8Array> => {
 }
 
 export const writeBlob = async (uri: string, blob: Blob): Promise<void> => {
+  Assert.string(uri)
+
   const bytes = await getBytes(blob)
   // @ts-ignore
   await FileSystemProcess.invoke('FileSystem.writeBuffer', uri, bytes)
