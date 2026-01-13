@@ -1,14 +1,14 @@
-import { type Rpc, TransferMessagePortRpcParent } from '@lvce-editor/rpc'
-import { RendererWorker } from '@lvce-editor/rpc-registry'
+import { LazyTransferMessagePortRpcParent } from '@lvce-editor/rpc'
+import { ExtensionHost, RendererWorker } from '@lvce-editor/rpc-registry'
 import { VError } from '@lvce-editor/verror'
 
-export const createExtensionHostRpc = async (): Promise<Rpc> => {
+export const initializeExtensionHostWorker = async (): Promise<void> => {
   try {
-    const rpc = await TransferMessagePortRpcParent.create({
+    const rpc = await LazyTransferMessagePortRpcParent.create({
       commandMap: {},
       send: RendererWorker.sendMessagePortToExtensionHostWorker,
     })
-    return rpc
+    ExtensionHost.set(rpc)
   } catch (error) {
     throw new VError(error, `Failed to create extension host rpc`)
   }

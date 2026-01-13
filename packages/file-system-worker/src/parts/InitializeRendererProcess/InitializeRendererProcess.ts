@@ -1,14 +1,14 @@
-import { type Rpc, TransferMessagePortRpcParent } from '@lvce-editor/rpc'
-import { RendererWorker } from '@lvce-editor/rpc-registry'
+import { LazyTransferMessagePortRpcParent } from '@lvce-editor/rpc'
+import { RendererProcess, RendererWorker } from '@lvce-editor/rpc-registry'
 import { VError } from '@lvce-editor/verror'
 
-export const createRendererProcessRpc = async (): Promise<Rpc> => {
+export const initializeRendererProcess = async (): Promise<void> => {
   try {
-    const rpc = await TransferMessagePortRpcParent.create({
+    const rpc = await LazyTransferMessagePortRpcParent.create({
       commandMap: {},
       send: RendererWorker.sendMessagePortToRendererProcess,
     })
-    return rpc
+    RendererProcess.set(rpc)
   } catch (error) {
     throw new VError(error, `Failed to create renderer process rpc`)
   }
