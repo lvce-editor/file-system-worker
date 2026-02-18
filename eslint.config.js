@@ -7,6 +7,7 @@ export default [
   {
     rules: {
       'jest/no-restricted-jest-methods': 'off',
+      '@cspell/spellchecker': 'off',
     },
   },
 ]
