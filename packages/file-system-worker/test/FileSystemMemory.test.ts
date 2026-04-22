@@ -3,7 +3,7 @@ import { MockRpc } from '@lvce-editor/rpc'
 import { ExtensionHost } from '@lvce-editor/rpc-registry'
 import * as FileSystemMemory from '../src/parts/FileSystemMemory/FileSystemMemory.ts'
 
-const mockInvoke = jest.fn()
+const mockInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
 const mockRpc = MockRpc.create({
   commandMap: {},
   invoke: mockInvoke,
