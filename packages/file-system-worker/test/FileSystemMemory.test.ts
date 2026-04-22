@@ -1,5 +1,19 @@
-import { test, expect } from '@jest/globals'
+import { beforeEach, expect, jest, test } from '@jest/globals'
+import { MockRpc } from '@lvce-editor/rpc'
+import { ExtensionHost } from '@lvce-editor/rpc-registry'
 import * as FileSystemMemory from '../src/parts/FileSystemMemory/FileSystemMemory.ts'
+
+const mockInvoke = jest.fn()
+const mockRpc = MockRpc.create({
+  commandMap: {},
+  invoke: mockInvoke,
+})
+ExtensionHost.set(mockRpc)
+
+beforeEach(() => {
+  jest.clearAllMocks()
+  mockInvoke.mockRejectedValue(new Error('rpc not initialized'))
+})
 
 test('getPathSeparator should return forward slash', async () => {
   const result = await FileSystemMemory.getPathSeparator('memory://')
@@ -16,8 +30,15 @@ test('remove should not throw error for memfs URI', async () => {
   await expect(FileSystemMemory.remove('memfs://test.txt')).rejects.toThrow()
 })
 
-test('readFileAsBlob should throw not implemented', async () => {
-  await expect(FileSystemMemory.readFileAsBlob('memory://test.txt')).rejects.toThrow('not implemented')
+test('readFileAsBlob should read memfs svg content and convert it to a blob', async () => {
+  mockInvoke.mockResolvedValue('<svg xmlns="http://www.w3.org/2000/svg"></svg>')
+
+  const result = await FileSystemMemory.readFileAsBlob('memfs:///workspace/left.svg')
+
+  expect(mockInvoke).toHaveBeenCalledWith('FileSystemMemory.readFile', 'memfs:///workspace/left.svg')
+  expect(result).toBeInstanceOf(globalThis.Blob)
+  expect(result.type).toBe('image/svg+xml')
+  await expect(result.text()).resolves.toBe('<svg xmlns="http://www.w3.org/2000/svg"></svg>')
 })
 
 test('exists should throw not implemented', async () => {

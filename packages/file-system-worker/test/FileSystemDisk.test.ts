@@ -1,5 +1,6 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
 import { MockRpc } from '@lvce-editor/rpc'
+import { ExtensionHost } from '@lvce-editor/rpc-registry'
 import * as FileSystemDisk from '../src/parts/FileSystemDisk/FileSystemDisk.js'
 import * as FileSystemProcess from '../src/parts/FileSystemProcess/FileSystemProcess.js'
 
@@ -8,10 +9,17 @@ const mockRpc = MockRpc.create({
   commandMap: {},
   invoke: mockInvoke,
 })
+const mockExtensionHostInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
+const mockExtensionHostRpc = MockRpc.create({
+  commandMap: {},
+  invoke: mockExtensionHostInvoke,
+})
 FileSystemProcess.set(mockRpc)
+ExtensionHost.set(mockExtensionHostRpc)
 
 beforeEach(() => {
   jest.resetAllMocks()
+  mockExtensionHostInvoke.mockReset()
 })
 
 test('remove', async () => {
@@ -119,6 +127,20 @@ test('writeBlob', async () => {
     throw new Error(`unexpected method ${method}`)
   })
   await FileSystemDisk.writeBlob('file:///test/path', blob)
+})
+
+test('readFileAsBlob routes memfs uri to FileSystemMemory', async () => {
+  mockExtensionHostInvoke.mockImplementation(async (method: string) => {
+    if (method === 'FileSystemMemory.readFile') {
+      return '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
+    }
+    throw new Error(`unexpected method ${method}`)
+  })
+
+  const blob = await FileSystemDisk.readFileAsBlob('memfs:///workspace/left.svg')
+
+  expect(blob.type).toBe('image/svg+xml')
+  await expect(blob.text()).resolves.toBe('<svg xmlns="http://www.w3.org/2000/svg"></svg>')
 })
 
 test('mkdir', async () => {
