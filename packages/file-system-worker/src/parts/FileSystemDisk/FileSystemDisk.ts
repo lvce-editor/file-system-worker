@@ -51,6 +51,9 @@ export const readFileAsBlob = async (uri: string): Promise<Blob> => {
   if (isHttp(uri)) {
     return FileSystemFetch.readFileAsBlob(uri)
   }
+  if (isMemory(uri)) {
+    return FileSystemMemory.readFileAsBlob(uri)
+  }
   if (uri.startsWith('file:///')) {
     const rest = uri.slice('file:///'.length)
     const remoteUrl = `/remote/${rest}`

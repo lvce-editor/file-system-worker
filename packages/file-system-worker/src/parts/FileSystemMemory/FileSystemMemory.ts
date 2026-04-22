@@ -1,5 +1,28 @@
 import { ExtensionHost } from '@lvce-editor/rpc-registry'
 import * as FileWatcher from '../FileWatcher/FileWatcher.ts'
+import { getFileExtension } from '../GetFileExtension/GetFileExtension.ts'
+
+const getBlobType = (uri: string): string => {
+  const extension = getFileExtension(uri).toLowerCase()
+  switch (extension) {
+    case 'css':
+      return 'text/css'
+    case 'html':
+      return 'text/html'
+    case 'js':
+      return 'text/javascript'
+    case 'json':
+      return 'application/json'
+    case 'svg':
+      return 'image/svg+xml'
+    case 'txt':
+      return 'text/plain'
+    case 'xml':
+      return 'application/xml'
+    default:
+      return ''
+  }
+}
 
 export const remove = async (dirent: string): Promise<void> => {
   await ExtensionHost.invoke('FileSystemMemory.remove', dirent)
@@ -12,7 +35,12 @@ export const readFile = async (uri: string): Promise<string> => {
 }
 
 export const readFileAsBlob = async (uri: string): Promise<Blob> => {
-  throw new Error('not implemented')
+  const content = await readFile(uri)
+  const type = getBlobType(uri)
+  if (type) {
+    return new Blob([content], { type })
+  }
+  return new Blob([content])
 }
 
 export const exists = async (uri: string): Promise<boolean> => {
