@@ -1,4 +1,4 @@
-import { beforeEach, expect, test } from '@jest/globals'
+import { beforeEach, expect, jest, test } from '@jest/globals'
 import { createMockRpc } from '@lvce-editor/rpc'
 import * as FileSystemProcess from '../src/parts/FileSystemProcess/FileSystemProcess.ts'
 import * as UploadFileSystemDirectoryHandle from '../src/parts/UploadFileSystemDirectoryHandle/UploadFileSystemDirectoryHandle.ts'

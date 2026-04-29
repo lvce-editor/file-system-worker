@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/prefer-readonly-parameter-types */
-import { expect, test } from '@jest/globals'
+import { expect, jest, test } from '@jest/globals'
 import { createMockRpc } from '@lvce-editor/rpc'
 import * as FileSystemProcess from '../src/parts/FileSystemProcess/FileSystemProcess.ts'
 import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'

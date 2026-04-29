@@ -1,4 +1,4 @@
-import { beforeEach, expect, test } from '@jest/globals'
+import { beforeEach, expect, jest, test } from '@jest/globals'
 import { createMockRpc } from '@lvce-editor/rpc'
 import * as FileSystemHandlePermission from '../src/parts/FileSystemHandlePermission/FileSystemHandlePermission.ts'
 import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
@@ -15,7 +15,11 @@ beforeEach(() => {
 })
 
 test('requestPermission', async () => {
-  const mockHandle = { kind: 'file' as const, name: 'file1' }
+  const mockHandle = {
+    isSameEntry: async (): Promise<boolean> => false,
+    kind: 'file' as const,
+    name: 'file1',
+  }
   const options = { mode: 'read' as const }
   const result = await FileSystemHandlePermission.requestPermission(mockHandle, options)
   expect(result).toBe('granted')
@@ -25,7 +29,8 @@ test('requestPermission', async () => {
 test('queryPermission', async () => {
   const mockQueryPermission = jest.fn<(options: Readonly<{ mode?: 'read' | 'readwrite' }>) => Promise<PermissionState>>().mockResolvedValue('granted')
   const mockHandle = {
-    kind: 'file',
+    isSameEntry: async (): Promise<boolean> => false,
+    kind: 'file' as const,
     name: 'file1',
     queryPermission: mockQueryPermission,
   }
