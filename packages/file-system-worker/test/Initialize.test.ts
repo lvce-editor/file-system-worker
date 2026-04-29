@@ -15,7 +15,12 @@ test('initialize', async () => {
   await initialize(2)
   const rpc = get(RpcId.FileSystemProcess)
   expect(mockRpc.invocations).toEqual([
-    ['SendMessagePortToExtensionHostWorker.sendMessagePortToSharedProcess', expect.anything(), 'HandleMessagePortForFileSystemProcess.handleMessagePortForFileSystemProcess', 209],
+    [
+      'SendMessagePortToExtensionHostWorker.sendMessagePortToSharedProcess',
+      expect.anything(),
+      'HandleMessagePortForFileSystemProcess.handleMessagePortForFileSystemProcess',
+      209,
+    ],
   ])
   expect(rpc).toBeDefined()
   await rpc.dispose()

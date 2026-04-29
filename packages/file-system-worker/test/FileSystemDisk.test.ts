@@ -81,6 +81,7 @@ test('getPathSeparator', async () => {
   })
   const separator = await FileSystemDisk.getPathSeparator('/test/path')
   expect(separator).toBe('/')
+  expect(mockRpc.invocations).toEqual([['FileSystem.getPathSeparator', '/test/path']])
 })
 
 test('readJson', async () => {
