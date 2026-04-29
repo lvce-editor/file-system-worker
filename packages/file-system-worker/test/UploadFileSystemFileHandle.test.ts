@@ -1,28 +1,28 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
-import { MockRpc } from '@lvce-editor/rpc'
+import { createMockRpc } from '@lvce-editor/rpc'
 import * as FileSystemProcess from '../src/parts/FileSystemProcess/FileSystemProcess.ts'
 import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
 import * as UploadFileSystemFileHandle from '../src/parts/UploadFileSystemFileHandle/UploadFileSystemFileHandle.ts'
 
-const mockFileSystemInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-const mockFileSystemRpc = MockRpc.create({
-  commandMap: {},
-  invoke: mockFileSystemInvoke,
-})
-
-const mockRendererInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-const mockRendererRpc = MockRpc.create({
-  commandMap: {},
-  invoke: mockRendererInvoke,
-})
+let mockFileSystemRpc: ReturnType<typeof createMockRpc>
+let mockRendererRpc: ReturnType<typeof createMockRpc>
 
 beforeEach(() => {
-  jest.resetAllMocks()
+  mockFileSystemRpc = createMockRpc({
+    commandMap: {
+      'FileSystem.writeFile': async () => undefined,
+    },
+  })
+  mockRendererRpc = createMockRpc({
+    commandMap: {
+      'Blob.blobToBinaryString': async () => 'file content',
+    },
+  })
   FileSystemProcess.set(mockFileSystemRpc)
   setFactory(async () => mockRendererRpc)
 })
 
-test.skip('uploadFile', async () => {
+test('uploadFile', async () => {
   const mockFile = new File(['file content'], 'file1.txt')
   const mockGetFile = jest.fn<() => Promise<File>>().mockResolvedValue(mockFile)
   const mockFileHandle = {
@@ -31,22 +31,8 @@ test.skip('uploadFile', async () => {
     name: 'file1.txt',
   } as unknown as FileSystemFileHandle
 
-  mockFileSystemInvoke.mockImplementation(async (method: string) => {
-    if (method === 'FileSystem.writeFile') {
-      return
-    }
-    throw new Error(`unexpected method ${method}`)
-  })
-
-  mockRendererInvoke.mockImplementation(async (method: string) => {
-    if (method === 'Blob.blobToBinaryString') {
-      return 'file content'
-    }
-    throw new Error(`unexpected method ${method}`)
-  })
-
   await UploadFileSystemFileHandle.uploadFile(mockFileHandle, '/', '/root')
 
-  expect(mockRendererInvoke).toHaveBeenCalledWith('Blob.blobToBinaryString', mockFile)
-  expect(mockFileSystemInvoke).toHaveBeenCalledWith('FileSystem.writeFile', '/root/file1.txt', 'file content')
+  expect(mockRendererRpc.invocations).toEqual([['Blob.blobToBinaryString', mockFile]])
+  expect(mockFileSystemRpc.invocations).toEqual([['FileSystem.writeFile', '/root/file1.txt', 'file content']])
 })

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/prefer-readonly-parameter-types */
 import { beforeEach, expect, jest, test } from '@jest/globals'
-import { MockRpc } from '@lvce-editor/rpc'
+import { createMockRpc } from '@lvce-editor/rpc'
 import * as FileSystemProcess from '../src/parts/FileSystemProcess/FileSystemProcess.ts'
 import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
 import * as UploadFileSystemHandle from '../src/parts/UploadFileSystemHandle/UploadFileSystemHandle.ts'
@@ -55,20 +55,21 @@ globalThis.FileReader = class FileReader extends EventTarget {
   }
 }
 
-const mockFileSystemInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-const mockFileSystemRpc = MockRpc.create({
-  commandMap: {},
-  invoke: mockFileSystemInvoke,
-})
-
-const mockRendererInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-const mockRendererRpc = MockRpc.create({
-  commandMap: {},
-  invoke: mockRendererInvoke,
-})
+let mockFileSystemRpc: ReturnType<typeof createMockRpc>
+let mockRendererRpc: ReturnType<typeof createMockRpc>
 
 beforeEach(() => {
-  jest.resetAllMocks()
+  mockFileSystemRpc = createMockRpc({
+    commandMap: {
+      'FileSystem.mkdir': async () => undefined,
+      'FileSystem.writeFile': async () => undefined,
+    },
+  })
+  mockRendererRpc = createMockRpc({
+    commandMap: {
+      'Blob.blobToBinaryString': async () => 'file content',
+    },
+  })
   FileSystemProcess.set(mockFileSystemRpc)
   setFactory(async () => mockRendererRpc)
 })
@@ -82,25 +83,12 @@ test('uploadHandle with file', async () => {
     name: 'file1.txt',
   } as unknown as FileSystemFileHandle
 
-  mockFileSystemInvoke.mockImplementation(async (method: string) => {
-    if (method === 'FileSystem.writeFile') {
-      return
-    }
-    throw new Error(`unexpected method ${method}`)
-  })
-
-  mockRendererInvoke.mockImplementation(async (method: string) => {
-    if (method === 'Blob.blobToBinaryString') {
-      return 'file content'
-    }
-    throw new Error(`unexpected method ${method}`)
-  })
-
   const mockUploadHandles = jest.fn<(fileSystemHandles: readonly FileSystemHandle[], pathSeparator: string, root: string) => Promise<void>>()
 
   await UploadFileSystemHandle.uploadHandle(mockFileHandle, '/', '/root', mockUploadHandles)
 
-  expect(mockFileSystemInvoke).toHaveBeenCalledWith('FileSystem.writeFile', '/root/file1.txt', 'file content')
+  expect(mockRendererRpc.invocations).toEqual([['Blob.blobToBinaryString', mockFile]])
+  expect(mockFileSystemRpc.invocations).toEqual([['FileSystem.writeFile', '/root/file1.txt', 'file content']])
 })
 
 test('uploadHandle with directory', async () => {
@@ -114,18 +102,11 @@ test('uploadHandle with directory', async () => {
     values: jest.fn().mockReturnValue(mockValues()),
   } as unknown as FileSystemDirectoryHandle
 
-  mockFileSystemInvoke.mockImplementation(async (method: string) => {
-    if (method === 'FileSystem.mkdir') {
-      return
-    }
-    throw new Error(`unexpected method ${method}`)
-  })
-
   const mockUploadHandles = jest.fn<(fileSystemHandles: readonly FileSystemHandle[], pathSeparator: string, root: string) => Promise<void>>()
 
   await UploadFileSystemHandle.uploadHandle(mockDirectoryHandle, '/', '/root', mockUploadHandles)
 
-  expect(mockFileSystemInvoke).toHaveBeenCalledWith('FileSystem.mkdir', '/root/folder1')
+  expect(mockFileSystemRpc.invocations).toEqual([['FileSystem.mkdir', '/root/folder1']])
   expect(mockUploadHandles).toHaveBeenCalledWith([mockChildHandle], '/', '/root/folder1')
 })
 

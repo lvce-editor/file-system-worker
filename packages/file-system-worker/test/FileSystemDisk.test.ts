@@ -1,25 +1,40 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
-import { MockRpc } from '@lvce-editor/rpc'
+import { createMockRpc } from '@lvce-editor/rpc'
 import { ExtensionHost } from '@lvce-editor/rpc-registry'
 import * as FileSystemDisk from '../src/parts/FileSystemDisk/FileSystemDisk.js'
 import * as FileSystemProcess from '../src/parts/FileSystemProcess/FileSystemProcess.js'
 
 const mockInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-const mockRpc = MockRpc.create({
-  commandMap: {},
-  invoke: mockInvoke,
-})
 const mockExtensionHostInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-const mockExtensionHostRpc = MockRpc.create({
-  commandMap: {},
-  invoke: mockExtensionHostInvoke,
-})
-FileSystemProcess.set(mockRpc)
-ExtensionHost.set(mockExtensionHostRpc)
+let mockRpc: ReturnType<typeof createMockRpc>
+let mockExtensionHostRpc: ReturnType<typeof createMockRpc>
 
 beforeEach(() => {
   jest.resetAllMocks()
   mockExtensionHostInvoke.mockReset()
+  mockRpc = createMockRpc({
+    commandMap: {
+      'FileSystem.copy': async (oldUri: string, newUri: string) => mockInvoke('FileSystem.copy', oldUri, newUri),
+      'FileSystem.getPathSeparator': async (root: string) => mockInvoke('FileSystem.getPathSeparator', root),
+      'FileSystem.getRealPath': async (path: string) => mockInvoke('FileSystem.getRealPath', path),
+      'FileSystem.mkdir': async (uri: string) => mockInvoke('FileSystem.mkdir', uri),
+      'FileSystem.readDirWithFileTypes': async (uri: string) => mockInvoke('FileSystem.readDirWithFileTypes', uri),
+      'FileSystem.readFile': async (uri: string) => mockInvoke('FileSystem.readFile', uri),
+      'FileSystem.readJson': async (uri: string) => mockInvoke('FileSystem.readJson', uri),
+      'FileSystem.remove': async (uri: string) => mockInvoke('FileSystem.remove', uri),
+      'FileSystem.rename': async (oldUri: string, newUri: string) => mockInvoke('FileSystem.rename', oldUri, newUri),
+      'FileSystem.stat': async (uri: string) => mockInvoke('FileSystem.stat', uri),
+      'FileSystem.writeBuffer': async (uri: string, bytes: Uint8Array) => mockInvoke('FileSystem.writeBuffer', uri, bytes),
+      'FileSystem.writeFile': async (uri: string, content: string) => mockInvoke('FileSystem.writeFile', uri, content),
+    },
+  })
+  mockExtensionHostRpc = createMockRpc({
+    commandMap: {
+      'FileSystemMemory.readFile': async (uri: string) => mockExtensionHostInvoke('FileSystemMemory.readFile', uri),
+    },
+  })
+  FileSystemProcess.set(mockRpc)
+  ExtensionHost.set(mockExtensionHostRpc)
 })
 
 test('remove', async () => {
@@ -30,6 +45,7 @@ test('remove', async () => {
     throw new Error(`unexpected method ${method}`)
   })
   await FileSystemDisk.remove('/test/path')
+  expect(mockRpc.invocations).toEqual([['FileSystem.remove', '/test/path']])
 })
 
 test('readFile', async () => {
@@ -41,6 +57,7 @@ test('readFile', async () => {
   })
   const content = await FileSystemDisk.readFile('/test/path')
   expect(content).toBe('file content')
+  expect(mockRpc.invocations).toEqual([['FileSystem.readFile', '/test/path']])
 })
 
 test('readDirWithFileTypes', async () => {
@@ -52,6 +69,7 @@ test('readDirWithFileTypes', async () => {
   })
   const files = await FileSystemDisk.readDirWithFileTypes('/test/path')
   expect(files).toEqual([{ name: 'file1' }, { name: 'file2' }])
+  expect(mockRpc.invocations).toEqual([['FileSystem.readDirWithFileTypes', '/test/path']])
 })
 
 test('getPathSeparator', async () => {
@@ -74,6 +92,7 @@ test('readJson', async () => {
   })
   const json = await FileSystemDisk.readJson('/test/path')
   expect(json).toEqual({ key: 'value' })
+  expect(mockRpc.invocations).toEqual([['FileSystem.readJson', '/test/path']])
 })
 
 test('getRealPath', async () => {
@@ -85,6 +104,7 @@ test('getRealPath', async () => {
   })
   const path = await FileSystemDisk.getRealPath('/test/path')
   expect(path).toBe('/real/path')
+  expect(mockRpc.invocations).toEqual([['FileSystem.getRealPath', '/test/path']])
 })
 
 test('stat', async () => {
@@ -96,6 +116,7 @@ test('stat', async () => {
   })
   const stats = await FileSystemDisk.stat('/test/path')
   expect(stats).toEqual({ size: 100 })
+  expect(mockRpc.invocations).toEqual([['FileSystem.stat', '/test/path']])
 })
 
 test('createFile', async () => {
@@ -106,6 +127,7 @@ test('createFile', async () => {
     throw new Error(`unexpected method ${method}`)
   })
   await FileSystemDisk.createFile('/test/path')
+  expect(mockRpc.invocations).toEqual([['FileSystem.writeFile', '/test/path', '']])
 })
 
 test('writeFile', async () => {
@@ -116,6 +138,7 @@ test('writeFile', async () => {
     throw new Error(`unexpected method ${method}`)
   })
   await FileSystemDisk.writeFile('/test/path', 'content')
+  expect(mockRpc.invocations).toEqual([['FileSystem.writeFile', '/test/path', 'content']])
 })
 
 test('writeBlob', async () => {
@@ -127,6 +150,7 @@ test('writeBlob', async () => {
     throw new Error(`unexpected method ${method}`)
   })
   await FileSystemDisk.writeBlob('file:///test/path', blob)
+  expect(mockRpc.invocations).toEqual([['FileSystem.writeBuffer', 'file:///test/path', new Uint8Array([97, 98, 99])]])
 })
 
 test('readFileAsBlob routes memfs uri to FileSystemMemory', async () => {
@@ -141,6 +165,7 @@ test('readFileAsBlob routes memfs uri to FileSystemMemory', async () => {
 
   expect(blob.type).toBe('image/svg+xml')
   await expect(blob.text()).resolves.toBe('<svg xmlns="http://www.w3.org/2000/svg"></svg>')
+  expect(mockExtensionHostRpc.invocations).toEqual([['FileSystemMemory.readFile', 'memfs:///workspace/left.svg']])
 })
 
 test('mkdir', async () => {
@@ -151,6 +176,7 @@ test('mkdir', async () => {
     throw new Error(`unexpected method ${method}`)
   })
   await FileSystemDisk.mkdir('/test/path')
+  expect(mockRpc.invocations).toEqual([['FileSystem.mkdir', '/test/path']])
 })
 
 test('rename', async () => {
@@ -161,6 +187,7 @@ test('rename', async () => {
     throw new Error(`unexpected method ${method}`)
   })
   await FileSystemDisk.rename('/old/path', '/new/path')
+  expect(mockRpc.invocations).toEqual([['FileSystem.rename', '/old/path', '/new/path']])
 })
 
 test('copy', async () => {
@@ -171,4 +198,5 @@ test('copy', async () => {
     throw new Error(`unexpected method ${method}`)
   })
   await FileSystemDisk.copy('/old/path', '/new/path')
+  expect(mockRpc.invocations).toEqual([['FileSystem.copy', '/old/path', '/new/path']])
 })

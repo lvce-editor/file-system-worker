@@ -1,40 +1,29 @@
-import { beforeEach, expect, jest, test } from '@jest/globals'
-import { MockRpc } from '@lvce-editor/rpc'
+import { beforeEach, expect, test } from '@jest/globals'
+import { createMockRpc } from '@lvce-editor/rpc'
 import * as FileSystemHandle from '../src/parts/FileSystemHandle/FileSystemHandle.ts'
 import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
 
-const mockInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-const mockRpc = MockRpc.create({
-  commandMap: {},
-  invoke: mockInvoke,
-})
+let mockRpc: ReturnType<typeof createMockRpc>
 
 beforeEach(() => {
-  jest.resetAllMocks()
+  mockRpc = createMockRpc({
+    commandMap: {
+      'FileHandles.get': async () => [{ kind: 'file', name: 'file1' }],
+      'FileSystemHandle.addFileHandle': async () => undefined,
+    },
+  })
   setFactory(async () => mockRpc)
 })
 
 test('getFileHandles', async () => {
   const mockHandles = [{ kind: 'file', name: 'file1' }]
-  mockInvoke.mockImplementation(async (method: string) => {
-    if (method === 'FileHandles.get') {
-      return mockHandles
-    }
-    throw new Error(`unexpected method ${method}`)
-  })
   const result = await FileSystemHandle.getFileHandles(['id1'])
   expect(result).toEqual(mockHandles)
-  expect(mockInvoke).toHaveBeenCalledWith('FileHandles.get', ['id1'])
+  expect(mockRpc.invocations).toEqual([['FileHandles.get', ['id1']]])
 })
 
 test('addFileHandle', async () => {
   const mockHandle = { kind: 'file', name: 'file1' }
-  mockInvoke.mockImplementation(async (method: string) => {
-    if (method === 'FileSystemHandle.addFileHandle') {
-      return
-    }
-    throw new Error(`unexpected method ${method}`)
-  })
   await FileSystemHandle.addFileHandle(mockHandle as FileSystemHandle)
-  expect(mockInvoke).toHaveBeenCalledWith('FileSystemHandle.addFileHandle', mockHandle)
+  expect(mockRpc.invocations).toEqual([['FileSystemHandle.addFileHandle', mockHandle]])
 })
