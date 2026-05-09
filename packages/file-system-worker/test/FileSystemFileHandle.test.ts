@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/prefer-readonly-parameter-types */
-import { beforeEach, expect, jest, test } from '@jest/globals'
-import { MockRpc } from '@lvce-editor/rpc'
+import { expect, jest, test } from '@jest/globals'
 import * as FileSystemFileHandle from '../src/parts/FileSystemFileHandle/FileSystemFileHandle.ts'
-import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
 
 // @ts-ignore
 globalThis.ProgressEvent = class ProgressEvent extends Event {
@@ -53,17 +51,6 @@ globalThis.FileReader = class FileReader extends EventTarget {
       })
   }
 }
-
-const mockInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-const mockRpc = MockRpc.create({
-  commandMap: {},
-  invoke: mockInvoke,
-})
-
-beforeEach(() => {
-  jest.resetAllMocks()
-  setFactory(async () => mockRpc)
-})
 
 test('getFile', async () => {
   const mockFile = new File(['content'], 'file1')

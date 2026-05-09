@@ -21,10 +21,7 @@ export const readFileAsBlob = async (uri: string): Promise<Blob> => {
 
 export const exists = async (uri: string): Promise<boolean> => {
   const response = await fetch(uri)
-  if (response.ok) {
-    return true
-  }
-  return false
+  return response.ok
 }
 
 export const readDirWithFileTypes = async (uri: string): Promise<readonly any[]> => {
