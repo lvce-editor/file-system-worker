@@ -1,29 +1,39 @@
-import { beforeEach, expect, test } from '@jest/globals'
-import { createMockRpc } from '@lvce-editor/rpc'
-import { RpcId, set as setRpc } from '@lvce-editor/rpc-registry'
-import * as FileSystemHandle from '../src/parts/FileSystemHandle/FileSystemHandle.ts'
+import { beforeEach, expect, jest, test } from '@jest/globals'
 
-let mockRpc: ReturnType<typeof createMockRpc>
+let invokeMock: jest.Mock<(method: string, ...params: readonly unknown[]) => Promise<unknown>>
 
 beforeEach(() => {
-  mockRpc = createMockRpc({
-    commandMap: {
-      'FileHandles.get': async () => [{ kind: 'file', name: 'file1' }],
-      'FileSystemHandle.addFileHandle': async () => undefined,
-    },
-  })
-  setRpc(RpcId.RendererProcess, mockRpc)
+  jest.resetModules()
+  invokeMock = jest.fn<(method: string, ...params: readonly unknown[]) => Promise<unknown>>()
 })
 
 test('getFileHandles', async () => {
   const mockHandles = [{ kind: 'file', name: 'file1' }]
+  invokeMock.mockResolvedValue(mockHandles)
+
+  jest.unstable_mockModule('../src/parts/RendererProcess/RendererProcess.ts', () => ({
+    invoke: invokeMock,
+  }))
+
+  const FileSystemHandle = await import('../src/parts/FileSystemHandle/FileSystemHandle.ts')
+
   const result = await FileSystemHandle.getFileHandles(['id1'])
+
   expect(result).toEqual(mockHandles)
-  expect(mockRpc.invocations).toEqual([['FileHandles.get', ['id1']]])
+  expect(invokeMock).toHaveBeenCalledWith('FileHandles.get', ['id1'])
 })
 
 test('addFileHandle', async () => {
   const mockHandle = { kind: 'file', name: 'file1' }
+  invokeMock.mockResolvedValue(undefined)
+
+  jest.unstable_mockModule('../src/parts/RendererProcess/RendererProcess.ts', () => ({
+    invoke: invokeMock,
+  }))
+
+  const FileSystemHandle = await import('../src/parts/FileSystemHandle/FileSystemHandle.ts')
+
   await FileSystemHandle.addFileHandle(mockHandle as FileSystemHandle)
-  expect(mockRpc.invocations).toEqual([['FileSystemHandle.addFileHandle', mockHandle]])
+
+  expect(invokeMock).toHaveBeenCalledWith('FileSystemHandle.addFileHandle', mockHandle)
 })

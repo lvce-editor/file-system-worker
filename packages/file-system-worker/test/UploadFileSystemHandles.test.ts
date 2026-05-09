@@ -125,7 +125,7 @@ test('uploadFileSystemHandles with multiple handles', async () => {
     name: 'file2.txt',
   } as unknown as FileSystemFileHandle
   const mockValues = async function* (): AsyncGenerator<FileSystemHandle, void, unknown> {
-    yield mockChildHandle as FileSystemHandle
+    yield mockChildHandle
   }
   const mockDirectoryHandle = {
     kind: 'directory',
