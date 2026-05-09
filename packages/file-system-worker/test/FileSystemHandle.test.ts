@@ -1,7 +1,7 @@
 import { beforeEach, expect, test } from '@jest/globals'
 import { createMockRpc } from '@lvce-editor/rpc'
+import { RpcId, set as setRpc } from '@lvce-editor/rpc-registry'
 import * as FileSystemHandle from '../src/parts/FileSystemHandle/FileSystemHandle.ts'
-import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
 
 let mockRpc: ReturnType<typeof createMockRpc>
 
@@ -12,7 +12,7 @@ beforeEach(() => {
       'FileSystemHandle.addFileHandle': async () => undefined,
     },
   })
-  setFactory(async () => mockRpc)
+  setRpc(RpcId.RendererProcess, mockRpc)
 })
 
 test('getFileHandles', async () => {

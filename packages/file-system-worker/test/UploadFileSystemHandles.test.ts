@@ -86,13 +86,6 @@ test('uploadFileSystemHandles with single file', async () => {
   })
   FileSystemProcess.set(mockFileSystemRpc)
 
-  const rpc = createMockRpc({
-    commandMap: {
-      'Blob.blobToBinaryString': async () => 'file content',
-    },
-  })
-  setFactory(async () => rpc)
-
   const mockFile = new File(['file content'], 'file1.txt')
   const mockGetFile = jest.fn<() => Promise<File>>().mockResolvedValue(mockFile)
   const mockFileHandle = {
@@ -104,7 +97,6 @@ test('uploadFileSystemHandles with single file', async () => {
   const result = await UploadFileSystemHandles.uploadFileSystemHandles('/root', '/', [mockFileHandle])
 
   expect(result).toBe(false)
-  expect(rpc.invocations).toEqual([['Blob.blobToBinaryString', mockFile]])
   expect(mockFileSystemRpc.invocations).toEqual([['FileSystem.writeFile', '/root/file1.txt', 'file content']])
 })
 
@@ -119,21 +111,6 @@ test('uploadFileSystemHandles with multiple handles', async () => {
     },
   })
   FileSystemProcess.set(mockFileSystemRpc)
-
-  const rpc = createMockRpc({
-    commandMap: {
-      'Blob.blobToBinaryString': async (file: File) => {
-        if (file === mockFile) {
-          return 'file content'
-        }
-        if (file === mockChildFile) {
-          return 'child content'
-        }
-        return 'content'
-      },
-    },
-  })
-  setFactory(async () => rpc)
 
   const mockGetFile = jest.fn<() => Promise<File>>().mockResolvedValue(mockFile)
   const mockFileHandle = {
@@ -159,10 +136,6 @@ test('uploadFileSystemHandles with multiple handles', async () => {
   const result = await UploadFileSystemHandles.uploadFileSystemHandles('/root', '/', [mockFileHandle, mockDirectoryHandle])
 
   expect(result).toBe(false)
-  expect(rpc.invocations).toEqual([
-    ['Blob.blobToBinaryString', mockFile],
-    ['Blob.blobToBinaryString', mockChildFile],
-  ])
   expect(mockFileSystemRpc.invocations).toEqual([
     ['FileSystem.writeFile', '/root/file1.txt', 'file content'],
     ['FileSystem.mkdir', '/root/folder1'],
