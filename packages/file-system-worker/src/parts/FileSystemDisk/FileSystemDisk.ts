@@ -1,3 +1,4 @@
+import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as FileSystemFetch from '../FileSystemFetch/FileSystemFetch.ts'
 import * as FileSystemMemory from '../FileSystemMemory/FileSystemMemory.ts'
 import * as FileSystemProcess from '../FileSystemProcess/FileSystemProcess.ts'
@@ -108,6 +109,10 @@ export const writeBlob = async (uri: string, blob: Blob): Promise<void> => {
 }
 
 export const mkdir = async (uri: string): Promise<void> => {
+  if (isMemory(uri)) {
+    await RendererWorker.invoke('FileSystem.mkdir', uri)
+    return
+  }
   return FileSystemProcess.mkdir(uri)
 }
 
