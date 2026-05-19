@@ -17,7 +17,7 @@ export const readFile = async (uri: string): Promise<string> => {
     return FileSystemFetch.readFile(uri)
   }
   if (isMemory(uri)) {
-    return FileSystemMemory.readFile(uri)
+    return RendererWorker.invoke('FileSystem.readFile', uri)
   }
   return FileSystemProcess.readFile(uri)
 }
@@ -76,6 +76,9 @@ export const exists = async (uri: string): Promise<any> => {
   if (isHttp(uri)) {
     return FileSystemFetch.exists(uri)
   }
+  if (isMemory(uri)) {
+    return RendererWorker.invoke('FileSystem.exists', uri)
+  }
   return FileSystemProcess.exists(uri)
 }
 
@@ -88,7 +91,7 @@ export const createFile = async (uri: string): Promise<void> => {
 
 export const writeFile = async (uri: string, content: string): Promise<void> => {
   if (isMemory(uri)) {
-    return FileSystemMemory.writeFile(uri, content)
+    return RendererWorker.invoke('FileSystem.writeFile', uri, content)
   }
   return FileSystemProcess.writeFile(uri, content)
 }
