@@ -27,6 +27,9 @@ export const appendFile = async (uri: string, text: string): Promise<string> => 
 }
 
 export const readDirWithFileTypes = async (uri: string): Promise<readonly any[]> => {
+  if (isMemory(uri)) {
+    return RendererWorker.invoke('FileSystem.readDirWithFileTypes', uri)
+  }
   return FileSystemProcess.readDirWithFileTypes(uri)
 }
 
