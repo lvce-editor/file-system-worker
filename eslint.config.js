@@ -8,6 +8,7 @@ export default [
     rules: {
       'jest/no-restricted-jest-methods': 'off',
       '@cspell/spellchecker': 'off',
+      'e18e/prefer-string-fromcharcode': 'off',
     },
   },
 ]
