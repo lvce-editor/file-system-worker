@@ -1,7 +1,7 @@
-import { test, expect, jest } from '@jest/globals'
+import { expect, jest, test } from '@jest/globals'
 import * as FileSystemFetch from '../src/parts/FileSystemFetch/FileSystemFetch.ts'
 
-const fetchMock = jest.fn() as jest.Mock
+const fetchMock = jest.fn()
 
 Object.defineProperty(globalThis, 'fetch', {
   configurable: true,
