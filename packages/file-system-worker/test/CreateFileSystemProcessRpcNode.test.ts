@@ -2,16 +2,17 @@ import { beforeAll, expect, test } from '@jest/globals'
 import { createFileSystemProcessRpcNode } from '../src/parts/CreateFileSystemProcessRpcNode/CreateFileSystemProcessRpcNode.js'
 
 beforeAll(() => {
-  // @ts-ignore
-  globalThis.location = {
-    href: 'http://localhost:3000',
-    protocol: 'http:',
-  }
+  Object.defineProperty(globalThis, 'location', {
+    configurable: true,
+    value: {
+      href: 'http://localhost:3000',
+      protocol: 'http:',
+    },
+  })
 })
 
 test('creates file system process rpc', async () => {
-  // @ts-ignore
-  globalThis.WebSocket = class MockWebSocket extends EventTarget {
+  class MockWebSocket extends EventTarget {
     constructor() {
       super()
 
@@ -22,14 +23,17 @@ test('creates file system process rpc', async () => {
 
     close(): void {}
   }
+  Object.defineProperty(globalThis, 'WebSocket', {
+    configurable: true,
+    value: MockWebSocket,
+  })
   const rpc = await createFileSystemProcessRpcNode()
   expect(rpc).toBeDefined()
   await rpc.dispose()
 })
 
 test('handles error when creating file system process rpc', async () => {
-  // @ts-ignore
-  globalThis.WebSocket = class MockWebSocket extends EventTarget {
+  class MockWebSocket extends EventTarget {
     constructor() {
       super()
 
@@ -40,6 +44,10 @@ test('handles error when creating file system process rpc', async () => {
 
     close(): void {}
   }
+  Object.defineProperty(globalThis, 'WebSocket', {
+    configurable: true,
+    value: MockWebSocket,
+  })
   await expect(createFileSystemProcessRpcNode()).rejects.toThrow(
     new Error('Failed to create file system process rpc: IpcError: Websocket connection was immediately closed'),
   )

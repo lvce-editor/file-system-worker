@@ -1,8 +1,12 @@
-import { test, expect, jest } from '@jest/globals'
+import { expect, jest, test } from '@jest/globals'
 import * as FileSystemFetch from '../src/parts/FileSystemFetch/FileSystemFetch.ts'
 
-// Mock fetch globally
-;(globalThis as any).fetch = jest.fn()
+const fetchMock = jest.fn()
+
+Object.defineProperty(globalThis, 'fetch', {
+  configurable: true,
+  value: fetchMock,
+})
 
 test('readFile should fetch and return text content', async () => {
   // @ts-ignore
@@ -12,11 +16,11 @@ test('readFile should fetch and return text content', async () => {
     text: mockText,
   } as any
   // @ts-ignore
-  ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
+  fetchMock.mockResolvedValue(mockResponse)
 
-  const result = await FileSystemFetch.readFile('http://example.com/file.txt')
+  const result = await FileSystemFetch.readFile('https://example.com/file.txt')
 
-  expect((globalThis as any).fetch).toHaveBeenCalledWith('http://example.com/file.txt')
+  expect(fetchMock).toHaveBeenCalledWith('https://example.com/file.txt')
   expect(result).toBe('file content')
 })
 
@@ -26,9 +30,9 @@ test('readFile should throw error when response is not ok', async () => {
     statusText: 'Not Found',
   } as any
   // @ts-ignore
-  ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
+  fetchMock.mockResolvedValue(mockResponse)
 
-  await expect(FileSystemFetch.readFile('http://example.com/notfound.txt')).rejects.toThrow('Not Found')
+  await expect(FileSystemFetch.readFile('https://example.com/notfound.txt')).rejects.toThrow('Not Found')
 })
 
 test('readFileAsBlob should fetch and return blob content', async () => {
@@ -40,11 +44,11 @@ test('readFileAsBlob should fetch and return blob content', async () => {
     ok: true,
   } as any
   // @ts-ignore
-  ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
+  fetchMock.mockResolvedValue(mockResponse)
 
-  const result = await FileSystemFetch.readFileAsBlob('http://example.com/file.bin')
+  const result = await FileSystemFetch.readFileAsBlob('https://example.com/file.bin')
 
-  expect((globalThis as any).fetch).toHaveBeenCalledWith('http://example.com/file.bin')
+  expect(fetchMock).toHaveBeenCalledWith('https://example.com/file.bin')
   expect(result).toBe(mockBlob)
 })
 
@@ -54,9 +58,9 @@ test('readFileAsBlob should throw error when response is not ok', async () => {
     statusText: 'Server Error',
   } as any
   // @ts-ignore
-  ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
+  fetchMock.mockResolvedValue(mockResponse)
 
-  await expect(FileSystemFetch.readFileAsBlob('http://example.com/error.bin')).rejects.toThrow('Server Error')
+  await expect(FileSystemFetch.readFileAsBlob('https://example.com/error.bin')).rejects.toThrow('Server Error')
 })
 
 test('exists should return true for successful response', async () => {
@@ -64,9 +68,9 @@ test('exists should return true for successful response', async () => {
     ok: true,
   } as any
   // @ts-ignore
-  ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
+  fetchMock.mockResolvedValue(mockResponse)
 
-  const result = await FileSystemFetch.exists('http://example.com/exists.txt')
+  const result = await FileSystemFetch.exists('https://example.com/exists.txt')
 
   expect(result).toBe(true)
 })
@@ -76,15 +80,15 @@ test('exists should return false for failed response', async () => {
     ok: false,
   } as any
   // @ts-ignore
-  ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
+  fetchMock.mockResolvedValue(mockResponse)
 
-  const result = await FileSystemFetch.exists('http://example.com/notfound.txt')
+  const result = await FileSystemFetch.exists('https://example.com/notfound.txt')
 
   expect(result).toBe(false)
 })
 
 test('getPathSeparator should return forward slash', async () => {
-  const result = await FileSystemFetch.getPathSeparator('http://example.com/')
+  const result = await FileSystemFetch.getPathSeparator('https://example.com/')
   expect(result).toBe('/')
 })
 
@@ -97,11 +101,11 @@ test('readJson should fetch and return JSON content', async () => {
     ok: true,
   } as any
   // @ts-ignore
-  ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
+  fetchMock.mockResolvedValue(mockResponse)
 
-  const result = await FileSystemFetch.readJson('http://example.com/data.json')
+  const result = await FileSystemFetch.readJson('https://example.com/data.json')
 
-  expect((globalThis as any).fetch).toHaveBeenCalledWith('http://example.com/data.json')
+  expect(fetchMock).toHaveBeenCalledWith('https://example.com/data.json')
   expect(result).toEqual(mockJson)
 })
 
@@ -111,47 +115,47 @@ test('readJson should throw error when response is not ok', async () => {
     statusText: 'Bad Request',
   } as any
   // @ts-ignore
-  ;((globalThis as any).fetch as jest.Mock).mockResolvedValue(mockResponse)
+  fetchMock.mockResolvedValue(mockResponse)
 
-  await expect(FileSystemFetch.readJson('http://example.com/invalid.json')).rejects.toThrow('Bad Request')
+  await expect(FileSystemFetch.readJson('https://example.com/invalid.json')).rejects.toThrow('Bad Request')
 })
 
 test('remove should throw not implemented', async () => {
-  await expect(FileSystemFetch.remove('http://example.com/file.txt')).rejects.toThrow('not implemented')
+  await expect(FileSystemFetch.remove('https://example.com/file.txt')).rejects.toThrow('not implemented')
 })
 
 test('readDirWithFileTypes should throw not implemented', async () => {
-  await expect(FileSystemFetch.readDirWithFileTypes('http://example.com/')).rejects.toThrow('not implemented')
+  await expect(FileSystemFetch.readDirWithFileTypes('https://example.com/')).rejects.toThrow('not implemented')
 })
 
 test('getRealPath should throw not implemented', async () => {
-  await expect(FileSystemFetch.getRealPath('http://example.com/file.txt')).rejects.toThrow('not implemented')
+  await expect(FileSystemFetch.getRealPath('https://example.com/file.txt')).rejects.toThrow('not implemented')
 })
 
 test('stat should throw not implemented', async () => {
-  await expect(FileSystemFetch.stat('http://example.com/file.txt')).rejects.toThrow('not implemented')
+  await expect(FileSystemFetch.stat('https://example.com/file.txt')).rejects.toThrow('not implemented')
 })
 
 test('createFile should throw not implemented', async () => {
-  await expect(FileSystemFetch.createFile('http://example.com/file.txt')).rejects.toThrow('not implemented')
+  await expect(FileSystemFetch.createFile('https://example.com/file.txt')).rejects.toThrow('not implemented')
 })
 
 test('writeFile should throw not implemented', async () => {
-  await expect(FileSystemFetch.writeFile('http://example.com/file.txt', 'content')).rejects.toThrow('not implemented')
+  await expect(FileSystemFetch.writeFile('https://example.com/file.txt', 'content')).rejects.toThrow('not implemented')
 })
 
 test('mkdir should throw not implemented', async () => {
-  await expect(FileSystemFetch.mkdir('http://example.com/folder')).rejects.toThrow('not implemented')
+  await expect(FileSystemFetch.mkdir('https://example.com/folder')).rejects.toThrow('not implemented')
 })
 
 test('rename should throw not implemented', async () => {
-  await expect(FileSystemFetch.rename('http://example.com/old.txt', 'http://example.com/new.txt')).rejects.toThrow('not implemented')
+  await expect(FileSystemFetch.rename('https://example.com/old.txt', 'https://example.com/new.txt')).rejects.toThrow('not implemented')
 })
 
 test('copy should throw not implemented', async () => {
-  await expect(FileSystemFetch.copy('http://example.com/source.txt', 'http://example.com/dest.txt')).rejects.toThrow('not implemented')
+  await expect(FileSystemFetch.copy('https://example.com/source.txt', 'https://example.com/dest.txt')).rejects.toThrow('not implemented')
 })
 
 test('getFolderSize should throw not implemented', async () => {
-  await expect(FileSystemFetch.getFolderSize('http://example.com/folder')).rejects.toThrow('not implemented')
+  await expect(FileSystemFetch.getFolderSize('https://example.com/folder')).rejects.toThrow('not implemented')
 })

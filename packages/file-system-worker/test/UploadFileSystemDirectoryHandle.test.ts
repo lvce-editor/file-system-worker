@@ -3,18 +3,23 @@ import { createMockRpc } from '@lvce-editor/rpc'
 import * as FileSystemProcess from '../src/parts/FileSystemProcess/FileSystemProcess.ts'
 import * as UploadFileSystemDirectoryHandle from '../src/parts/UploadFileSystemDirectoryHandle/UploadFileSystemDirectoryHandle.ts'
 
-let mockRpc: ReturnType<typeof createMockRpc>
-
-beforeEach(() => {
-  mockRpc = createMockRpc({
+const createMockFileSystemRpc = (): ReturnType<typeof createMockRpc> => {
+  const mockRpc = createMockRpc({
     commandMap: {
       'FileSystem.mkdir': async () => undefined,
     },
   })
   FileSystemProcess.set(mockRpc)
+  return mockRpc
+}
+
+beforeEach(() => {
+  jest.resetAllMocks()
 })
 
 test('uploadDirectory', async () => {
+  const mockRpc = createMockFileSystemRpc()
+
   const mockChildHandle = { kind: 'file', name: 'file1' } as FileSystemHandle
   const mockValues = async function* (): AsyncGenerator<FileSystemHandle, void, unknown> {
     yield mockChildHandle

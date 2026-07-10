@@ -1,5 +1,5 @@
 export const normalizeBlobError = (error: unknown): unknown => {
-  const ProgressEventConstructor = globalThis.ProgressEvent
+  const ProgressEventConstructor = ProgressEvent
   if (
     error &&
     ProgressEventConstructor &&
