@@ -1,6 +1,10 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
 
-const createInvokeMock = (): jest.Mock => jest.fn<(method: string, ...params: readonly unknown[]) => Promise<unknown>>()
+type MockInvoke = jest.MockedFunction<(method: string, ...params: readonly unknown[]) => Promise<unknown>>
+
+const createInvokeMock = (): MockInvoke => {
+  return jest.fn<(method: string, ...params: readonly unknown[]) => Promise<unknown>>()
+}
 
 beforeEach(() => {
   jest.resetModules()
