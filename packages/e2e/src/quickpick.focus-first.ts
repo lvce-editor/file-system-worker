@@ -2,7 +2,9 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'quickpick.focus-first'
 
-export const test: Test = async ({ Command, expect, Locator, QuickPick }) => {
+type QuickpickContext = Readonly<Parameters<Test>[0]>
+
+export const test: Test = async ({ Command, expect, Locator, QuickPick }: QuickpickContext) => {
   // arrange
   await QuickPick.open()
   await QuickPick.setValue('> Layout')

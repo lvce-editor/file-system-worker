@@ -35,7 +35,7 @@ export const getPathSeparator = async (root: string): Promise<string> => {
 export const readJson = async (uri: string): Promise<any> => {
   const response = await fetch(uri)
   if (!response.ok) {
-    throw new Error(`${response.statusText}`)
+    throw new Error(response.statusText)
   }
   const json = await response.json()
   return json

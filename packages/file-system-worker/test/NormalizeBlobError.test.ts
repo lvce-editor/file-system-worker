@@ -5,7 +5,10 @@ class ProgressEvent {
   target: any = null
 }
 
-;(globalThis as any).ProgressEvent = ProgressEvent
+Object.defineProperty(globalThis, 'ProgressEvent', {
+  configurable: true,
+  value: ProgressEvent,
+})
 
 test('normalizeBlobError should return target.error for ProgressEvent with target.error', () => {
   const targetError = new Error('Target error')
@@ -24,12 +27,12 @@ test('normalizeBlobError should return error as-is for regular Error', () => {
 
 test('normalizeBlobError should return error as-is for null', () => {
   const result = normalizeBlobError(null)
-  expect(result).toBe(null)
+  expect(result).toBeNull()
 })
 
 test('normalizeBlobError should return error as-is for undefined', () => {
   const result = normalizeBlobError(undefined)
-  expect(result).toBe(undefined)
+  expect(result).toBeUndefined()
 })
 
 test('normalizeBlobError should return error as-is for ProgressEvent without target', () => {

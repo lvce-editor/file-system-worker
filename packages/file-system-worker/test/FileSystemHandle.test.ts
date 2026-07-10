@@ -1,13 +1,13 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
 
-let invokeMock: jest.Mock<(method: string, ...params: readonly unknown[]) => Promise<unknown>>
+const createInvokeMock = (): jest.Mock => jest.fn<(method: string, ...params: readonly unknown[]) => Promise<unknown>>()
 
 beforeEach(() => {
   jest.resetModules()
-  invokeMock = jest.fn<(method: string, ...params: readonly unknown[]) => Promise<unknown>>()
 })
 
 test('getFileHandles', async () => {
+  const invokeMock = createInvokeMock()
   const mockHandles = [{ kind: 'file', name: 'file1' }]
   invokeMock.mockResolvedValue(mockHandles)
 
@@ -24,6 +24,7 @@ test('getFileHandles', async () => {
 })
 
 test('addFileHandle', async () => {
+  const invokeMock = createInvokeMock()
   const mockHandle = { kind: 'file', name: 'file1' }
   invokeMock.mockResolvedValue(undefined)
 

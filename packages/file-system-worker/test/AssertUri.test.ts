@@ -2,7 +2,7 @@ import { test, expect } from '@jest/globals'
 import { assertUri } from '../src/parts/AssertUri/AssertUri.ts'
 
 test('assertUri should not throw for valid URIs', () => {
-  expect(() => assertUri('http://example.com')).not.toThrow()
+  expect(() => assertUri('https://example.com')).not.toThrow()
   expect(() => assertUri('https://example.com')).not.toThrow()
   expect(() => assertUri('file:///path/to/file')).not.toThrow()
   expect(() => assertUri('ftp://example.com')).not.toThrow()

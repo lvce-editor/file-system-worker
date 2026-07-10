@@ -6,13 +6,12 @@ import * as FileSystemProcess from '../src/parts/FileSystemProcess/FileSystemPro
 
 const mockInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
 const mockExtensionHostInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-let mockRpc: ReturnType<typeof createMockRpc>
-let mockExtensionHostRpc: ReturnType<typeof createMockRpc>
 
-beforeEach(() => {
-  jest.resetAllMocks()
-  mockExtensionHostInvoke.mockReset()
-  mockRpc = createMockRpc({
+const createMockFileSystemRpcs = (): {
+  mockRpc: ReturnType<typeof createMockRpc>
+  mockExtensionHostRpc: ReturnType<typeof createMockRpc>
+} => {
+  const mockRpc = createMockRpc({
     commandMap: {
       'FileSystem.copy': async (oldUri: string, newUri: string) => mockInvoke('FileSystem.copy', oldUri, newUri),
       'FileSystem.getPathSeparator': async (root: string) => mockInvoke('FileSystem.getPathSeparator', root),
@@ -28,16 +27,24 @@ beforeEach(() => {
       'FileSystem.writeFile': async (uri: string, content: string) => mockInvoke('FileSystem.writeFile', uri, content),
     },
   })
-  mockExtensionHostRpc = createMockRpc({
+  const mockExtensionHostRpc = createMockRpc({
     commandMap: {
       'FileSystemMemory.readFile': async (uri: string) => mockExtensionHostInvoke('FileSystemMemory.readFile', uri),
     },
   })
   FileSystemProcess.set(mockRpc)
   ExtensionHost.set(mockExtensionHostRpc)
+  return { mockExtensionHostRpc, mockRpc }
+}
+
+beforeEach(() => {
+  jest.resetAllMocks()
+  mockInvoke.mockReset()
+  mockExtensionHostInvoke.mockReset()
 })
 
 test('remove', async () => {
+  const { mockRpc } = createMockFileSystemRpcs()
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.remove') {
       return
@@ -49,6 +56,7 @@ test('remove', async () => {
 })
 
 test('readFile', async () => {
+  const { mockRpc } = createMockFileSystemRpcs()
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.readFile') {
       return 'file content'
@@ -61,6 +69,7 @@ test('readFile', async () => {
 })
 
 test('readDirWithFileTypes', async () => {
+  const { mockRpc } = createMockFileSystemRpcs()
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.readDirWithFileTypes') {
       return [{ name: 'file1' }, { name: 'file2' }]
@@ -73,6 +82,7 @@ test('readDirWithFileTypes', async () => {
 })
 
 test('getPathSeparator', async () => {
+  const { mockRpc } = createMockFileSystemRpcs()
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.getPathSeparator') {
       return '/'
@@ -85,6 +95,7 @@ test('getPathSeparator', async () => {
 })
 
 test('readJson', async () => {
+  const { mockRpc } = createMockFileSystemRpcs()
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.readJson') {
       return { key: 'value' }
@@ -97,6 +108,7 @@ test('readJson', async () => {
 })
 
 test('getRealPath', async () => {
+  const { mockRpc } = createMockFileSystemRpcs()
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.getRealPath') {
       return '/real/path'
@@ -109,6 +121,7 @@ test('getRealPath', async () => {
 })
 
 test('stat', async () => {
+  const { mockRpc } = createMockFileSystemRpcs()
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.stat') {
       return { size: 100 }
@@ -121,6 +134,7 @@ test('stat', async () => {
 })
 
 test('createFile', async () => {
+  const { mockRpc } = createMockFileSystemRpcs()
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.writeFile') {
       return
@@ -132,6 +146,7 @@ test('createFile', async () => {
 })
 
 test('writeFile', async () => {
+  const { mockRpc } = createMockFileSystemRpcs()
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.writeFile') {
       return
@@ -143,6 +158,7 @@ test('writeFile', async () => {
 })
 
 test('writeBlob', async () => {
+  const { mockRpc } = createMockFileSystemRpcs()
   const blob = new Blob(['abc'])
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.writeBuffer') {
@@ -155,6 +171,7 @@ test('writeBlob', async () => {
 })
 
 test('readFileAsBlob routes memfs uri to FileSystemMemory', async () => {
+  const { mockExtensionHostRpc } = createMockFileSystemRpcs()
   mockExtensionHostInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystemMemory.readFile') {
       return '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
@@ -170,6 +187,7 @@ test('readFileAsBlob routes memfs uri to FileSystemMemory', async () => {
 })
 
 test('mkdir', async () => {
+  const { mockRpc } = createMockFileSystemRpcs()
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.mkdir') {
       return
@@ -181,6 +199,7 @@ test('mkdir', async () => {
 })
 
 test('rename', async () => {
+  const { mockRpc } = createMockFileSystemRpcs()
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.rename') {
       return
@@ -192,6 +211,7 @@ test('rename', async () => {
 })
 
 test('copy', async () => {
+  const { mockRpc } = createMockFileSystemRpcs()
   mockInvoke.mockImplementation(async (method: string) => {
     if (method === 'FileSystem.copy') {
       return
