@@ -16,6 +16,7 @@ const createMockFileSystemRpcs = (): {
       'FileSystem.copy': async (oldUri: string, newUri: string) => mockInvoke('FileSystem.copy', oldUri, newUri),
       'FileSystem.getPathSeparator': async (root: string) => mockInvoke('FileSystem.getPathSeparator', root),
       'FileSystem.getRealPath': async (path: string) => mockInvoke('FileSystem.getRealPath', path),
+      'FileSystem.isReadonly': async (uri: string) => mockInvoke('FileSystem.isReadonly', uri),
       'FileSystem.mkdir': async (uri: string) => mockInvoke('FileSystem.mkdir', uri),
       'FileSystem.readDirWithFileTypes': async (uri: string) => mockInvoke('FileSystem.readDirWithFileTypes', uri),
       'FileSystem.readFile': async (uri: string) => mockInvoke('FileSystem.readFile', uri),
@@ -92,6 +93,19 @@ test('getPathSeparator', async () => {
   const separator = await FileSystemDisk.getPathSeparator('/test/path')
   expect(separator).toBe('/')
   expect(mockRpc.invocations).toEqual([['FileSystem.getPathSeparator', '/test/path']])
+})
+
+test('isReadonly', async () => {
+  const { mockRpc } = createMockFileSystemRpcs()
+  mockInvoke.mockImplementation(async (method: string) => {
+    if (method === 'FileSystem.isReadonly') {
+      return true
+    }
+    throw new Error(`unexpected method ${method}`)
+  })
+  const isReadonly = await FileSystemDisk.isReadonly('file:///test/path')
+  expect(isReadonly).toBe(true)
+  expect(mockRpc.invocations).toEqual([['FileSystem.isReadonly', 'file:///test/path']])
 })
 
 test('readJson', async () => {
