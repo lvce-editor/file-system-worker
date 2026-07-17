@@ -37,6 +37,10 @@ export const getPathSeparator = async (root: string): Promise<string> => {
   return FileSystemProcess.getPathSeparator(root)
 }
 
+export const isReadonly = async (uri: string): Promise<boolean> => {
+  return FileSystemProcess.invoke('FileSystem.isReadonly', uri)
+}
+
 export const readJson = async (uri: string): Promise<any> => {
   if (isHttp(uri)) {
     return FileSystemFetch.readJson(uri)

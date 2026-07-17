@@ -19,6 +19,7 @@ export const commandMap: Record<string, any> = {
   'FileSystem.getPathSeparator': FileSystem.getPathSeparator,
   'FileSystem.getRealPath': FileSystem.getRealPath,
   'FileSystem.handleMessagePort': HandleMessagePort.handleMessagePort,
+  'FileSystem.isReadonly': FileSystem.isReadonly,
   'FileSystem.mkdir': FileSystem.mkdir,
   'FileSystem.readDirWithFileTypes': FileSystem.readDirWithFileTypes,
   'FileSystem.readFile': FileSystem.readFile,
