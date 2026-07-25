@@ -14,6 +14,7 @@ const createMockFileSystemRpcs = (): {
   const mockRpc = createMockRpc({
     commandMap: {
       'FileSystem.copy': async (oldUri: string, newUri: string) => mockInvoke('FileSystem.copy', oldUri, newUri),
+      'FileSystem.getFileHash': async (uri: string) => mockInvoke('FileSystem.getFileHash', uri),
       'FileSystem.getPathSeparator': async (root: string) => mockInvoke('FileSystem.getPathSeparator', root),
       'FileSystem.getRealPath': async (path: string) => mockInvoke('FileSystem.getRealPath', path),
       'FileSystem.isReadonly': async (uri: string) => mockInvoke('FileSystem.isReadonly', uri),
@@ -67,6 +68,21 @@ test('readFile', async () => {
   const content = await FileSystemDisk.readFile('/test/path')
   expect(content).toBe('file content')
   expect(mockRpc.invocations).toEqual([['FileSystem.readFile', '/test/path']])
+})
+
+test('getFileHash', async () => {
+  const { mockRpc } = createMockFileSystemRpcs()
+  mockInvoke.mockImplementation(async (method: string) => {
+    if (method === 'FileSystem.getFileHash') {
+      return 'test-hash'
+    }
+    throw new Error(`unexpected method ${method}`)
+  })
+
+  const hash = await FileSystemDisk.getFileHash('/test/path')
+
+  expect(hash).toBe('test-hash')
+  expect(mockRpc.invocations).toEqual([['FileSystem.getFileHash', '/test/path']])
 })
 
 test('readDirWithFileTypes', async () => {

@@ -22,6 +22,10 @@ export const readFile = async (uri: string): Promise<string> => {
   return FileSystemProcess.readFile(uri)
 }
 
+export const getFileHash = async (uri: string): Promise<string> => {
+  return FileSystemProcess.getFileHash(uri)
+}
+
 export const appendFile = async (uri: string, text: string): Promise<string> => {
   return FileSystemProcess.appendFile(uri, text)
 }
