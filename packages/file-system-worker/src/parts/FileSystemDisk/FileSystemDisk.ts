@@ -2,6 +2,7 @@ import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as FileSystemFetch from '../FileSystemFetch/FileSystemFetch.ts'
 import * as FileSystemMemory from '../FileSystemMemory/FileSystemMemory.ts'
 import * as FileSystemProcess from '../FileSystemProcess/FileSystemProcess.ts'
+import { isFetch } from '../IsFetch/IsFetch.ts'
 import { isHttp } from '../IsHttp/IsHttp.ts'
 import { isMemory } from '../IsMemory/IsMemory.ts'
 
@@ -13,6 +14,9 @@ export const remove = async (dirent: string): Promise<void> => {
 }
 
 export const readFile = async (uri: string): Promise<string> => {
+  if (isFetch(uri)) {
+    return RendererWorker.invoke('FileSystem.readFile', uri)
+  }
   if (isHttp(uri)) {
     return FileSystemFetch.readFile(uri)
   }
@@ -31,6 +35,9 @@ export const appendFile = async (uri: string, text: string): Promise<string> => 
 }
 
 export const readDirWithFileTypes = async (uri: string): Promise<readonly any[]> => {
+  if (isFetch(uri)) {
+    return RendererWorker.invoke('FileSystem.readDirWithFileTypes', uri)
+  }
   if (isMemory(uri)) {
     return RendererWorker.invoke('FileSystem.readDirWithFileTypes', uri)
   }
@@ -84,6 +91,9 @@ export const stat = async (dirent: string): Promise<any> => {
 }
 
 export const exists = async (uri: string): Promise<any> => {
+  if (isFetch(uri)) {
+    return RendererWorker.invoke('FileSystem.exists', uri)
+  }
   if (isHttp(uri)) {
     return FileSystemFetch.exists(uri)
   }
