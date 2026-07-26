@@ -1,15 +1,17 @@
 import { beforeEach, expect, jest, test } from '@jest/globals'
 import { createMockRpc } from '@lvce-editor/rpc'
-import { ExtensionHost } from '@lvce-editor/rpc-registry'
+import { ExtensionHost, RendererWorker } from '@lvce-editor/rpc-registry'
 import * as FileSystemDisk from '../src/parts/FileSystemDisk/FileSystemDisk.js'
 import * as FileSystemProcess from '../src/parts/FileSystemProcess/FileSystemProcess.js'
 
 const mockInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
 const mockExtensionHostInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
+const mockRendererWorkerInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
 
 const createMockFileSystemRpcs = (): {
   mockRpc: ReturnType<typeof createMockRpc>
   mockExtensionHostRpc: ReturnType<typeof createMockRpc>
+  mockRendererWorkerRpc: ReturnType<typeof createMockRpc>
 } => {
   const mockRpc = createMockRpc({
     commandMap: {
@@ -34,15 +36,24 @@ const createMockFileSystemRpcs = (): {
       'FileSystemMemory.readFile': async (uri: string) => mockExtensionHostInvoke('FileSystemMemory.readFile', uri),
     },
   })
+  const mockRendererWorkerRpc = createMockRpc({
+    commandMap: {
+      'FileSystem.exists': async (uri: string) => mockRendererWorkerInvoke('FileSystem.exists', uri),
+      'FileSystem.readDirWithFileTypes': async (uri: string) => mockRendererWorkerInvoke('FileSystem.readDirWithFileTypes', uri),
+      'FileSystem.readFile': async (uri: string) => mockRendererWorkerInvoke('FileSystem.readFile', uri),
+    },
+  })
   FileSystemProcess.set(mockRpc)
   ExtensionHost.set(mockExtensionHostRpc)
-  return { mockExtensionHostRpc, mockRpc }
+  RendererWorker.set(mockRendererWorkerRpc)
+  return { mockExtensionHostRpc, mockRendererWorkerRpc, mockRpc }
 }
 
 beforeEach(() => {
   jest.resetAllMocks()
   mockInvoke.mockReset()
   mockExtensionHostInvoke.mockReset()
+  mockRendererWorkerInvoke.mockReset()
 })
 
 test('remove', async () => {
@@ -68,6 +79,26 @@ test('readFile', async () => {
   const content = await FileSystemDisk.readFile('/test/path')
   expect(content).toBe('file content')
   expect(mockRpc.invocations).toEqual([['FileSystem.readFile', '/test/path']])
+})
+
+test('readFile routes fetch uri to renderer worker', async () => {
+  const { mockRendererWorkerRpc } = createMockFileSystemRpcs()
+  mockRendererWorkerInvoke.mockResolvedValue('file content')
+
+  const content = await FileSystemDisk.readFile('fetch:///workspace/file.ts')
+
+  expect(content).toBe('file content')
+  expect(mockRendererWorkerRpc.invocations).toEqual([['FileSystem.readFile', 'fetch:///workspace/file.ts']])
+})
+
+test('exists routes fetch uri to renderer worker', async () => {
+  const { mockRendererWorkerRpc } = createMockFileSystemRpcs()
+  mockRendererWorkerInvoke.mockResolvedValue(true)
+
+  const exists = await FileSystemDisk.exists('fetch:///workspace/file.ts')
+
+  expect(exists).toBe(true)
+  expect(mockRendererWorkerRpc.invocations).toEqual([['FileSystem.exists', 'fetch:///workspace/file.ts']])
 })
 
 test('getFileHash', async () => {
@@ -96,6 +127,16 @@ test('readDirWithFileTypes', async () => {
   const files = await FileSystemDisk.readDirWithFileTypes('/test/path')
   expect(files).toEqual([{ name: 'file1' }, { name: 'file2' }])
   expect(mockRpc.invocations).toEqual([['FileSystem.readDirWithFileTypes', '/test/path']])
+})
+
+test('readDirWithFileTypes routes fetch uri to renderer worker', async () => {
+  const { mockRendererWorkerRpc } = createMockFileSystemRpcs()
+  mockRendererWorkerInvoke.mockResolvedValue([{ name: 'file.ts' }])
+
+  const files = await FileSystemDisk.readDirWithFileTypes('fetch:///workspace')
+
+  expect(files).toEqual([{ name: 'file.ts' }])
+  expect(mockRendererWorkerRpc.invocations).toEqual([['FileSystem.readDirWithFileTypes', 'fetch:///workspace']])
 })
 
 test('getPathSeparator', async () => {
