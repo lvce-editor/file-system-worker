@@ -1,4 +1,4 @@
-import { beforeAll, expect, test } from '@jest/globals'
+import { beforeAll, expect, jest, test } from '@jest/globals'
 import { createFileSystemProcessRpcNode } from '../src/parts/CreateFileSystemProcessRpcNode/CreateFileSystemProcessRpcNode.js'
 
 beforeAll(() => {
@@ -33,6 +33,7 @@ test('creates file system process rpc', async () => {
 })
 
 test('handles error when creating file system process rpc', async () => {
+  jest.useFakeTimers()
   class MockWebSocket extends EventTarget {
     constructor() {
       super()
@@ -48,7 +49,17 @@ test('handles error when creating file system process rpc', async () => {
     configurable: true,
     value: MockWebSocket,
   })
-  await expect(createFileSystemProcessRpcNode()).rejects.toThrow(
-    new Error('Failed to create file system process rpc: IpcError: Websocket connection was immediately closed'),
-  )
+  const rpcPromise = createFileSystemProcessRpcNode()
+  const errorPromise = (async (): Promise<unknown> => {
+    try {
+      return await rpcPromise
+    } catch (error) {
+      return error
+    }
+  })()
+  await jest.runAllTimersAsync()
+  await expect(errorPromise).resolves.toMatchObject({
+    message: 'Failed to create file system process rpc: Failed to create rpc connection: IpcError: Websocket connection was immediately closed',
+  })
+  jest.useRealTimers()
 })
