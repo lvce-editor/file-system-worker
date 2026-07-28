@@ -91,6 +91,16 @@ test('readFile routes fetch uri to renderer worker', async () => {
   expect(mockRendererWorkerRpc.invocations).toEqual([['FileSystem.readFile', 'fetch:///workspace/file.ts']])
 })
 
+test('readFile routes html uri to renderer worker', async () => {
+  const { mockRendererWorkerRpc } = createMockFileSystemRpcs()
+  mockRendererWorkerInvoke.mockResolvedValue('file content')
+
+  const content = await FileSystemDisk.readFile('html:///workspace/file.ts')
+
+  expect(content).toBe('file content')
+  expect(mockRendererWorkerRpc.invocations).toEqual([['FileSystem.readFile', 'html:///workspace/file.ts']])
+})
+
 test('exists routes fetch uri to renderer worker', async () => {
   const { mockRendererWorkerRpc } = createMockFileSystemRpcs()
   mockRendererWorkerInvoke.mockResolvedValue(true)
@@ -99,6 +109,16 @@ test('exists routes fetch uri to renderer worker', async () => {
 
   expect(exists).toBe(true)
   expect(mockRendererWorkerRpc.invocations).toEqual([['FileSystem.exists', 'fetch:///workspace/file.ts']])
+})
+
+test('exists routes html uri to renderer worker', async () => {
+  const { mockRendererWorkerRpc } = createMockFileSystemRpcs()
+  mockRendererWorkerInvoke.mockResolvedValue(true)
+
+  const exists = await FileSystemDisk.exists('html:///workspace/file.ts')
+
+  expect(exists).toBe(true)
+  expect(mockRendererWorkerRpc.invocations).toEqual([['FileSystem.exists', 'html:///workspace/file.ts']])
 })
 
 test('getFileHash', async () => {
@@ -137,6 +157,16 @@ test('readDirWithFileTypes routes fetch uri to renderer worker', async () => {
 
   expect(files).toEqual([{ name: 'file.ts' }])
   expect(mockRendererWorkerRpc.invocations).toEqual([['FileSystem.readDirWithFileTypes', 'fetch:///workspace']])
+})
+
+test('readDirWithFileTypes routes html uri to renderer worker', async () => {
+  const { mockRendererWorkerRpc } = createMockFileSystemRpcs()
+  mockRendererWorkerInvoke.mockResolvedValue([{ name: 'file.ts' }])
+
+  const files = await FileSystemDisk.readDirWithFileTypes('html:///workspace')
+
+  expect(files).toEqual([{ name: 'file.ts' }])
+  expect(mockRendererWorkerRpc.invocations).toEqual([['FileSystem.readDirWithFileTypes', 'html:///workspace']])
 })
 
 test('getPathSeparator', async () => {
