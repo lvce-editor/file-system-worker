@@ -4,3 +4,5 @@ export const Https = 'https:'
 export const File = 'file:'
 
 export const Fetch = 'fetch:'
+
+export const Html = 'html:'
