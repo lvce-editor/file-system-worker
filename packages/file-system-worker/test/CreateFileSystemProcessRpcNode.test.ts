@@ -1,4 +1,5 @@
 import { beforeAll, expect, jest, test } from '@jest/globals'
+import { RendererWorker } from '@lvce-editor/rpc-registry'
 import { createFileSystemProcessRpcNode } from '../src/parts/CreateFileSystemProcessRpcNode/CreateFileSystemProcessRpcNode.js'
 
 beforeAll(() => {
@@ -12,6 +13,11 @@ beforeAll(() => {
 })
 
 test('creates file system process rpc', async () => {
+  const rendererWorker = RendererWorker.registerMockRpc({
+    'WebSocketCapability.create'(): unknown {
+      return { protocols: ['lvce-rpc', 'lvce-capability.token'], url: 'ws://localhost/websocket/capability' }
+    },
+  })
   class MockWebSocket extends EventTarget {
     constructor() {
       super()
@@ -27,12 +33,21 @@ test('creates file system process rpc', async () => {
     configurable: true,
     value: MockWebSocket,
   })
-  const rpc = await createFileSystemProcessRpcNode()
-  expect(rpc).toBeDefined()
-  await rpc.dispose()
+  try {
+    const rpc = await createFileSystemProcessRpcNode()
+    expect(rpc).toBeDefined()
+    await rpc.dispose()
+  } finally {
+    rendererWorker[Symbol.dispose]()
+  }
 })
 
 test('handles error when creating file system process rpc', async () => {
+  const rendererWorker = RendererWorker.registerMockRpc({
+    'WebSocketCapability.create'(): unknown {
+      return { protocols: ['lvce-rpc', 'lvce-capability.token'], url: 'ws://localhost/websocket/capability' }
+    },
+  })
   jest.useFakeTimers()
   class MockWebSocket extends EventTarget {
     constructor() {
@@ -61,5 +76,6 @@ test('handles error when creating file system process rpc', async () => {
   await expect(errorPromise).resolves.toMatchObject({
     message: 'Failed to create file system process rpc: Failed to create rpc connection: IpcError: Websocket connection was immediately closed',
   })
+  rendererWorker[Symbol.dispose]()
   jest.useRealTimers()
 })
