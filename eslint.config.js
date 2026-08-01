@@ -1,9 +1,9 @@
-import config from '@lvce-editor/eslint-config'
-import actions from '@lvce-editor/eslint-plugin-github-actions'
+import { defineConfig } from 'eslint/config'
+import config, { recommendedActions } from '@lvce-editor/eslint-config'
 
-export default [
+export default defineConfig([
   ...config,
-  ...actions,
+  ...recommendedActions,
   {
     rules: {
       'jest/no-restricted-jest-methods': 'off',
@@ -11,4 +11,4 @@ export default [
       'e18e/prefer-string-fromcharcode': 'off',
     },
   },
-]
+])
