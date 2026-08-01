@@ -15,7 +15,13 @@ export const createFileSystemProcessRpcNode = async (): Promise<Rpc> => {
         webSocket: new WebSocket(url, protocols),
       })
     } catch (error) {
-      if (!(error instanceof Error && error.message.includes('WebSocketCapability.create') && /command not found|not found/i.test(error.message))) {
+      if (
+        !(
+          error instanceof Error &&
+          (error.message.includes('WebSocketCapability.create') || error.message.includes('module WebSocketCapability not found')) &&
+          /command not found|not found/i.test(error.message)
+        )
+      ) {
         throw error
       }
     }
