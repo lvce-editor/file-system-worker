@@ -31,6 +31,10 @@ export const getFileHash = async (uri: string): Promise<string> => {
   return FileSystemProcess.getFileHash(uri)
 }
 
+export const getFileHashes = async (uris: readonly string[]): Promise<readonly (string | null)[]> => {
+  return FileSystemProcess.getFileHashes(uris)
+}
+
 export const appendFile = async (uri: string, text: string): Promise<string> => {
   return FileSystemProcess.appendFile(uri, text)
 }
