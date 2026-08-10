@@ -16,6 +16,7 @@ export const commandMap: Record<string, any> = {
   'FileSystem.executeWatchCallback': FileWatcher.executeWatchCallback,
   'FileSystem.exists': FileSystem.exists,
   'FileSystem.getFileHash': FileSystem.getFileHash,
+  'FileSystem.getFileHashes': FileSystem.getFileHashes,
   'FileSystem.getFolderSize': FileSystem.getFolderSize,
   'FileSystem.getPathSeparator': FileSystem.getPathSeparator,
   'FileSystem.getRealPath': FileSystem.getRealPath,

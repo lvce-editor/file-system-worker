@@ -17,6 +17,7 @@ const createMockFileSystemRpcs = (): {
     commandMap: {
       'FileSystem.copy': async (oldUri: string, newUri: string) => mockInvoke('FileSystem.copy', oldUri, newUri),
       'FileSystem.getFileHash': async (uri: string) => mockInvoke('FileSystem.getFileHash', uri),
+      'FileSystem.getFileHashes': async (uris: readonly string[]) => mockInvoke('FileSystem.getFileHashes', uris),
       'FileSystem.getPathSeparator': async (root: string) => mockInvoke('FileSystem.getPathSeparator', root),
       'FileSystem.getRealPath': async (path: string) => mockInvoke('FileSystem.getRealPath', path),
       'FileSystem.isReadonly': async (uri: string) => mockInvoke('FileSystem.isReadonly', uri),
@@ -134,6 +135,22 @@ test('getFileHash', async () => {
 
   expect(hash).toBe('test-hash')
   expect(mockRpc.invocations).toEqual([['FileSystem.getFileHash', '/test/path']])
+})
+
+test('getFileHashes', async () => {
+  const { mockRpc } = createMockFileSystemRpcs()
+  const uris = ['file:///first.js', 'file:///missing.js', 'file:///second.js']
+  mockInvoke.mockImplementation(async (method: string) => {
+    if (method === 'FileSystem.getFileHashes') {
+      return ['first-hash', null, 'second-hash']
+    }
+    throw new Error(`unexpected method ${method}`)
+  })
+
+  const hashes = await FileSystemDisk.getFileHashes(uris)
+
+  expect(hashes).toEqual(['first-hash', null, 'second-hash'])
+  expect(mockRpc.invocations).toEqual([['FileSystem.getFileHashes', uris]])
 })
 
 test('readDirWithFileTypes', async () => {

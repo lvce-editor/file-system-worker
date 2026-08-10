@@ -4,6 +4,10 @@ export const getFileHash = async (uri: string): Promise<string> => {
   return FileSystemProcess.invoke('FileSystem.getFileHash', uri)
 }
 
+export const getFileHashes = async (uris: readonly string[]): Promise<readonly (string | null)[]> => {
+  return FileSystemProcess.invoke('FileSystem.getFileHashes', uris)
+}
+
 export const {
   appendFile,
   copy,
