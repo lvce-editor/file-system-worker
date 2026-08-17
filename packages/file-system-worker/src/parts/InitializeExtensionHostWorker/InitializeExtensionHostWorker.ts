@@ -6,7 +6,7 @@ export const initializeExtensionHostWorker = async (): Promise<void> => {
   try {
     const rpc = await LazyTransferMessagePortRpcParent.create({
       commandMap: {},
-      send: RendererWorker.sendMessagePortToExtensionHostWorker,
+      send: (port) => RendererWorker.sendMessagePortToExtensionManagementWorker(port, 0),
     })
     ExtensionHost.set(rpc)
   } catch (error) {
