@@ -1,5 +1,6 @@
 import pluginTypeScript from '@babel/preset-typescript'
 import { babel } from '@rollup/plugin-babel'
+import commonjs from '@rollup/plugin-commonjs'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import { join } from 'path'
 import { rollup } from 'rollup'
@@ -31,6 +32,7 @@ const options = {
       presets: [pluginTypeScript],
     }),
     nodeResolve(),
+    /** @type {() => import('rollup').Plugin} */ (/** @type {unknown} */ (commonjs))(),
   ],
 }
 
