@@ -1,6 +1,7 @@
 import { base64StringToBlob } from 'blob-util'
 import { binaryStringToBlob, blobToBinaryString } from '../Blob/Blob.ts'
 import * as FileSystem from '../FileSystemDisk/FileSystemDisk.ts'
+import * as FileSystemGlob from '../FileSystemGlob/FileSystemGlob.ts'
 import * as FileWatcher from '../FileWatcher/FileWatcher.ts'
 import * as HandleMessagePort from '../HandleMessagePort/HandleMessagePort.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
@@ -20,6 +21,7 @@ export const commandMap: Record<string, any> = {
   'FileSystem.getFolderSize': FileSystem.getFolderSize,
   'FileSystem.getPathSeparator': FileSystem.getPathSeparator,
   'FileSystem.getRealPath': FileSystem.getRealPath,
+  'FileSystem.glob': FileSystemGlob.glob,
   'FileSystem.handleMessagePort': HandleMessagePort.handleMessagePort,
   'FileSystem.isReadonly': FileSystem.isReadonly,
   'FileSystem.mkdir': FileSystem.mkdir,
