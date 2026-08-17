@@ -10,7 +10,6 @@
     "@babel/preset-typescript": "^7.28.5",
     "@lvce-editor/shared-process": "0.103.19",
     "@rollup/plugin-babel": "^7.0.0",
-    "@rollup/plugin-commonjs": "^29.0.3",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@types/node": "^24.1.0",
     "esbuild": "^0.28.0",

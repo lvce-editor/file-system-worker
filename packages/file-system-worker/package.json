@@ -50,11 +50,8 @@
     "@lvce-editor/rpc": "^6.12.0",
     "@lvce-editor/rpc-registry": "^9.23.0",
     "@lvce-editor/verror": "^1.7.0",
-    "@types/picomatch": "^4.0.3",
     "blob-util": "^2.0.2",
-    "ignore": "^7.0.6",
     "jest": "^30.4.2",
-    "picomatch": "^4.0.5",
     "ts-jest": "^29.4.10"
   }
 }
