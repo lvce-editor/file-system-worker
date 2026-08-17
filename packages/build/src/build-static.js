@@ -1,13 +1,8 @@
 import { cp } from 'node:fs/promises'
 import { join } from 'node:path'
-import { pathToFileURL } from 'node:url'
 import { root } from './root.js'
 
-const sharedProcessPath = join(root, 'packages', 'server', 'node_modules', '@lvce-editor', 'shared-process', 'index.js')
-
-const sharedProcessUrl = pathToFileURL(sharedProcessPath).toString()
-
-const sharedProcess = await import(sharedProcessUrl)
+const sharedProcess = await import('@lvce-editor/shared-process')
 
 process.env.PATH_PREFIX = '/file-system-worker'
 await sharedProcess.exportStatic({
