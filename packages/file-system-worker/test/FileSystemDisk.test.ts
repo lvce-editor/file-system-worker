@@ -18,7 +18,6 @@ const createMockFileSystemRpcs = (): {
       'FileSystem.copy': async (oldUri: string, newUri: string) => mockInvoke('FileSystem.copy', oldUri, newUri),
       'FileSystem.getFileHash': async (uri: string) => mockInvoke('FileSystem.getFileHash', uri),
       'FileSystem.getFileHashes': async (uris: readonly string[]) => mockInvoke('FileSystem.getFileHashes', uris),
-      'FileSystem.getPathSeparator': async (root: string) => mockInvoke('FileSystem.getPathSeparator', root),
       'FileSystem.getRealPath': async (path: string) => mockInvoke('FileSystem.getRealPath', path),
       'FileSystem.isReadonly': async (uri: string) => mockInvoke('FileSystem.isReadonly', uri),
       'FileSystem.mkdir': async (uri: string) => mockInvoke('FileSystem.mkdir', uri),
@@ -184,19 +183,6 @@ test('readDirWithFileTypes routes html uri to renderer worker', async () => {
 
   expect(files).toEqual([{ name: 'file.ts' }])
   expect(mockRendererWorkerRpc.invocations).toEqual([['FileSystem.readDirWithFileTypes', 'html:///workspace']])
-})
-
-test('getPathSeparator', async () => {
-  const { mockRpc } = createMockFileSystemRpcs()
-  mockInvoke.mockImplementation(async (method: string) => {
-    if (method === 'FileSystem.getPathSeparator') {
-      return '/'
-    }
-    throw new Error(`unexpected method ${method}`)
-  })
-  const separator = await FileSystemDisk.getPathSeparator('/test/path')
-  expect(separator).toBe('/')
-  expect(mockRpc.invocations).toEqual([['FileSystem.getPathSeparator', '/test/path']])
 })
 
 test('isReadonly', async () => {

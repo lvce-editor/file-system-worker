@@ -87,11 +87,6 @@ test('exists should return false for failed response', async () => {
   expect(result).toBe(false)
 })
 
-test('getPathSeparator should return forward slash', async () => {
-  const result = await FileSystemFetch.getPathSeparator('https://example.com/')
-  expect(result).toBe('/')
-})
-
 test('readJson should fetch and return JSON content', async () => {
   const mockJson = { key: 'value' }
   // @ts-ignore

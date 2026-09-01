@@ -13,7 +13,6 @@ export const {
   copy,
   exists,
   getFolderSize,
-  getPathSeparator,
   getRealPath,
   invoke,
   mkdir,

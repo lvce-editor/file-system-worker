@@ -24,13 +24,6 @@ beforeEach(() => {
   mockInvoke.mockRejectedValue(new Error('rpc not initialized'))
 })
 
-test('getPathSeparator should return forward slash', async () => {
-  createMockFileSystemRpcs()
-
-  const result = await FileSystemMemory.getPathSeparator('memory://')
-  expect(result).toBe('/')
-})
-
 test('writeFile should not throw error for memfs URI', async () => {
   const { mockRpc } = createMockFileSystemRpcs()
 
