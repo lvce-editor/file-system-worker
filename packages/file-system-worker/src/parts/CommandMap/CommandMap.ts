@@ -19,7 +19,6 @@ export const commandMap: Record<string, any> = {
   'FileSystem.getFileHash': FileSystem.getFileHash,
   'FileSystem.getFileHashes': FileSystem.getFileHashes,
   'FileSystem.getFolderSize': FileSystem.getFolderSize,
-  'FileSystem.getPathSeparator': FileSystem.getPathSeparator,
   'FileSystem.getRealPath': FileSystem.getRealPath,
   'FileSystem.glob': FileSystemGlob.glob,
   'FileSystem.handleMessagePort': HandleMessagePort.handleMessagePort,

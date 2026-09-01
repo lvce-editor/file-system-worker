@@ -1,7 +1,6 @@
 export interface FileSystemHandler {
   readonly createFile: (uri: string) => Promise<void>
   readonly exists: (uri: string) => Promise<boolean>
-  readonly getPathSeparator: (root: string) => Promise<string>
   readonly getRealPath: (path: string) => Promise<string>
   readonly mkdir: (uri: string) => Promise<void>
   readonly readDirWithFileTypes: (uri: string) => Promise<readonly any[]>

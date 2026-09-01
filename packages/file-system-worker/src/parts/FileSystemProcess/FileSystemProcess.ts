@@ -8,21 +8,5 @@ export const getFileHashes = async (uris: readonly string[]): Promise<readonly (
   return FileSystemProcess.invoke('FileSystem.getFileHashes', uris)
 }
 
-export const {
-  appendFile,
-  copy,
-  exists,
-  getFolderSize,
-  getPathSeparator,
-  getRealPath,
-  invoke,
-  mkdir,
-  readDirWithFileTypes,
-  readFile,
-  readJson,
-  remove,
-  rename,
-  set,
-  stat,
-  writeFile,
-} = FileSystemProcess
+export const { appendFile, copy, exists, getFolderSize, getRealPath, invoke, mkdir, readDirWithFileTypes, readFile, readJson, remove, rename, set, stat, writeFile } =
+  FileSystemProcess

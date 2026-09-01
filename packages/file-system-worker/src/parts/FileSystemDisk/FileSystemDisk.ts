@@ -49,10 +49,6 @@ export const readDirWithFileTypes = async (uri: string): Promise<readonly any[]>
   return FileSystemProcess.readDirWithFileTypes(uri)
 }
 
-export const getPathSeparator = async (root: string): Promise<string> => {
-  return FileSystemProcess.getPathSeparator(root)
-}
-
 export const isReadonly = async (uri: string): Promise<boolean> => {
   return FileSystemProcess.invoke('FileSystem.isReadonly', uri)
 }

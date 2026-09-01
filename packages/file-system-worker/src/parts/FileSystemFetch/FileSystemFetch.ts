@@ -28,10 +28,6 @@ export const readDirWithFileTypes = async (uri: string): Promise<readonly any[]>
   throw new Error('not implemented')
 }
 
-export const getPathSeparator = async (root: string): Promise<string> => {
-  return '/'
-}
-
 export const readJson = async (uri: string): Promise<any> => {
   const response = await fetch(uri)
   if (!response.ok) {
