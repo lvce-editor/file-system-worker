@@ -18,6 +18,7 @@ export const commandMap: Record<string, any> = {
   'FileSystem.exists': FileSystem.exists,
   'FileSystem.getFileHash': FileSystem.getFileHash,
   'FileSystem.getFileHashes': FileSystem.getFileHashes,
+  'FileSystem.getFileSize': FileSystem.getFileSize,
   'FileSystem.getFolderSize': FileSystem.getFolderSize,
   'FileSystem.getRealPath': FileSystem.getRealPath,
   'FileSystem.glob': FileSystemGlob.glob,

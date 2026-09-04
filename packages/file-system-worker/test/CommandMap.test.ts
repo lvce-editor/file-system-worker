@@ -5,6 +5,7 @@ test('commandMap', async () => {
   expect(typeof CommandMap.commandMap).toBe('object')
   expect(typeof CommandMap.commandMap['FileSystem.getFileHash']).toBe('function')
   expect(typeof CommandMap.commandMap['FileSystem.getFileHashes']).toBe('function')
+  expect(typeof CommandMap.commandMap['FileSystem.getFileSize']).toBe('function')
   expect(typeof CommandMap.commandMap['FileSystem.glob']).toBe('function')
   expect(typeof CommandMap.commandMap['FileSystem.isReadonly']).toBe('function')
 })
