@@ -67,6 +67,13 @@ export const getRealPath = async (path: string): Promise<string> => {
   return FileSystemProcess.getRealPath(path)
 }
 
+export const getFileSize = async (uri: string): Promise<number> => {
+  if (isHttp(uri) || isMemory(uri)) {
+    throw new Error(`File size is not supported for ${uri}`)
+  }
+  return FileSystemProcess.invoke('FileSystem.getFileSize', uri)
+}
+
 export const readFileAsBlob = async (uri: string): Promise<Blob> => {
   if (isHttp(uri)) {
     return FileSystemFetch.readFileAsBlob(uri)

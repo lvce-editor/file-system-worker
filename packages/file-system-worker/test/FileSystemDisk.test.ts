@@ -18,6 +18,7 @@ const createMockFileSystemRpcs = (): {
       'FileSystem.copy': async (oldUri: string, newUri: string) => mockInvoke('FileSystem.copy', oldUri, newUri),
       'FileSystem.getFileHash': async (uri: string) => mockInvoke('FileSystem.getFileHash', uri),
       'FileSystem.getFileHashes': async (uris: readonly string[]) => mockInvoke('FileSystem.getFileHashes', uris),
+      'FileSystem.getFileSize': async (uri: string) => mockInvoke('FileSystem.getFileSize', uri),
       'FileSystem.getRealPath': async (path: string) => mockInvoke('FileSystem.getRealPath', path),
       'FileSystem.isReadonly': async (uri: string) => mockInvoke('FileSystem.isReadonly', uri),
       'FileSystem.mkdir': async (uri: string) => mockInvoke('FileSystem.mkdir', uri),
@@ -222,6 +223,25 @@ test('getRealPath', async () => {
   const path = await FileSystemDisk.getRealPath('/test/path')
   expect(path).toBe('/real/path')
   expect(mockRpc.invocations).toEqual([['FileSystem.getRealPath', '/test/path']])
+})
+
+test('getFileSize', async () => {
+  const { mockRpc } = createMockFileSystemRpcs()
+  mockInvoke.mockImplementation(async (method: string) => {
+    if (method === 'FileSystem.getFileSize') {
+      return 1024
+    }
+    throw new Error(`unexpected method ${method}`)
+  })
+  const size = await FileSystemDisk.getFileSize('file:///test/path')
+  expect(size).toBe(1024)
+  expect(mockRpc.invocations).toEqual([['FileSystem.getFileSize', 'file:///test/path']])
+})
+
+test.each(['https://example.com/file.txt', 'memfs://file.txt'])('getFileSize rejects unsupported uri %s', async (uri) => {
+  createMockFileSystemRpcs()
+
+  await expect(FileSystemDisk.getFileSize(uri)).rejects.toThrow(`File size is not supported for ${uri}`)
 })
 
 test('stat', async () => {
