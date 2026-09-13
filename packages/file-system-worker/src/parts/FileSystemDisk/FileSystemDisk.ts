@@ -6,6 +6,7 @@ import { isFetch } from '../IsFetch/IsFetch.ts'
 import { isHtml } from '../IsHtml/IsHtml.ts'
 import { isHttp } from '../IsHttp/IsHttp.ts'
 import { isMemory } from '../IsMemory/IsMemory.ts'
+import { isProviderUri } from '../IsProviderUri/IsProviderUri.ts'
 
 export const remove = async (dirent: string): Promise<void> => {
   if (isMemory(dirent)) {
@@ -21,7 +22,7 @@ export const readFile = async (uri: string): Promise<string> => {
   if (isHttp(uri)) {
     return FileSystemFetch.readFile(uri)
   }
-  if (isMemory(uri)) {
+  if (isMemory(uri) || isProviderUri(uri)) {
     return RendererWorker.invoke('FileSystem.readFile', uri)
   }
   return FileSystemProcess.readFile(uri)
@@ -43,7 +44,7 @@ export const readDirWithFileTypes = async (uri: string): Promise<readonly any[]>
   if (isFetch(uri) || isHtml(uri)) {
     return RendererWorker.invoke('FileSystem.readDirWithFileTypes', uri)
   }
-  if (isMemory(uri)) {
+  if (isMemory(uri) || isProviderUri(uri)) {
     return RendererWorker.invoke('FileSystem.readDirWithFileTypes', uri)
   }
   return FileSystemProcess.readDirWithFileTypes(uri)
