@@ -12,6 +12,9 @@ export const remove = async (dirent: string): Promise<void> => {
   if (isMemory(dirent)) {
     return FileSystemMemory.remove(dirent)
   }
+  if (isProviderUri(dirent)) {
+    return RendererWorker.invoke('FileSystem.remove', dirent)
+  }
   return FileSystemProcess.remove(dirent)
 }
 
@@ -120,7 +123,7 @@ export const createFile = async (uri: string): Promise<void> => {
 }
 
 export const writeFile = async (uri: string, content: string): Promise<void> => {
-  if (isMemory(uri)) {
+  if (isMemory(uri) || isProviderUri(uri)) {
     return RendererWorker.invoke('FileSystem.writeFile', uri, content)
   }
   return FileSystemProcess.writeFile(uri, content)
