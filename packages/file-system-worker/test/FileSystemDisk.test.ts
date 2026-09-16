@@ -42,6 +42,8 @@ const createMockFileSystemRpcs = (): {
       'FileSystem.exists': async (uri: string) => mockRendererWorkerInvoke('FileSystem.exists', uri),
       'FileSystem.readDirWithFileTypes': async (uri: string) => mockRendererWorkerInvoke('FileSystem.readDirWithFileTypes', uri),
       'FileSystem.readFile': async (uri: string) => mockRendererWorkerInvoke('FileSystem.readFile', uri),
+      'FileSystem.remove': async (uri: string) => mockRendererWorkerInvoke('FileSystem.remove', uri),
+      'FileSystem.writeFile': async (uri: string, content: string) => mockRendererWorkerInvoke('FileSystem.writeFile', uri, content),
     },
   })
   FileSystemProcess.set(mockRpc)
@@ -67,6 +69,15 @@ test('remove', async () => {
   })
   await FileSystemDisk.remove('/test/path')
   expect(mockRpc.invocations).toEqual([['FileSystem.remove', '/test/path']])
+})
+
+test.each(['html:///workspace/file.ts', 'remote-ssh://user@host/workspace/file.ts'])('remove routes provider uri %s to renderer worker', async (uri) => {
+  const { mockRendererWorkerRpc } = createMockFileSystemRpcs()
+  mockRendererWorkerInvoke.mockResolvedValue(undefined)
+
+  await FileSystemDisk.remove(uri)
+
+  expect(mockRendererWorkerRpc.invocations).toEqual([['FileSystem.remove', uri]])
 })
 
 test('readFile', async () => {
@@ -279,6 +290,15 @@ test('writeFile', async () => {
   })
   await FileSystemDisk.writeFile('/test/path', 'content')
   expect(mockRpc.invocations).toEqual([['FileSystem.writeFile', '/test/path', 'content']])
+})
+
+test.each(['html:///workspace/file.ts', 'remote-ssh://user@host/workspace/file.ts'])('writeFile routes provider uri %s to renderer worker', async (uri) => {
+  const { mockRendererWorkerRpc } = createMockFileSystemRpcs()
+  mockRendererWorkerInvoke.mockResolvedValue(undefined)
+
+  await FileSystemDisk.writeFile(uri, 'content')
+
+  expect(mockRendererWorkerRpc.invocations).toEqual([['FileSystem.writeFile', uri, 'content']])
 })
 
 test('writeBlob', async () => {
