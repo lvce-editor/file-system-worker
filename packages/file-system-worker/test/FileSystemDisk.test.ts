@@ -316,18 +316,13 @@ test('writeBlob', async () => {
 
 test('readFileAsBlob routes memfs uri to FileSystemMemory', async () => {
   const { mockExtensionHostRpc } = createMockFileSystemRpcs()
-  mockExtensionHostInvoke.mockImplementation(async (method: string) => {
-    if (method === 'FileSystemMemory.readFile') {
-      return '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
-    }
-    throw new Error(`unexpected method ${method}`)
-  })
+  await FileSystemDisk.writeFile('memfs:///workspace/left.svg', '<svg xmlns="http://www.w3.org/2000/svg"></svg>')
 
   const blob = await FileSystemDisk.readFileAsBlob('memfs:///workspace/left.svg')
 
   expect(blob.type).toBe('image/svg+xml')
   await expect(blob.text()).resolves.toBe('<svg xmlns="http://www.w3.org/2000/svg"></svg>')
-  expect(mockExtensionHostRpc.invocations).toEqual([['FileSystemMemory.readFile', 'memfs:///workspace/left.svg']])
+  expect(mockExtensionHostRpc.invocations).toEqual([])
 })
 
 test('mkdir', async () => {
