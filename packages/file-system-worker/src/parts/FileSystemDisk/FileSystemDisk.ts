@@ -19,13 +19,17 @@ export const remove = async (dirent: string): Promise<void> => {
 }
 
 export const readFile = async (uri: string): Promise<string> => {
+  if (uri.startsWith('untitled:')) return ''
   if (isFetch(uri) || isHtml(uri)) {
     return RendererWorker.invoke('FileSystem.readFile', uri)
   }
   if (isHttp(uri)) {
     return FileSystemFetch.readFile(uri)
   }
-  if (isMemory(uri) || isProviderUri(uri)) {
+  if (isMemory(uri)) {
+    return FileSystemMemory.readFile(uri)
+  }
+  if (isProviderUri(uri)) {
     return RendererWorker.invoke('FileSystem.readFile', uri)
   }
   return FileSystemProcess.readFile(uri)
@@ -47,7 +51,10 @@ export const readDirWithFileTypes = async (uri: string): Promise<readonly any[]>
   if (isFetch(uri) || isHtml(uri)) {
     return RendererWorker.invoke('FileSystem.readDirWithFileTypes', uri)
   }
-  if (isMemory(uri) || isProviderUri(uri)) {
+  if (isMemory(uri)) {
+    return FileSystemMemory.readDirWithFileTypes(uri)
+  }
+  if (isProviderUri(uri)) {
     return RendererWorker.invoke('FileSystem.readDirWithFileTypes', uri)
   }
   return FileSystemProcess.readDirWithFileTypes(uri)
@@ -68,6 +75,7 @@ export const readJson = async (uri: string): Promise<any> => {
 }
 
 export const getRealPath = async (path: string): Promise<string> => {
+  if (isMemory(path)) return FileSystemMemory.getRealPath(path)
   return FileSystemProcess.getRealPath(path)
 }
 
@@ -99,6 +107,7 @@ export const readFileAsBlob = async (uri: string): Promise<Blob> => {
 }
 
 export const stat = async (dirent: string): Promise<any> => {
+  if (isMemory(dirent)) return FileSystemMemory.stat(dirent)
   return FileSystemProcess.stat(dirent)
 }
 
@@ -110,7 +119,7 @@ export const exists = async (uri: string): Promise<any> => {
     return FileSystemFetch.exists(uri)
   }
   if (isMemory(uri)) {
-    return RendererWorker.invoke('FileSystem.exists', uri)
+    return FileSystemMemory.exists(uri)
   }
   return FileSystemProcess.exists(uri)
 }
@@ -123,7 +132,10 @@ export const createFile = async (uri: string): Promise<void> => {
 }
 
 export const writeFile = async (uri: string, content: string): Promise<void> => {
-  if (isMemory(uri) || isProviderUri(uri)) {
+  if (isMemory(uri)) {
+    return FileSystemMemory.writeFile(uri, content)
+  }
+  if (isProviderUri(uri)) {
     return RendererWorker.invoke('FileSystem.writeFile', uri, content)
   }
   return FileSystemProcess.writeFile(uri, content)
@@ -146,7 +158,7 @@ export const writeBlob = async (uri: string, blob: Blob): Promise<void> => {
 
 export const mkdir = async (uri: string): Promise<void> => {
   if (isMemory(uri)) {
-    await RendererWorker.invoke('FileSystem.mkdir', uri)
+    await FileSystemMemory.mkdir(uri)
     return
   }
   return FileSystemProcess.mkdir(uri)
@@ -160,9 +172,15 @@ export const rename = async (oldUri: string, newUri: string): Promise<void> => {
 }
 
 export const copy = async (oldUri: string, newUri: string): Promise<void> => {
+  if (isMemory(oldUri) && isMemory(newUri)) return FileSystemMemory.copy(oldUri, newUri)
   return FileSystemProcess.copy(oldUri, newUri)
 }
 
 export const getFolderSize = async (uri: string): Promise<void> => {
   return FileSystemProcess.getFolderSize(uri)
+}
+
+export const getPathSeparator = async (uri: string): Promise<string> => {
+  if (isMemory(uri)) return FileSystemMemory.getPathSeparator(uri)
+  return FileSystemProcess.invoke('FileSystem.getPathSeparator', uri)
 }

@@ -1,104 +1,50 @@
-import { beforeEach, expect, jest, test } from '@jest/globals'
-import { createMockRpc } from '@lvce-editor/rpc'
-import { ExtensionHost } from '@lvce-editor/rpc-registry'
-import * as FileSystemMemory from '../src/parts/FileSystemMemory/FileSystemMemory.ts'
+import { expect, test } from '@jest/globals'
+import * as ApplicationFileSystem from '../src/parts/ApplicationFileSystem/ApplicationFileSystem.ts'
+import * as Memory from '../src/parts/FileSystemMemory/FileSystemMemory.ts'
 
-const mockInvoke = jest.fn<(method: string, ...args: readonly unknown[]) => Promise<unknown>>()
-
-const createMockFileSystemRpcs = (): { mockRpc: ReturnType<typeof createMockRpc> } => {
-  const mockRpc = createMockRpc({
-    commandMap: {
-      'FileSystemMemory.createFile': async (uri: string) => mockInvoke('FileSystemMemory.createFile', uri),
-      'FileSystemMemory.readFile': async (uri: string) => mockInvoke('FileSystemMemory.readFile', uri),
-      'FileSystemMemory.remove': async (uri: string) => mockInvoke('FileSystemMemory.remove', uri),
-      'FileSystemMemory.rename': async (oldUri: string, newUri: string) => mockInvoke('FileSystemMemory.rename', oldUri, newUri),
-      'FileSystemMemory.writeFile': async (uri: string, content: string) => mockInvoke('FileSystemMemory.writeFile', uri, content),
-    },
-  })
-  ExtensionHost.set(mockRpc)
-  return { mockRpc }
-}
-
-beforeEach(() => {
-  jest.clearAllMocks()
-  mockInvoke.mockRejectedValue(new Error('rpc not initialized'))
+test('owns file contents, creates parents, reads blobs and survives reads', async () => {
+  await Memory.writeFile('memfs:///workspace/left.svg', '<svg/>')
+  expect(await Memory.readFile('memfs:///workspace/left.svg')).toBe('<svg/>')
+  expect(await Memory.readDirWithFileTypes('memfs:///workspace')).toEqual([{ name: 'left.svg', type: 7 }])
+  const blob = await Memory.readFileAsBlob('memfs:///workspace/left.svg')
+  expect(blob.type).toBe('image/svg+xml')
+  expect(await blob.text()).toBe('<svg/>')
+  await Memory.remove('memfs:///workspace')
+  await expect(Memory.readFile('memfs:///workspace/left.svg')).rejects.toThrow('File not found')
 })
 
-test('writeFile should not throw error for memfs URI', async () => {
-  const { mockRpc } = createMockFileSystemRpcs()
-
-  await expect(FileSystemMemory.writeFile('memfs://test.txt', 'content')).rejects.toThrow()
-  expect(mockRpc.invocations).toEqual([['FileSystemMemory.writeFile', 'memfs://test.txt', 'content']])
+test('renames a directory tree, copies files and removes only the selected tree', async () => {
+  await Memory.writeFile('memfs:///tree/child/file', 'hello')
+  await Memory.writeFile('memfs:///tree-other/file', 'keep')
+  await Memory.rename('memfs:///tree', 'memfs:///renamed')
+  expect(await Memory.exists('memfs:///tree')).toBe(false)
+  expect(await Memory.readFile('memfs:///renamed/child/file')).toBe('hello')
+  await Memory.copy('memfs:///renamed/child/file', 'memfs:///copy')
+  await Memory.remove('memfs:///renamed')
+  expect(await Memory.readFile('memfs:///copy')).toBe('hello')
+  expect(await Memory.readFile('memfs:///tree-other/file')).toBe('keep')
 })
 
-test('remove should not throw error for memfs URI', async () => {
-  const { mockRpc } = createMockFileSystemRpcs()
-
-  await expect(FileSystemMemory.remove('memfs://test.txt')).rejects.toThrow()
-  expect(mockRpc.invocations).toEqual([['FileSystemMemory.remove', 'memfs://test.txt']])
+test('separate applications can use the same URI and dispose independently', async () => {
+  const uri = 'memfs:///workspace/main.ts'
+  await ApplicationFileSystem.execute('source', 'writeFile', uri, 'source text')
+  await ApplicationFileSystem.execute('preview', 'writeFile', uri, 'preview text')
+  expect(await ApplicationFileSystem.execute('source', 'readFile', uri)).toBe('source text')
+  await ApplicationFileSystem.dispose('source')
+  await expect(ApplicationFileSystem.execute('source', 'readFile', uri)).rejects.toThrow('File not found')
+  expect(await ApplicationFileSystem.execute('preview', 'readFile', uri)).toBe('preview text')
+  await ApplicationFileSystem.dispose('preview')
 })
 
-test('readFileAsBlob should read memfs svg content and convert it to a blob', async () => {
-  const { mockRpc } = createMockFileSystemRpcs()
-  mockInvoke.mockResolvedValue('<svg xmlns="http://www.w3.org/2000/svg"></svg>')
-
-  const result = await FileSystemMemory.readFileAsBlob('memfs:///workspace/left.svg')
-
-  expect(mockInvoke).toHaveBeenCalledWith('FileSystemMemory.readFile', 'memfs:///workspace/left.svg')
-  expect(mockRpc.invocations).toEqual([['FileSystemMemory.readFile', 'memfs:///workspace/left.svg']])
-  expect(result).toBeInstanceOf(Blob)
-  expect(result.type).toBe('image/svg+xml')
-  await expect(result.text()).resolves.toBe('<svg xmlns="http://www.w3.org/2000/svg"></svg>')
-})
-
-test('exists should throw not implemented', async () => {
-  createMockFileSystemRpcs()
-  await expect(FileSystemMemory.exists('memory://test.txt')).rejects.toThrow('not implemented')
-})
-
-test('readDirWithFileTypes should throw not implemented', async () => {
-  createMockFileSystemRpcs()
-  await expect(FileSystemMemory.readDirWithFileTypes('memory://')).rejects.toThrow('not implemented')
-})
-
-test('readJson should throw not implemented', async () => {
-  createMockFileSystemRpcs()
-  await expect(FileSystemMemory.readJson('memory://test.json')).rejects.toThrow('not implemented')
-})
-
-test('getRealPath should throw not implemented', async () => {
-  createMockFileSystemRpcs()
-  await expect(FileSystemMemory.getRealPath('memory://test.txt')).rejects.toThrow('not implemented')
-})
-
-test('stat should throw not implemented', async () => {
-  createMockFileSystemRpcs()
-  await expect(FileSystemMemory.stat('memory://test.txt')).rejects.toThrow('not implemented')
-})
-
-test('createFile should not throw error for memfs URI', async () => {
-  const { mockRpc } = createMockFileSystemRpcs()
-  await expect(FileSystemMemory.createFile('memfs://test.txt')).rejects.toThrow()
-  expect(mockRpc.invocations).toEqual([['FileSystemMemory.createFile', 'memfs://test.txt']])
-})
-
-test('mkdir should throw not implemented', async () => {
-  createMockFileSystemRpcs()
-  await expect(FileSystemMemory.mkdir('memory://folder')).rejects.toThrow('not implemented')
-})
-
-test('rename should not throw error for memfs URI', async () => {
-  const { mockRpc } = createMockFileSystemRpcs()
-  await expect(FileSystemMemory.rename('memfs://old.txt', 'memfs://new.txt')).rejects.toThrow()
-  expect(mockRpc.invocations).toEqual([['FileSystemMemory.rename', 'memfs://old.txt', 'memfs://new.txt']])
-})
-
-test('copy should throw not implemented', async () => {
-  createMockFileSystemRpcs()
-  await expect(FileSystemMemory.copy('memory://source.txt', 'memory://dest.txt')).rejects.toThrow('not implemented')
-})
-
-test('getFolderSize should throw not implemented', async () => {
-  createMockFileSystemRpcs()
-  await expect(FileSystemMemory.getFolderSize('memory://folder')).rejects.toThrow('not implemented')
+test('json, stat, directory and copy operations use the same storage', async () => {
+  await Memory.mkdir('memfs:///operations')
+  await Memory.createFile('memfs:///operations/empty')
+  await Memory.writeFile('memfs:///operations/file.json', '{"value":42}')
+  expect(await Memory.readJson('memfs:///operations/file.json')).toEqual({ value: 42 })
+  expect(await Memory.stat('memfs:///operations')).toMatchObject({ exists: true, type: 3 })
+  expect(await Memory.stat('memfs:///operations/empty')).toMatchObject({ exists: true, size: 0, type: 7 })
+  expect(await Memory.getFolderSize('memfs:///operations')).toBe(12)
+  await expect(Memory.rename('memfs:///operations', 'memfs:///operations/child')).rejects.toThrow('into itself')
+  await Memory.remove('memfs:///operations')
+  expect(await Memory.exists('memfs:///operations')).toBe(false)
 })

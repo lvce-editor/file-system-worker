@@ -1,17 +1,23 @@
 import { base64StringToBlob } from 'blob-util'
+import * as ApplicationFileSystem from '../ApplicationFileSystem/ApplicationFileSystem.ts'
 import { binaryStringToBlob, blobToBinaryString } from '../Blob/Blob.ts'
+import { connect } from '../Connect/Connect.ts'
 import * as FileSystem from '../FileSystemDisk/FileSystemDisk.ts'
 import * as FileSystemGlob from '../FileSystemGlob/FileSystemGlob.ts'
+import * as FileSystemMemory from '../FileSystemMemory/FileSystemMemory.ts'
 import * as FileWatcher from '../FileWatcher/FileWatcher.ts'
 import * as HandleMessagePort from '../HandleMessagePort/HandleMessagePort.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
 import { uploadFileSystemHandles } from '../UploadFileSystemHandles/UploadFileSystemHandles.ts'
 
 export const commandMap: Record<string, any> = {
+  'ApplicationFileSystem.dispose': ApplicationFileSystem.dispose,
+  'ApplicationFileSystem.execute': ApplicationFileSystem.execute,
   'Blob.base64StringToBlob': base64StringToBlob,
   'Blob.binaryStringToBlob': binaryStringToBlob,
   'Blob.blobToBinaryString': blobToBinaryString,
   'FileSystem.appendFile': FileSystem.appendFile,
+  'FileSystem.connect': connect,
   'FileSystem.copy': FileSystem.copy,
   'FileSystem.createFile': FileSystem.createFile,
   'FileSystem.executeWatchCallback': FileWatcher.executeWatchCallback,
@@ -20,6 +26,7 @@ export const commandMap: Record<string, any> = {
   'FileSystem.getFileHashes': FileSystem.getFileHashes,
   'FileSystem.getFileSize': FileSystem.getFileSize,
   'FileSystem.getFolderSize': FileSystem.getFolderSize,
+  'FileSystem.getPathSeparator': FileSystem.getPathSeparator,
   'FileSystem.getRealPath': FileSystem.getRealPath,
   'FileSystem.glob': FileSystemGlob.glob,
   'FileSystem.handleMessagePort': HandleMessagePort.handleMessagePort,
@@ -37,5 +44,6 @@ export const commandMap: Record<string, any> = {
   'FileSystem.watchFile': FileWatcher.watchFile,
   'FileSystem.writeBlob': FileSystem.writeBlob,
   'FileSystem.writeFile': FileSystem.writeFile,
+  'FileSystemMemory.getFiles': FileSystemMemory.getFiles,
   'Initialize.initialize': Initialize.initialize,
 }
