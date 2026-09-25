@@ -75,6 +75,7 @@ export const readJson = async (uri: string): Promise<any> => {
 }
 
 export const getRealPath = async (path: string): Promise<string> => {
+  if (isMemory(path)) return FileSystemMemory.getRealPath(path)
   return FileSystemProcess.getRealPath(path)
 }
 
