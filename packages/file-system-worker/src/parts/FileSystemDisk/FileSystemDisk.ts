@@ -179,3 +179,8 @@ export const copy = async (oldUri: string, newUri: string): Promise<void> => {
 export const getFolderSize = async (uri: string): Promise<void> => {
   return FileSystemProcess.getFolderSize(uri)
 }
+
+export const getPathSeparator = async (uri: string): Promise<string> => {
+  if (isMemory(uri)) return FileSystemMemory.getPathSeparator(uri)
+  return FileSystemProcess.invoke('FileSystem.getPathSeparator', uri)
+}
