@@ -103,6 +103,9 @@ export const readFileAsBlob = async (uri: string): Promise<Blob> => {
     const blob = await response.blob()
     return blob
   }
+  if (isProviderUri(uri)) {
+    return RendererWorker.invoke('FileSystem.getBlob', uri)
+  }
   throw new Error('uri not supported')
 }
 
