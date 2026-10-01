@@ -39,8 +39,8 @@ const createMockFileSystemRpcs = (): {
   })
   const mockRendererWorkerRpc = createMockRpc({
     commandMap: {
-      'FileSystem.getBlob': async (uri: string) => mockRendererWorkerInvoke('FileSystem.getBlob', uri),
       'FileSystem.exists': async (uri: string) => mockRendererWorkerInvoke('FileSystem.exists', uri),
+      'FileSystem.getBlob': async (uri: string) => mockRendererWorkerInvoke('FileSystem.getBlob', uri),
       'FileSystem.readDirWithFileTypes': async (uri: string) => mockRendererWorkerInvoke('FileSystem.readDirWithFileTypes', uri),
       'FileSystem.readFile': async (uri: string) => mockRendererWorkerInvoke('FileSystem.readFile', uri),
       'FileSystem.remove': async (uri: string) => mockRendererWorkerInvoke('FileSystem.remove', uri),
