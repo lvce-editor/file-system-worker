@@ -39,6 +39,7 @@ const createMockFileSystemRpcs = (): {
   })
   const mockRendererWorkerRpc = createMockRpc({
     commandMap: {
+      'FileSystem.getBlob': async (uri: string) => mockRendererWorkerInvoke('FileSystem.getBlob', uri),
       'FileSystem.exists': async (uri: string) => mockRendererWorkerInvoke('FileSystem.exists', uri),
       'FileSystem.readDirWithFileTypes': async (uri: string) => mockRendererWorkerInvoke('FileSystem.readDirWithFileTypes', uri),
       'FileSystem.readFile': async (uri: string) => mockRendererWorkerInvoke('FileSystem.readFile', uri),
@@ -359,4 +360,23 @@ test('copy', async () => {
   })
   await FileSystemDisk.copy('/old/path', '/new/path')
   expect(mockRpc.invocations).toEqual([['FileSystem.copy', '/old/path', '/new/path']])
+})
+
+test.each(['remote-ssh://user@host:2222/work/encoded%20path/dictionary.gz', 'remote-test://other-host/file.bin'])(
+  'readFileAsBlob preserves provider binary content and URI: %s',
+  async (uri) => {
+    const { mockRendererWorkerRpc, mockRpc } = createMockFileSystemRpcs()
+    const bytes = new Uint8Array([31, 139, 0, 128, 255, 195, 40])
+    mockRendererWorkerInvoke.mockResolvedValue(new Blob([bytes]))
+    const blob = await FileSystemDisk.readFileAsBlob(uri)
+    expect(new Uint8Array(await blob.arrayBuffer())).toEqual(bytes)
+    expect(mockRendererWorkerRpc.invocations).toEqual([['FileSystem.getBlob', uri]])
+    expect(mockRpc.invocations).toEqual([])
+  },
+)
+
+test('readFileAsBlob propagates Remote SSH provider failures', async () => {
+  createMockFileSystemRpcs()
+  mockRendererWorkerInvoke.mockRejectedValue(new Error('Remote file not found'))
+  await expect(FileSystemDisk.readFileAsBlob('remote-ssh://host/missing.gz')).rejects.toThrow('Remote file not found')
 })
