@@ -1,65 +1,6 @@
 import { expect, jest, test } from '@jest/globals'
 import * as FileSystemFileHandle from '../src/parts/FileSystemFileHandle/FileSystemFileHandle.ts'
 
-const MockProgressEvent = class ProgressEvent extends Event {
-  target: any
-
-  constructor(type: string, init?: any) {
-    super(type, init)
-    this.target = init?.target
-  }
-}
-
-const MockFileReader = class FileReader extends EventTarget {
-  target: any
-  result: string | ArrayBuffer | null = null
-  readyState: number = 0
-  error: Error | null = null
-  onload: ((event: any) => void) | null = null
-  onerror: ((event: any) => void) | null = null
-  onloadend: ((event: any) => void) | null = null
-
-  async readAsBinaryString(blob: Blob): Promise<void> {
-    this.readyState = 1
-    try {
-      const buffer = await blob.arrayBuffer()
-      const bytes = new Uint8Array(buffer)
-      let binaryString = ''
-      for (let i = 0; i < bytes.length; i++) {
-        binaryString += String.fromCodePoint(bytes[i])
-      }
-      this.result = binaryString
-      this.readyState = 2
-      if (this.onload) {
-        this.onload({ target: this })
-      }
-      if (this.onloadend) {
-        this.onloadend({ target: this })
-      }
-    } catch (error) {
-      this.error = error as Error | null
-      this.readyState = 2
-      if (this.onerror) {
-        this.onerror({ target: this })
-      }
-      if (this.onloadend) {
-        this.onloadend({ target: this })
-      }
-    }
-  }
-}
-
-Object.defineProperties(globalThis, {
-  FileReader: {
-    configurable: true,
-    value: MockFileReader,
-  },
-  ProgressEvent: {
-    configurable: true,
-    value: MockProgressEvent,
-  },
-})
-
 test('getFile', async () => {
   const mockFile = new File(['content'], 'file1')
   const mockGetFile = jest.fn<() => Promise<File>>().mockResolvedValue(mockFile)
@@ -80,6 +21,15 @@ test('getBinaryString', async () => {
   const result = await FileSystemFileHandle.getBinaryString(mockHandle)
   expect(result).toBe('content')
   expect(mockGetFile).toHaveBeenCalled()
+})
+
+test('getBinaryString preserves non-ASCII file bytes', async () => {
+  const mockFile = new File([new Uint8Array([0x00, 0x80, 0xff])], 'binary')
+  const mockGetFile = jest.fn<() => Promise<File>>().mockResolvedValue(mockFile)
+  const mockHandle = {
+    getFile: mockGetFile,
+  } as unknown as FileSystemFileHandle
+  await expect(FileSystemFileHandle.getBinaryString(mockHandle)).resolves.toBe(String.fromCodePoint(0, 0x80, 0xff))
 })
 
 test('write', async () => {

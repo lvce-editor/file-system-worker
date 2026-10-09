@@ -1,6 +1,4 @@
-import { base64StringToBlob } from 'blob-util'
 import * as ApplicationFileSystem from '../ApplicationFileSystem/ApplicationFileSystem.ts'
-import { binaryStringToBlob, blobToBinaryString } from '../Blob/Blob.ts'
 import { connect } from '../Connect/Connect.ts'
 import * as FileSystem from '../FileSystemDisk/FileSystemDisk.ts'
 import * as FileSystemGlob from '../FileSystemGlob/FileSystemGlob.ts'
@@ -13,9 +11,6 @@ import { uploadFileSystemHandles } from '../UploadFileSystemHandles/UploadFileSy
 export const commandMap: Record<string, any> = {
   'ApplicationFileSystem.dispose': ApplicationFileSystem.dispose,
   'ApplicationFileSystem.execute': ApplicationFileSystem.execute,
-  'Blob.base64StringToBlob': base64StringToBlob,
-  'Blob.binaryStringToBlob': binaryStringToBlob,
-  'Blob.blobToBinaryString': blobToBinaryString,
   'FileSystem.appendFile': FileSystem.appendFile,
   'FileSystem.connect': connect,
   'FileSystem.copy': FileSystem.copy,
