@@ -115,14 +115,14 @@ export const stat = async (dirent: string): Promise<any> => {
 }
 
 export const exists = async (uri: string): Promise<any> => {
+  if (isMemory(uri)) {
+    return FileSystemMemory.exists(uri)
+  }
   if (isFetch(uri) || isHtml(uri) || isProviderUri(uri)) {
     return RendererWorker.invoke('FileSystem.exists', uri)
   }
   if (isHttp(uri)) {
     return FileSystemFetch.exists(uri)
-  }
-  if (isMemory(uri)) {
-    return FileSystemMemory.exists(uri)
   }
   return FileSystemProcess.exists(uri)
 }
