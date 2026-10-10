@@ -134,6 +134,24 @@ test('exists routes html uri to renderer worker', async () => {
   expect(mockRendererWorkerRpc.invocations).toEqual([['FileSystem.exists', 'html:///workspace/file.ts']])
 })
 
+test.each([
+  'remote-ssh://simon@host:2222/workspace/node_modules/eslint/package.json',
+  'remote-ssh://simon@host:2222/workspace/node_modules',
+  'remote-server://host:3000/workspace/node_modules/package/index.d.ts',
+  'custom-provider://host/workspace/encoded%20path/file.ts',
+])('exists checks provider uri %s without probing the local filesystem', async (uri) => {
+  const { mockRendererWorkerRpc, mockRpc } = createMockFileSystemRpcs()
+  for (const expected of [true, false]) {
+    mockRendererWorkerInvoke.mockResolvedValueOnce(expected)
+    expect(await FileSystemDisk.exists(uri)).toBe(expected)
+  }
+  expect(mockRendererWorkerRpc.invocations).toEqual([
+    ['FileSystem.exists', uri],
+    ['FileSystem.exists', uri],
+  ])
+  expect(mockRpc.invocations).toEqual([])
+})
+
 test('getFileHash', async () => {
   const { mockRpc } = createMockFileSystemRpcs()
   mockInvoke.mockImplementation(async (method: string) => {
