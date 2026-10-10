@@ -398,3 +398,14 @@ test('readFileAsBlob propagates Remote SSH provider failures', async () => {
   mockRendererWorkerInvoke.mockRejectedValue(new Error('Remote file not found'))
   await expect(FileSystemDisk.readFileAsBlob('remote-ssh://host/missing.gz')).rejects.toThrow('Remote file not found')
 })
+
+test('exists checks memory storage without forwarding to the renderer', async () => {
+  const { mockRpc, mockRendererWorkerRpc } = createMockFileSystemRpcs()
+  const uri = 'memfs:///workspace/exists-regression.txt'
+  await FileSystemDisk.writeFile(uri, 'content')
+
+  expect(await FileSystemDisk.exists(uri)).toBe(true)
+  expect(await FileSystemDisk.exists('memfs:///workspace/missing-regression.txt')).toBe(false)
+  expect(mockRendererWorkerRpc.invocations).toEqual([])
+  expect(mockRpc.invocations).toEqual([])
+})
