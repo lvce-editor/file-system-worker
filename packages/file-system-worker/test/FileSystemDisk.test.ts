@@ -400,7 +400,7 @@ test('readFileAsBlob propagates Remote SSH provider failures', async () => {
 })
 
 test('exists checks memory storage without forwarding to the renderer', async () => {
-  const { mockRpc, mockRendererWorkerRpc } = createMockFileSystemRpcs()
+  const { mockRendererWorkerRpc, mockRpc } = createMockFileSystemRpcs()
   const uri = 'memfs:///workspace/exists-regression.txt'
   await FileSystemDisk.writeFile(uri, 'content')
 
