@@ -115,7 +115,7 @@ export const stat = async (dirent: string): Promise<any> => {
 }
 
 export const exists = async (uri: string): Promise<any> => {
-  if (isFetch(uri) || isHtml(uri)) {
+  if (isFetch(uri) || isHtml(uri) || isProviderUri(uri)) {
     return RendererWorker.invoke('FileSystem.exists', uri)
   }
   if (isHttp(uri)) {
