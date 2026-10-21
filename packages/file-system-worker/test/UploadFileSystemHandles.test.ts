@@ -2,7 +2,9 @@ import { expect, jest, test } from '@jest/globals'
 import { createMockRpc } from '@lvce-editor/rpc'
 import * as FileSystemProcess from '../src/parts/FileSystemProcess/FileSystemProcess.ts'
 import { setFactory } from '../src/parts/RendererProcess/RendererProcess.ts'
-import * as UploadFileSystemHandles from '../src/parts/UploadFileSystemHandles/UploadFileSystemHandles.ts'
+jest.unstable_mockModule('../src/parts/HandleStorage/HandleStorage.ts', () => ({ addHandle: jest.fn(), getHandle: jest.fn() }))
+const PersistentFileHandle = await import('../src/parts/PersistentFileHandle/PersistentFileHandle.ts')
+const UploadFileSystemHandles = await import('../src/parts/UploadFileSystemHandles/UploadFileSystemHandles.ts')
 
 const MockProgressEvent = class ProgressEvent extends Event {
   target: any
@@ -91,10 +93,8 @@ test('uploadFileSystemHandles with single directory', async () => {
   const result = await UploadFileSystemHandles.uploadFileSystemHandles('/root', '/', [mockDirectoryHandle])
 
   expect(result).toBe(true)
-  expect(rpc.invocations).toEqual([
-    ['PersistentFileHandle.addHandle', '/folder1', mockDirectoryHandle],
-    ['Workspace.setPath', 'html:///folder1'],
-  ])
+  expect(await PersistentFileHandle.getHandle('html:///folder1')).toBe(mockDirectoryHandle)
+  expect(rpc.invocations).toEqual([['Workspace.setPath', 'html:///folder1']])
 })
 
 test('uploadFileSystemHandles with single file', async () => {

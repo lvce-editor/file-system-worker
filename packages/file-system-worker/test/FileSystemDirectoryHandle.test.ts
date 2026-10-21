@@ -3,13 +3,13 @@ import * as FileSystemDirectoryHandle from '../src/parts/FileSystemDirectoryHand
 
 test('getFileHandle', async () => {
   const mockFileHandle = { kind: 'file', name: 'file1' } as FileSystemFileHandle
-  const mockGetFileHandle = jest.fn<(name: string) => Promise<FileSystemFileHandle>>().mockResolvedValue(mockFileHandle)
+  const mockGetFileHandle = jest.fn<(name: string, options?: Readonly<FileSystemGetFileOptions>) => Promise<FileSystemFileHandle>>().mockResolvedValue(mockFileHandle)
   const mockHandle = {
     getFileHandle: mockGetFileHandle,
   } as unknown as FileSystemDirectoryHandle
   const result = await FileSystemDirectoryHandle.getFileHandle(mockHandle, 'file1')
   expect(result).toBe(mockFileHandle)
-  expect(mockGetFileHandle).toHaveBeenCalledWith('file1')
+  expect(mockGetFileHandle).toHaveBeenCalledWith('file1', undefined)
 })
 
 test('getChildHandles', async () => {

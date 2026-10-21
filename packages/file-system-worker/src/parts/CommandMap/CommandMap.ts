@@ -2,10 +2,12 @@ import * as ApplicationFileSystem from '../ApplicationFileSystem/ApplicationFile
 import { connect } from '../Connect/Connect.ts'
 import * as FileSystem from '../FileSystemDisk/FileSystemDisk.ts'
 import * as FileSystemGlob from '../FileSystemGlob/FileSystemGlob.ts'
+import * as FileSystemHtmlSearch from '../FileSystemHtmlSearch/FileSystemHtmlSearch.ts'
 import * as FileSystemMemory from '../FileSystemMemory/FileSystemMemory.ts'
 import * as FileWatcher from '../FileWatcher/FileWatcher.ts'
 import * as HandleMessagePort from '../HandleMessagePort/HandleMessagePort.ts'
 import * as Initialize from '../Initialize/Initialize.ts'
+import * as PersistentFileHandle from '../PersistentFileHandle/PersistentFileHandle.ts'
 import { uploadFileSystemHandles } from '../UploadFileSystemHandles/UploadFileSystemHandles.ts'
 
 export const commandMap: Record<string, any> = {
@@ -39,6 +41,11 @@ export const commandMap: Record<string, any> = {
   'FileSystem.watchFile': FileWatcher.watchFile,
   'FileSystem.writeBlob': FileSystem.writeBlob,
   'FileSystem.writeFile': FileSystem.writeFile,
+  'FileSystemHtml.fileSearch': FileSystemHtmlSearch.fileSearch,
+  'FileSystemHtml.textSearch': FileSystemHtmlSearch.textSearch,
   'FileSystemMemory.getFiles': FileSystemMemory.getFiles,
   'Initialize.initialize': Initialize.initialize,
+  'PersistentFileHandle.addHandle': PersistentFileHandle.addHandle,
+  'PersistentFileHandle.getHandle': PersistentFileHandle.getHandle,
+  'PersistentFileHandle.removeHandle': PersistentFileHandle.removeHandle,
 }

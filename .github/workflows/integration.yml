@@ -30,7 +30,8 @@ jobs:
       - uses: actions/checkout@v7
         with:
           repository: lvce-editor/lvce-editor
-          ref: 236de223cab8f9eeb72dc68a260b63f0db3b4ef9
+          # Includes Playwright 1.64.1 / Chromium 156, fixing native OPFS handle restoration after worker termination.
+          ref: 0d090d5372057aa57a51eb547704d808af0f22d3
           path: .tmp/lvce-integration
       - uses: actions/setup-node@v6
         with:
@@ -47,5 +48,6 @@ jobs:
         run: |-
           npm run e2e:headless --prefix packages/extension-host-worker-tests -- --test-name-prefix=workspace.remote-local-services
           npm run e2e:headless --prefix packages/extension-host-worker-tests -- --test-name-prefix=workspace.local-uri-path
+          npm run e2e:headless --prefix packages/extension-host-worker-tests -- --test-name-prefix=filesystem.html-worker
         working-directory: .tmp/lvce-integration
         shell: bash

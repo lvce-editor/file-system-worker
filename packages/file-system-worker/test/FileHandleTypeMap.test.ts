@@ -1,5 +1,5 @@
 import { expect, test } from '@jest/globals'
-import * as DirentType from '../src/parts/DirentType/DirentType.ts'
+import { DirentType } from '@lvce-editor/constants'
 import * as FileHandleType from '../src/parts/FileHandleType/FileHandleType.ts'
 import * as FileHandleTypeMap from '../src/parts/FileHandleTypeMap/FileHandleTypeMap.ts'
 
