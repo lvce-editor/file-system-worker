@@ -52,6 +52,14 @@ export const test: Test = async () => {
       results.map((result: { text: string }) => result.text),
       ['nested/child/test.txt', 'a Needle in text'],
     )
+    await rpc.invoke('FileSystem.mkdir', `${uri}/generated`)
+    await rpc.invoke('FileSystem.writeFile', `${uri}/generated/drop.txt`, 'ignored')
+    await rpc.invoke('FileSystem.writeFile', `${uri}/generated/keep.txt`, 'kept')
+    await rpc.invoke('FileSystem.writeFile', `${uri}/.gitignore`, 'generated/*\n!generated/keep.txt\n')
+    const files = await rpc.invoke('FileSystemHtml.fileSearch', uri)
+    if (files.includes('generated/drop.txt') || !files.includes('generated/keep.txt')) throw new Error('Native HTML file search must honor gitignore negations')
+    await rpc.invoke('FileSystem.remove', `${uri}/generated`)
+    await rpc.invoke('FileSystem.remove', `${uri}/.gitignore`)
     const blob = new Blob([new Uint8Array([0, 255, 42])])
     await rpc.invoke('FileSystem.writeBlob', `${uri}/binary.bin`, blob)
     const restoredBlob = await rpc.invoke('FileSystem.readFileAsBlob', `${uri}/binary.bin`)

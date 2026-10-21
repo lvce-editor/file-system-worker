@@ -1,5 +1,7 @@
 import { DirentType } from '@lvce-editor/constants'
+import { FileNotFoundError } from '../FileNotFoundError/FileNotFoundError.ts'
 import * as FileSystemHtml from '../FileSystemHtml/FileSystemHtml.ts'
+import * as GitIgnoreMatcher from '../GitIgnoreMatcher/GitIgnoreMatcher.ts'
 
 interface SearchResult {
   readonly end: number
@@ -62,18 +64,30 @@ export const textSearch = async (root: string, query: string, options: Readonly<
   return searchHtmlDirectory(root, '', query, options.flags || 0)
 }
 
-const searchDirectory = async (uri: string, prefix = ''): Promise<string[]> => {
+const searchDirectory = async (uri: string, prefix: string, matcher: Readonly<GitIgnoreMatcher.Matcher>): Promise<string[]> => {
   const entries = await FileSystemHtml.readDirWithFileTypes(uri)
   const results: string[] = []
   for (const entry of entries) {
     const relativePath = prefix ? `${prefix}/${entry.name}` : entry.name
     if (entry.type === DirentType.Directory) {
-      results.push(...(await searchDirectory(`${uri}/${entry.name}`, relativePath)))
-    } else {
+      if (matcher.hasNegation || !matcher.isIgnored(relativePath, true)) {
+        results.push(...(await searchDirectory(`${uri}/${entry.name}`, relativePath, matcher)))
+      }
+    } else if (!matcher.isIgnored(relativePath)) {
       results.push(relativePath)
     }
   }
   return results
 }
 
-export const fileSearch = (uri: string): Promise<string[]> => searchDirectory(uri)
+export const fileSearch = async (uri: string): Promise<string[]> => {
+  let contents = ''
+  try {
+    contents = await FileSystemHtml.readFile(`${uri}/.gitignore`)
+  } catch (error) {
+    if (!(error instanceof FileNotFoundError)) {
+      throw error
+    }
+  }
+  return searchDirectory(uri, '', GitIgnoreMatcher.create(contents))
+}
