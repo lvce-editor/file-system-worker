@@ -1,5 +1,6 @@
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as FileSystemFetch from '../FileSystemFetch/FileSystemFetch.ts'
+import * as FileSystemHtml from '../FileSystemHtml/FileSystemHtml.ts'
 import * as FileSystemMemory from '../FileSystemMemory/FileSystemMemory.ts'
 import * as FileSystemProcess from '../FileSystemProcess/FileSystemProcess.ts'
 import { isFetch } from '../IsFetch/IsFetch.ts'
@@ -9,6 +10,7 @@ import { isMemory } from '../IsMemory/IsMemory.ts'
 import { isProviderUri } from '../IsProviderUri/IsProviderUri.ts'
 
 export const remove = async (dirent: string): Promise<void> => {
+  if (isHtml(dirent)) return FileSystemHtml.remove(dirent)
   if (isMemory(dirent)) {
     return FileSystemMemory.remove(dirent)
   }
@@ -19,8 +21,9 @@ export const remove = async (dirent: string): Promise<void> => {
 }
 
 export const readFile = async (uri: string): Promise<string> => {
+  if (isHtml(uri)) return FileSystemHtml.readFile(uri)
   if (uri.startsWith('untitled:')) return ''
-  if (isFetch(uri) || isHtml(uri)) {
+  if (isFetch(uri)) {
     return RendererWorker.invoke('FileSystem.readFile', uri)
   }
   if (isHttp(uri)) {
@@ -48,7 +51,8 @@ export const appendFile = async (uri: string, text: string): Promise<string> => 
 }
 
 export const readDirWithFileTypes = async (uri: string): Promise<readonly any[]> => {
-  if (isFetch(uri) || isHtml(uri)) {
+  if (isHtml(uri)) return FileSystemHtml.readDirWithFileTypes(uri)
+  if (isFetch(uri)) {
     return RendererWorker.invoke('FileSystem.readDirWithFileTypes', uri)
   }
   if (isMemory(uri)) {
@@ -61,10 +65,12 @@ export const readDirWithFileTypes = async (uri: string): Promise<readonly any[]>
 }
 
 export const isReadonly = async (uri: string): Promise<boolean> => {
+  if (isHtml(uri)) return FileSystemHtml.isReadonly(uri)
   return FileSystemProcess.invoke('FileSystem.isReadonly', uri)
 }
 
 export const readJson = async (uri: string): Promise<any> => {
+  if (isHtml(uri)) return JSON.parse(await FileSystemHtml.readFile(uri))
   if (isHttp(uri)) {
     return FileSystemFetch.readJson(uri)
   }
@@ -87,6 +93,7 @@ export const getFileSize = async (uri: string): Promise<number> => {
 }
 
 export const readFileAsBlob = async (uri: string): Promise<Blob> => {
+  if (isHtml(uri)) return FileSystemHtml.getBlob(uri)
   if (isHttp(uri)) {
     return FileSystemFetch.readFileAsBlob(uri)
   }
@@ -115,10 +122,11 @@ export const stat = async (dirent: string): Promise<any> => {
 }
 
 export const exists = async (uri: string): Promise<any> => {
+  if (isHtml(uri)) return FileSystemHtml.exists(uri)
   if (isMemory(uri)) {
     return FileSystemMemory.exists(uri)
   }
-  if (isFetch(uri) || isHtml(uri) || isProviderUri(uri)) {
+  if (isFetch(uri) || isProviderUri(uri)) {
     return RendererWorker.invoke('FileSystem.exists', uri)
   }
   if (isHttp(uri)) {
@@ -131,10 +139,12 @@ export const createFile = async (uri: string): Promise<void> => {
   if (isMemory(uri)) {
     return FileSystemMemory.createFile(uri)
   }
+  if (isHtml(uri)) return FileSystemHtml.writeFile(uri, '')
   return FileSystemProcess.writeFile(uri, '')
 }
 
 export const writeFile = async (uri: string, content: string): Promise<void> => {
+  if (isHtml(uri)) return FileSystemHtml.writeFile(uri, content)
   if (isMemory(uri)) {
     return FileSystemMemory.writeFile(uri, content)
   }
@@ -154,12 +164,14 @@ const getBytes = async (blob: Blob): Promise<Uint8Array> => {
 }
 
 export const writeBlob = async (uri: string, blob: Blob): Promise<void> => {
+  if (isHtml(uri)) return FileSystemHtml.writeBlob(uri, blob)
   const bytes = await getBytes(blob)
   // @ts-ignore
   await FileSystemProcess.invoke('FileSystem.writeBuffer', uri, bytes)
 }
 
 export const mkdir = async (uri: string): Promise<void> => {
+  if (isHtml(uri)) return FileSystemHtml.mkdir(uri)
   if (isMemory(uri)) {
     await FileSystemMemory.mkdir(uri)
     return

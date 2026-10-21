@@ -1,7 +1,7 @@
-import * as DirentType from '../DirentType/DirentType.ts'
+import { DirentType } from '@lvce-editor/constants'
 import * as FileHandleType from '../FileHandleType/FileHandleType.ts'
 
-export const getDirentType = (fileHandleKind: string): string => {
+export const getDirentType = (fileHandleKind: string): number => {
   switch (fileHandleKind) {
     case FileHandleType.Directory:
       return DirentType.Directory

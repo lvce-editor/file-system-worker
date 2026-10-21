@@ -1,4 +1,5 @@
 import * as FileHandleType from '../FileHandleType/FileHandleType.ts'
+import * as PersistentFileHandle from '../PersistentFileHandle/PersistentFileHandle.ts'
 import * as RendererProcess from '../RendererProcess/RendererProcess.ts'
 import * as UploadFileSystemHandle from '../UploadFileSystemHandle/UploadFileSystemHandle.ts'
 
@@ -13,7 +14,7 @@ export const uploadFileSystemHandles = async (root: string, pathSeparator: strin
     const file = fileSystemHandles[0]
     const { kind, name } = file
     if (kind === FileHandleType.Directory) {
-      await RendererProcess.invoke('PersistentFileHandle.addHandle', `/${name}`, file)
+      await PersistentFileHandle.addHandle(`html:///${name}`, file as FileSystemDirectoryHandle)
       await RendererProcess.invoke('Workspace.setPath', `html:///${name}`)
       return true
     }

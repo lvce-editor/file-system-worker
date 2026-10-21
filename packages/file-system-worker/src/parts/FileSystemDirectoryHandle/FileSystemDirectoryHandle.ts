@@ -12,6 +12,10 @@ export const getChildHandles = async (handle: FileSystemDirectoryHandle): Promis
   return handles
 }
 
-export const getFileHandle = (handle: FileSystemDirectoryHandle, name: string): Promise<FileSystemFileHandle> => {
-  return handle.getFileHandle(name)
+export const getFileHandle = (handle: FileSystemDirectoryHandle, name: string, options?: Readonly<FileSystemGetFileOptions>): Promise<FileSystemFileHandle> => {
+  return handle.getFileHandle(name, options)
+}
+
+export const getDirectoryHandle = (handle: FileSystemDirectoryHandle, name: string): Promise<FileSystemDirectoryHandle> => {
+  return handle.getDirectoryHandle(name)
 }

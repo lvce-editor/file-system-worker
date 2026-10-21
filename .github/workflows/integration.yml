@@ -47,5 +47,6 @@ jobs:
         run: |-
           npm run e2e:headless --prefix packages/extension-host-worker-tests -- --test-name-prefix=workspace.remote-local-services
           npm run e2e:headless --prefix packages/extension-host-worker-tests -- --test-name-prefix=workspace.local-uri-path
+          npm run e2e:headless --prefix packages/extension-host-worker-tests -- --test-name-prefix=filesystem.html-worker
         working-directory: .tmp/lvce-integration
         shell: bash
