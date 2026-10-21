@@ -10,8 +10,31 @@ export const test: Test = async () => {
   const base = new URL('/', import.meta.url)
   const rpcUrl = new URL('js/lvce-editor-rpc.js', base).href
   const workerUrl = new URL('packages/renderer-worker/node_modules/@lvce-editor/file-system-worker/dist/fileSystemWorkerMain.js', base).href
-  const { ModuleWorkerRpcParent } = await import(rpcUrl)
-  const create = (): Promise<any> => ModuleWorkerRpcParent.create({ commandMap: {}, name: 'HTML filesystem acceptance', url: workerUrl })
+  const { PlainMessagePortRpc } = await import(rpcUrl)
+  const create = async (): Promise<any> => {
+    const worker = new Worker(workerUrl, { name: 'HTML filesystem acceptance', type: 'module' })
+    const { port1, port2 } = new MessageChannel()
+    try {
+      await new Promise<void>((resolve, reject) => {
+        worker.addEventListener('message', () => resolve(), { once: true })
+        worker.addEventListener('error', (event) => reject(new Error(event.message)), { once: true })
+      })
+      worker.postMessage({ id: 1, jsonrpc: '2.0', method: 'initialize', params: ['message-port', port2] }, [port2])
+      const rpc = await PlainMessagePortRpc.create({ commandMap: {}, messagePort: port1 })
+      return {
+        dispose: async (): Promise<void> => {
+          await rpc.dispose()
+          worker.terminate()
+        },
+        invoke: rpc.invoke,
+      }
+    } catch (error) {
+      port1.close()
+      port2.close()
+      worker.terminate()
+      throw error
+    }
+  }
   const storage = await navigator.storage.getDirectory()
   const folderName = `html-worker-${Date.now()}`
   const directory = await storage.getDirectoryHandle(folderName, { create: true })
@@ -33,10 +56,6 @@ export const test: Test = async () => {
     await rpc.invoke('FileSystem.writeBlob', `${uri}/binary.bin`, blob)
     const restoredBlob = await rpc.invoke('FileSystem.readFileAsBlob', `${uri}/binary.bin`)
     check([...new Uint8Array(await restoredBlob.arrayBuffer())], [0, 255, 42])
-    const src = await rpc.invoke('FileSystemHtml.getBlobSrc', `${uri}/binary.bin`)
-    const response = await fetch(src)
-    check([...new Uint8Array(await response.arrayBuffer())], [0, 255, 42])
-    URL.revokeObjectURL(src)
     // A fresh worker must restore the native directory handle from the existing database.
     await rpc.dispose()
     rpc = await create()

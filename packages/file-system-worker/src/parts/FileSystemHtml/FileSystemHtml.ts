@@ -203,16 +203,6 @@ export const isReadonly = async (uri: string): Promise<boolean> => {
   return Boolean(handle && 'readonly' in handle && handle.readonly)
 }
 
-export const getBlobSrc = async (uri: string): Promise<string> => {
-  const handle = await GetFileHandle.getFileHandle(uri)
-  if (!handle) {
-    throw new Error(`file not found`)
-  }
-  const file = await FileSystemFileHandle.getFile(handle)
-  const blobUrl = URL.createObjectURL(file)
-  return blobUrl
-}
-
 export const getBlob = async (uri: string): Promise<File> => {
   const handle = await GetFileHandle.getFileHandle(uri)
   if (!handle) {

@@ -2,7 +2,6 @@ import * as ApplicationFileSystem from '../ApplicationFileSystem/ApplicationFile
 import { connect } from '../Connect/Connect.ts'
 import * as FileSystem from '../FileSystemDisk/FileSystemDisk.ts'
 import * as FileSystemGlob from '../FileSystemGlob/FileSystemGlob.ts'
-import * as FileSystemHtml from '../FileSystemHtml/FileSystemHtml.ts'
 import * as FileSystemHtmlSearch from '../FileSystemHtmlSearch/FileSystemHtmlSearch.ts'
 import * as FileSystemMemory from '../FileSystemMemory/FileSystemMemory.ts'
 import * as FileWatcher from '../FileWatcher/FileWatcher.ts'
@@ -43,7 +42,6 @@ export const commandMap: Record<string, any> = {
   'FileSystem.writeBlob': FileSystem.writeBlob,
   'FileSystem.writeFile': FileSystem.writeFile,
   'FileSystemHtml.fileSearch': FileSystemHtmlSearch.fileSearch,
-  'FileSystemHtml.getBlobSrc': FileSystemHtml.getBlobSrc,
   'FileSystemHtml.textSearch': FileSystemHtmlSearch.textSearch,
   'FileSystemMemory.getFiles': FileSystemMemory.getFiles,
   'Initialize.initialize': Initialize.initialize,
