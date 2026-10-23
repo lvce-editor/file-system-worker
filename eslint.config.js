@@ -1,9 +1,10 @@
 import { defineConfig } from 'eslint/config'
-import config, { recommendedActions } from '@lvce-editor/eslint-config'
+import config, { recommendedActions, recommendedRegex } from '@lvce-editor/eslint-config'
 
 export default defineConfig([
   ...config,
   ...recommendedActions,
+  ...recommendedRegex,
   {
     rules: {
       'jest/no-restricted-jest-methods': 'off',
