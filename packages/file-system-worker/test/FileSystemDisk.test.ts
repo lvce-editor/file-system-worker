@@ -16,6 +16,7 @@ const createMockFileSystemRpcs = (): {
   const mockRpc = createMockRpc({
     commandMap: {
       'FileSystem.copy': async (oldUri: string, newUri: string) => mockInvoke('FileSystem.copy', oldUri, newUri),
+      'FileSystem.getDirectoryVersion': async (uri: string) => mockInvoke('FileSystem.getDirectoryVersion', uri),
       'FileSystem.getFileHash': async (uri: string) => mockInvoke('FileSystem.getFileHash', uri),
       'FileSystem.getFileHashes': async (uris: readonly string[]) => mockInvoke('FileSystem.getFileHashes', uris),
       'FileSystem.getFileSize': async (uri: string) => mockInvoke('FileSystem.getFileSize', uri),
@@ -378,4 +379,18 @@ test('exists checks memory storage without forwarding to the renderer', async ()
   expect(await FileSystemDisk.exists('memfs:///workspace/missing-regression.txt')).toBe(false)
   expect(mockRendererWorkerRpc.invocations).toEqual([])
   expect(mockRpc.invocations).toEqual([])
+})
+
+test('directory versions reach the connected filesystem without reading directory entries', async () => {
+  createMockFileSystemRpcs()
+  mockInvoke.mockResolvedValue('connection:version')
+  await expect(FileSystemDisk.getDirectoryVersion('file:///workspace')).resolves.toBe('connection:version')
+  expect(mockInvoke).toHaveBeenCalledWith('FileSystem.getDirectoryVersion', 'file:///workspace')
+  expect(mockInvoke).toHaveBeenCalledTimes(1)
+})
+
+test('memory and web providers do not use disk directory validators', async () => {
+  await expect(FileSystemDisk.getDirectoryVersion('memfs:///workspace')).resolves.toBeNull()
+  await expect(FileSystemDisk.getDirectoryVersion('https://host/workspace')).resolves.toBeNull()
+  expect(mockInvoke).not.toHaveBeenCalled()
 })

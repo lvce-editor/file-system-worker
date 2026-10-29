@@ -19,6 +19,7 @@ export const commandMap: Record<string, any> = {
   'FileSystem.createFile': FileSystem.createFile,
   'FileSystem.executeWatchCallback': FileWatcher.executeWatchCallback,
   'FileSystem.exists': FileSystem.exists,
+  'FileSystem.getDirectoryVersion': FileSystem.getDirectoryVersion,
   'FileSystem.getFileHash': FileSystem.getFileHash,
   'FileSystem.getFileHashes': FileSystem.getFileHashes,
   'FileSystem.getFileSize': FileSystem.getFileSize,

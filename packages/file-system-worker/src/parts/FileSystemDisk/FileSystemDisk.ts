@@ -116,6 +116,13 @@ export const readFileAsBlob = async (uri: string): Promise<Blob> => {
   throw new Error('uri not supported')
 }
 
+export const getDirectoryVersion = async (uri: string): Promise<string | null> => {
+  if (!uri.startsWith('file://')) {
+    return null
+  }
+  return FileSystemProcess.invoke('FileSystem.getDirectoryVersion', uri)
+}
+
 export const stat = async (dirent: string): Promise<any> => {
   if (isMemory(dirent)) return FileSystemMemory.stat(dirent)
   return FileSystemProcess.stat(dirent)
